@@ -1,4 +1,22 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+// AdSense Banner Component
+function AdBanner() {
+  const adRef = useRef(null);
+  useEffect(() => {
+    if (window.adsbygoogle && adRef.current) {
+      window.adsbygoogle.push({});
+    }
+  }, []);
+  return (
+    <ins className="adsbygoogle"
+      style={{ display: 'block' }}
+      data-ad-client="ca-pub-1917839501702299"
+      data-ad-slot="8369048135"
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+      ref={adRef}></ins>
+  );
+}
 import { auth, provider, signInWithPopup, signOut } from './auth';
 import { db } from './firebase';
 import { collection, addDoc, Timestamp, query, orderBy, limit, getDocs } from 'firebase/firestore';
@@ -210,6 +228,26 @@ function App() {
     </div>
   );
 
+  function AdBanner() {
+    const adRef = useRef(null);
+
+    useEffect(() => {
+      if (window.adsbygoogle && adRef.current) {
+        window.adsbygoogle.push({});
+      }
+    }, []);
+
+    return (
+      <ins className="adsbygoogle"
+        style={{ display: 'block' }}
+        data-ad-client="ca-pub-1917839501702299"
+        data-ad-slot="8369048135"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+        ref={adRef}></ins>
+    );
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -264,6 +302,7 @@ function App() {
           )}
         </div>
         <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #2196f3', borderRadius: '8px', background: '#f5faff', color: '#333' }}>
+          <AdBanner />
           <h2>Leaderboard</h2>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
@@ -292,6 +331,7 @@ function App() {
             </tbody>
           </table>
         </div>
+        <AdBanner />
       </header>
     </div>
   );
