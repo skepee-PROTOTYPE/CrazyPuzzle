@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCK1nHodN5OeNXTq0KmhzSne1a7CNZhjpc",
-  authDomain: "mygameapp-fe399.firebaseapp.com",
-  projectId: "mygameapp-fe399",
-  storageBucket: "mygameapp-fe399.firebasestorage.app",
-  messagingSenderId: "858848894749",
-  appId: "1:858848894749:web:b5d4111b06f56987b48bf4",
-  measurementId: "G-8456NCNN5V"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
