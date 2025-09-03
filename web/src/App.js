@@ -13,7 +13,6 @@ function App() {
   const [layout, setLayout] = useState('grid');
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
-  const [leaderboard, setLeaderboard] = useState([]);
 
   // Listen for auth state changes
   useEffect(() => {
