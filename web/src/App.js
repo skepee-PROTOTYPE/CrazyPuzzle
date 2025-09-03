@@ -172,36 +172,16 @@ function App() {
 
   // Render grid
   const renderGrid = () => (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: `repeat(${gridSize}, 60px)`,
-      gap: '10px',
-      justifyContent: 'center',
-      marginTop: '20px'
-    }}>
+    <div className="puzzle-grid">
       {tiles.map((val, idx) => (
         <div
           key={idx}
           onClick={() => handleTileClick(idx)}
-          style={{
-            width: 60,
-            height: 60,
-            background: matched.includes(idx) || flipped.includes(idx) ? '#4caf50' : '#eee',
-            color: matched.includes(idx) || flipped.includes(idx) ? '#fff' : '#eee',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 24,
-            borderRadius: 8,
-            cursor: 'pointer',
-            border: '2px solid #ccc',
-            userSelect: 'none',
-            overflow: 'hidden'
-          }}
+          className={`tile${flipped.includes(idx) || matched.includes(idx) ? ' flipped' : ''}`}
         >
           {(matched.includes(idx) || flipped.includes(idx)) ? (
             difficulty === 'easy' ? (
-              <img src={val} alt="animal" style={{ width: '40px', height: '40px' }} />
+              <img src={val} alt="animal" className="tile-img" />
             ) : (
               val
             )
@@ -212,81 +192,80 @@ function App() {
   );
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Puzzle Game</h1>
-        {!user ? (
-          <div style={{ margin: '20px 0' }}>
-            <button onClick={handleLogin} style={{ fontSize: '1em', padding: '10px 20px', borderRadius: '8px', background: '#2196f3', color: '#fff', border: 'none', cursor: 'pointer' }}>
-              Sign in with Google to play
-            </button>
+    <div className="app-bg">
+      <header className="app-header">
+        <h1 className="app-title">Puzzle Game</h1>
+        <AdBanner />
+        <div className="controls-row">
+          <div className="card sign-in-card">
+            <h3 className="card-title">Sign In</h3>
+            {!user ? (
+              <button onClick={handleLogin} className="btn sign-in-btn">
+                Sign in with Google
+              </button>
+            ) : (
+              <div className="user-info">
+                <img src={user.photoURL} alt="profile" className="user-avatar" />
+                <span className="user-name">{user.displayName}</span>
+                <button onClick={handleLogout} className="btn logout-btn">
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
-        ) : (
-          <div style={{ margin: '20px 0', display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <img src={user.photoURL} alt="profile" style={{ width: 40, height: 40, borderRadius: '50%' }} />
-            <span>Welcome, {user.displayName}</span>
-            <button onClick={handleLogout} style={{ fontSize: '1em', padding: '6px 16px', borderRadius: '8px', background: '#f44336', color: '#fff', border: 'none', cursor: 'pointer' }}>
-              Logout
-            </button>
-          </div>
-        )}
-        <p>Choose your difficulty and layout to start playing.</p>
-        <div style={{ margin: '20px 0' }}>
-          <label>
-            Difficulty:
-            <select value={difficulty} onChange={e => setDifficulty(e.target.value)}>
+          <div className="card difficulty-card">
+            <h3 className="card-title">Difficulty</h3>
+            <select value={difficulty} onChange={e => setDifficulty(e.target.value)} className="select">
               <option value="easy">Kids - Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Adults - Hard</option>
             </select>
-          </label>
-        </div>
-        <div style={{ margin: '20px 0' }}>
-          <label>
-            Layout:
-            <select value={layout} onChange={e => setLayout(e.target.value)}>
+          </div>
+          <div className="card layout-card">
+            <h3 className="card-title">Layout</h3>
+            <select value={layout} onChange={e => setLayout(e.target.value)} className="select">
               <option value="grid">Grid</option>
               <option value="hex">Hexagonal</option>
             </select>
-          </label>
+          </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', marginBottom: '20px' }}>
-          <div style={{ fontSize: '1.2em' }}>Score: {score}</div>
-          <div style={{ fontSize: '1.2em' }}>Time: {timer}s</div>
+        <div className="score-row">
+          <div className="score-box">Score: {score}</div>
+          <div className="score-box">Time: {timer}s</div>
         </div>
-        <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #ccc', borderRadius: '8px', background: '#fff', color: '#333' }}>
-          <h2>Puzzle Board</h2>
+        <div className="board-card">
+          <h2 className="board-title">Puzzle Board</h2>
           {layout === 'grid' ? renderGrid() : <p>Other layouts coming soon!</p>}
           {matched.length === tiles.length && (
-            <div style={{ marginTop: '20px', color: '#4caf50', fontWeight: 'bold' }}>
+            <div className="congrats-msg">
               🎉 Congratulations! You completed the puzzle.<br />Final Score: {score} | Time: {timer}s
             </div>
           )}
         </div>
-        <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #2196f3', borderRadius: '8px', background: '#f5faff', color: '#333' }}>
+        <div className="leaderboard-card">
           <AdBanner />
-          <h2>Leaderboard</h2>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <h2 className="leaderboard-title">Leaderboard</h2>
+          <table className="leaderboard-table">
             <thead>
-              <tr style={{ background: '#e3f2fd' }}>
-                <th style={{ padding: '8px', border: '1px solid #2196f3' }}>Rank</th>
-                <th style={{ padding: '8px', border: '1px solid #2196f3' }}>Score</th>
-                <th style={{ padding: '8px', border: '1px solid #2196f3' }}>Time (s)</th>
-                <th style={{ padding: '8px', border: '1px solid #2196f3' }}>Difficulty</th>
-                <th style={{ padding: '8px', border: '1px solid #2196f3' }}>Layout</th>
+              <tr>
+                <th>Rank</th>
+                <th>Score</th>
+                <th>Time (s)</th>
+                <th>Difficulty</th>
+                <th>Layout</th>
               </tr>
             </thead>
             <tbody>
               {leaderboard.length === 0 ? (
-                <tr><td colSpan={5} style={{ textAlign: 'center', padding: '12px' }}>No scores yet.</td></tr>
+                <tr><td colSpan={5} className="no-scores">No scores yet.</td></tr>
               ) : (
                 leaderboard.map((entry, idx) => (
                   <tr key={idx}>
-                    <td style={{ padding: '8px', border: '1px solid #2196f3' }}>{idx + 1}</td>
-                    <td style={{ padding: '8px', border: '1px solid #2196f3' }}>{entry.score}</td>
-                    <td style={{ padding: '8px', border: '1px solid #2196f3' }}>{entry.time}</td>
-                    <td style={{ padding: '8px', border: '1px solid #2196f3' }}>{entry.difficulty}</td>
-                    <td style={{ padding: '8px', border: '1px solid #2196f3' }}>{entry.layout}</td>
+                    <td>{idx + 1}</td>
+                    <td>{entry.score}</td>
+                    <td>{entry.time}</td>
+                    <td>{entry.difficulty}</td>
+                    <td>{entry.layout}</td>
                   </tr>
                 ))
               )}
