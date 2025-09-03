@@ -83,7 +83,7 @@ function App() {
   return (
     <div className="app-bg">
       <header className="app-header">
-        <h1 className="app-title">Puzzle Game</h1>
+        <h1 className="app-title">Crazy Puzzle</h1>
         <AdBanner />
         <div className="controls-row">
           <div className="card sign-in-card">
