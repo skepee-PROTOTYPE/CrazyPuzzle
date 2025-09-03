@@ -94,7 +94,7 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }) {
 
   return (
     <div className="board-card">
-      <h2 className="board-title">Puzzle Board</h2>
+      <h2 className="board-title">Crazy Puzzle Board</h2>
       {layout === 'grid' ? (
         <div
           className="puzzle-grid"

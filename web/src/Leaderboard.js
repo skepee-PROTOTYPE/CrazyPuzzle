@@ -28,7 +28,7 @@ function Leaderboard({ score, timer, difficulty, layout }) {
   return (
     <div className="leaderboard-card">
       <AdBanner />
-      <h2 className="leaderboard-title">Leaderboard</h2>
+      <h2 className="leaderboard-title">CrazyPuzzle Leaderboard</h2>
       <table className="leaderboard-table">
         <thead>
           <tr>
