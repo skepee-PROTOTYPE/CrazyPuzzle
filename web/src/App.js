@@ -246,8 +246,7 @@ function App() {
             Layout:
             <select value={layout} onChange={e => setLayout(e.target.value)}>
               <option value="grid">Grid</option>
-              <option value="jigsaw">Jigsaw</option>
-              <option value="custom">Custom</option>
+              <option value="hex">Hexagonal</option>
             </select>
           </label>
         </div>
@@ -301,3 +300,13 @@ function App() {
 }
 
 export default App;
+
+function GridPuzzle() {
+  // Render tiles in a grid
+  return <div className="grid-layout">Grid Puzzle Here</div>;
+}
+
+function HexPuzzle() {
+  // Render tiles in a hexagonal layout
+  return <div className="hex-layout">Hex Puzzle Here</div>;
+}

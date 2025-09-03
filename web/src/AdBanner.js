@@ -9,21 +9,22 @@ function AdBanner() {
         window.adsbygoogle.push({});
       }
     } catch (e) {
-      // Fail gracefully if adsbygoogle is not available
       console.warn('AdSense failed to load:', e);
     }
   }, []);
 
   return (
-    <ins
-      className="adsbygoogle"
-      style={{ display: 'block', minHeight: '90px' }}
-      data-ad-client="ca-pub-1917839501702299"
-      data-ad-slot="8369048135"
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-      ref={adRef}
-    ></ins>
+    <div style={{ width: '100%', minWidth: 320, minHeight: 100 }}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: 'block', width: '100%', minHeight: '100px' }}
+        data-ad-client="ca-pub-1917839501702299"
+        data-ad-slot="8369048135"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+        ref={adRef}
+      ></ins>
+    </div>
   );
 }
 
