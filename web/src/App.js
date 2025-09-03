@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, provider, signInWithPopup, signOut } from './auth';
 import { db } from './firebase';
-import { collection, addDoc, Timestamp, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import './App.css';
 import AdBanner from './AdBanner';
 import PuzzleBoard from './PuzzleBoard';
@@ -58,26 +58,6 @@ function App() {
     setScore(score);
     setTimer(timer);
   };
-
-  // Fetch leaderboard from Firestore
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const q = query(
-          collection(db, 'scores'),
-          orderBy('score', 'desc'),
-          orderBy('time', 'asc'),
-          limit(10)
-        );
-        const querySnapshot = await getDocs(q);
-        const scores = querySnapshot.docs.map(doc => doc.data());
-        setLeaderboard(scores);
-      } catch (error) {
-        console.error('Error fetching leaderboard:', error);
-      }
-    };
-    fetchLeaderboard();
-  }, [score, timer, difficulty, layout]);
 
   return (
     <div className="app-bg">
