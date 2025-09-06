@@ -24,6 +24,10 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Write service account JSON (for debug/use)
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > ${{ runner.temp }}/sa.json
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
