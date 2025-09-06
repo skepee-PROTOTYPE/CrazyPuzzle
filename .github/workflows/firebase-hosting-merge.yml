@@ -75,7 +75,6 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-          scopes: "https://www.googleapis.com/auth/cloud-platform"
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
