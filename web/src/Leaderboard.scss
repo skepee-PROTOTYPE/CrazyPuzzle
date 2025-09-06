@@ -1,0 +1,67 @@
+/* Leaderboard component styles */
+$primary: #1976d2;
+$bg-light: #f5faff;
+$card-bg: #fff;
+$muted: #666;
+
+.leaderboard-card {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid $primary;
+  border-radius: 12px;
+  background: $bg-light;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(25,118,210,0.06);
+}
+
+.leaderboard-title {
+  color: $primary;
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: $card-bg;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.leaderboard-table thead {
+  background: lighten($primary, 40%);
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  font-size: 0.95rem;
+  color: #222;
+}
+
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table th.rank {
+  width: 56px;
+  text-align: center;
+  font-weight: 700;
+  color: darken($primary, 10%);
+}
+
+.leaderboard-table td.score {
+  text-align: right;
+  font-weight: 600;
+  color: $primary;
+}
+
+.no-scores {
+  text-align: center;
+  padding: 16px;
+  color: $muted;
+}
+

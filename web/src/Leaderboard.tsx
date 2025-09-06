@@ -3,6 +3,7 @@ import { db } from './firebase';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import AdBanner from './AdBanner';
 import './App.scss';
+import './Leaderboard.scss';
 
 interface LeaderboardProps {
   score: number;

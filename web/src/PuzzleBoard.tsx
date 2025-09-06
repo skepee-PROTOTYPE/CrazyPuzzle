@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import type { User } from 'firebase/auth';
+import './PuzzleBoard.scss';
 
 // Add this props interface
 interface PuzzleBoardProps {

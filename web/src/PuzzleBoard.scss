@@ -1,0 +1,148 @@
+/* PuzzleBoard specific styles */
+
+:root {
+  --tile-size: 60px;
+  --tile-gap: 10px;
+  --tile-border-radius: 8px;
+  --tile-bg: #eee;
+  --tile-border: #ccc;
+  --tile-success: #4caf50;
+  --board-padding: 20px;
+}
+
+/* Board container */
+.board-card {
+  margin-top: 30px;
+  padding: var(--board-padding);
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background: #fff;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.06);
+}
+
+/* Board title */
+.board-title {
+  color: #1976d2;
+  margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+/* Puzzle grid - uses CSS variable --grid-size */
+.puzzle-grid {
+  display: grid;
+  gap: var(--tile-gap);
+  justify-content: center;
+  margin-top: 20px;
+  grid-template-columns: repeat(var(--grid-size, 4), var(--tile-size));
+  transform-style: preserve-3d;
+}
+
+/* Tile card */
+.tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  background: var(--tile-bg);
+  color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  border-radius: var(--tile-border-radius);
+  cursor: pointer;
+  border: 2px solid var(--tile-border);
+  user-select: none;
+  overflow: hidden;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.4s;
+  position: relative;
+  perspective: 800px;
+}
+
+/* Flip effect */
+.tile-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.45s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.tile-front,
+.tile-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+}
+
+/* Hidden face */
+.tile-front {
+  background: var(--tile-bg);
+  color: transparent;
+}
+
+/* Visible face when flipped */
+.tile-back {
+  transform: rotateY(180deg);
+  background: var(--tile-success);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* When flipped */
+.tile.flipped .tile-inner {
+  transform: rotateY(180deg);
+}
+
+/* Matched state */
+.tile.matched {
+  background: var(--tile-success);
+  color: #fff;
+  /* Simple: use the CSS variable as border color */
+  border-color: var(--tile-success);
+
+  /* Optional: if you want a slightly darker border and target modern browsers,
+     you can use color-mix (with a fallback to the var). Uncomment if desired:
+  border-color: color-mix(in srgb, var(--tile-success) 85%, black 15%);
+  */
+}
+
+/* Image inside tile */
+.tile-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Congrats message */
+.congrats-msg {
+  margin-top: 20px;
+  color: var(--tile-success);
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+/* Animations */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-10%); }
+  40% { transform: translateY(-6%); }
+  60% { transform: translateY(-10%); }
+  80% { transform: translateY(-3%); }
+}
+
+.animated-bounce {
+  animation: bounce 1.2s infinite;
+}
+
+/* Responsive - scale tiles on smaller screens */
+@media (max-width: 480px) {
+  :root { --tile-size: 48px; }
+  .board-card { padding: 12px; }
+  .board-title { font-size: 1rem; }
+}
