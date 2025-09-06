@@ -1,17 +1,39 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 function AdBanner() {
   const adRef = useRef(null);
+  const [adBlocked, setAdBlocked] = useState(false);
 
   useEffect(() => {
-    try {
-      if ((window as any).adsbygoogle && adRef.current) {
-        (window as any).adsbygoogle.push({});
+    console.log('AdBanner mounted');
+    
+    const checkAds = () => {
+      console.log('Checking ads...');
+      console.log('adsbygoogle available:', !!(window as any).adsbygoogle);
+      console.log('Ad element:', adRef.current);
+      
+      try {
+        if ((window as any).adsbygoogle && adRef.current) {
+          console.log('Pushing ad...');
+          (window as any).adsbygoogle.push({});
+        }
+      } catch (e) {
+        console.error('AdSense error:', e);
       }
-    } catch (e) {
-      console.warn('AdSense failed to load:', e);
-    }
+    };
+
+    // Wait a bit for the script to load
+    const timer = setTimeout(checkAds, 2000);
+    return () => clearTimeout(timer);
   }, []);
+
+  if (adBlocked) {
+    return (
+      <div style={{ width: '100%', minHeight: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f0f0f0', color: '#666' }}>
+        <p>Support us by disabling your ad blocker</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: '100%', minWidth: 320, minHeight: 100 }}>
