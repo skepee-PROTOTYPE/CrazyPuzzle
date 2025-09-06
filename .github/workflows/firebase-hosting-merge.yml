@@ -31,4 +31,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MYGAMEAPP_FE399 }}
           channelId: live
-          projectId: mygameapp-fe399
+          projectId: crazypuzzlecrazy
