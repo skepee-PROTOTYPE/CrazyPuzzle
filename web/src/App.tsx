@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, provider, signInWithPopup, signOut } from './auth';
 import { db } from './firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import './App.scss';
+import './App.module.scss';
 import AdBanner from './AdBanner';
 import PuzzleBoard from './PuzzleBoard';
 import Leaderboard from './Leaderboard';

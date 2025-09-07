@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-function AdBanner() {
+const AdBanner = React.memo(() => {
   const adRef = useRef<HTMLModElement>(null);
   const [adBlocked, setAdBlocked] = useState(false);
   const [adLoaded, setAdLoaded] = useState(false);
@@ -163,6 +163,6 @@ function AdBanner() {
       )}
     </div>
   );
-}
+});
 
 export default AdBanner;

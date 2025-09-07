@@ -20,8 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
-  "description": "A fun and challenging puzzle game",
-  "categories": ["games", "entertainment"]
+  "theme_color": "#1976d2",
+  "background_color": "#f5faff",
+  "description": "A fun and challenging puzzle game"
 }
