@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, provider, signInWithPopup, signOut } from './auth';
 import { db } from './firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import './App.module.scss';
+import styles from './App.module.scss';
 import AdBanner from './AdBanner';
 import PuzzleBoard from './PuzzleBoard';
 import Leaderboard from './Leaderboard';
@@ -62,13 +62,13 @@ function App() {
   };
 
   return (
-    <div className="app-bg">
-      <header className="app-header">
-        <h1 className="app-title animated-bounce">Crazy Puzzle</h1>
+    <div className={styles.appBg}>
+      <div className={styles.appHeaderContainer}>
+        <h1 className={styles.appTitle}>CrazyPuzzle</h1>
         <AdBanner />
-        <div className="controls-row">
-          <div className="card sign-in-card">
-            <h3 className="card-title">Sign In</h3>
+        <div className={styles.controlsRow}>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>Sign In</h3>
             {!user ? (
               <button onClick={handleLogin} className="btn sign-in-btn">
                 Sign in with Google
@@ -83,16 +83,16 @@ function App() {
               </div>
             )}
           </div>
-          <div className="card difficulty-card">
-            <h3 className="card-title">Difficulty</h3>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>Difficulty</h3>
             <select value={difficulty} onChange={e => setDifficulty(e.target.value)} className="select">
               <option value="easy">Kids - Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Adults - Hard</option>
             </select>
           </div>
-          <div className="card layout-card">
-            <h3 className="card-title">Layout</h3>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>Layout</h3>
             <select value={layout} onChange={e => setLayout(e.target.value)} className="select">
               <option value="grid">Grid</option>
               <option value="hex">Hexagonal</option>
@@ -115,7 +115,7 @@ function App() {
           layout={layout}
         />
         <AdBanner />
-      </header>
+      </div>
     </div>
   );
 }

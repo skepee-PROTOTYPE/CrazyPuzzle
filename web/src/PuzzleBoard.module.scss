@@ -11,7 +11,7 @@
 }
 
 /* Board container */
-.board-card {
+.boardCard {
   margin-top: 30px;
   padding: var(--board-padding);
   border: 1px solid #ccc;
@@ -22,7 +22,7 @@
 }
 
 /* Board title */
-.board-title {
+.boardTitle {
   color: #1976d2;
   margin-bottom: 16px;
   font-weight: 700;
@@ -30,7 +30,7 @@
 }
 
 /* Puzzle grid - uses CSS variable --grid-size */
-.puzzle-grid {
+.puzzleGrid {
   display: grid;
   gap: var(--tile-gap);
   justify-content: center;
@@ -60,7 +60,7 @@
 }
 
 /* Flip effect */
-.tile-inner {
+.tileInner {
   width: 100%;
   height: 100%;
   transition: transform 0.45s;
@@ -68,8 +68,8 @@
   position: relative;
 }
 
-.tile-front,
-.tile-back {
+.tileFront,
+.tileBack {
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
@@ -80,13 +80,13 @@
 }
 
 /* Hidden face */
-.tile-front {
+.tileFront {
   background: var(--tile-bg);
   color: transparent;
 }
 
 /* Visible face when flipped */
-.tile-back {
+.tileBack {
   transform: rotateY(180deg);
   background: var(--tile-success);
   color: #fff;
@@ -94,7 +94,7 @@
 }
 
 /* When flipped */
-.tile.flipped .tile-inner {
+.tile.flipped .tileInner {
   transform: rotateY(180deg);
 }
 
@@ -112,14 +112,14 @@
 }
 
 /* Image inside tile */
-.tile-img {
+.tileImg {
   width: 40px;
   height: 40px;
   object-fit: contain;
 }
 
 /* Congrats message */
-.congrats-msg {
+.congratsMsg {
   margin-top: 20px;
   color: var(--tile-success);
   font-weight: bold;
@@ -136,13 +136,13 @@
   80% { transform: translateY(-3%); }
 }
 
-.animated-bounce {
+.animatedBounce {
   animation: bounce 1.2s infinite;
 }
 
 /* Responsive - scale tiles on smaller screens */
 @media (max-width: 480px) {
   :root { --tile-size: 48px; }
-  .board-card { padding: 12px; }
-  .board-title { font-size: 1rem; }
+  .boardCard { padding: 12px; }
+  .boardTitle { font-size: 1rem; }
 }

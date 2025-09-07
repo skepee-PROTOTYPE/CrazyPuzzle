@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import type { User } from 'firebase/auth';
-import './PuzzleBoard.module.scss';
+import styles from './PuzzleBoard.module.scss';
 
 // Add this props interface
 interface PuzzleBoardProps {
@@ -107,11 +107,11 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
   };
 
   return (
-    <div className="board-card">
-      <h2 className="board-title">Crazy Puzzle Board</h2>
+    <div className={styles.boardCard}>
+      <h3 className={styles.boardTitle}>Puzzle Board</h3>
       {layout === 'grid' ? (
         <div
-          className="puzzle-grid"
+          className={styles.puzzleGrid}
           style={{ ['--grid-size' as string]: gridSize } as React.CSSProperties}
         >
           {tiles.map((val, idx) => (

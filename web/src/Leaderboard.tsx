@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import AdBanner from './AdBanner';
-import './Leaderboard.module.scss';
+import styles from './Leaderboard.module.scss';
 
 interface LeaderboardProps {
   score: number;
@@ -34,10 +34,10 @@ function Leaderboard({ score, timer, difficulty, layout }: LeaderboardProps) {
   }, [score, timer, difficulty, layout]);
 
   return (
-    <div className="leaderboard-card">
+    <div className={styles.leaderboardCard}>
       <AdBanner />
-      <h2 className="leaderboard-title">CrazyPuzzle Leaderboard</h2>
-      <table className="leaderboard-table">
+      <h2 className={styles.leaderboardTitle}>CrazyPuzzle Leaderboard</h2>
+      <table className={styles.leaderboardTable}>
         <thead>
           <tr>
             <th>Rank</th>

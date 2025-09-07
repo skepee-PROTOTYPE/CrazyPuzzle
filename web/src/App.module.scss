@@ -5,22 +5,22 @@ $danger: #f44336;
 $bg-light: #f5faff;
 $bg-card: #fff;
 
-.App {
+.app {
   text-align: center;
 }
 
-.App-logo {
+.appLogo {
   height: 40vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+  .appLogo {
+    animation: appLogoSpin infinite 20s linear;
   }
 }
 
-.App-header {
+.appHeader {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -29,46 +29,38 @@ $bg-card: #fff;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-
-  .app-title {
-    text-align: center;
-    color: $primary;
-    font-weight: 700;
-    font-size: 2.5em;
-    margin-bottom: 10px;
-  }
 }
 
-.App-link {
+.appTitle {
+  text-align: center;
+  color: $primary;
+  font-weight: 700;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.appLink {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
+@keyframes appLogoSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-.app-bg {
+.appBg {
   background: linear-gradient(135deg, $bg-light 0%, #e3f2fd 100%);
   min-height: 100vh;
   font-family: 'Segoe UI', Arial, sans-serif;
-
-  .app-header {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px 20px 20px 20px;
-
-    .app-title {
-      text-align: center;
-      color: $primary;
-      font-weight: 700;
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-  }
 }
 
-.controls-row {
+.appHeaderContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px 20px 20px;
+}
+
+.controlsRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -86,7 +78,7 @@ $bg-card: #fff;
   flex: 1 1 220px;
 }
 
-.card-title {
+.cardTitle {
   color: $secondary;
   margin-bottom: 10px;
 }
@@ -100,31 +92,31 @@ $bg-card: #fff;
   width: 100%;
 }
 
-.sign-in-btn {
+.signInBtn {
   background: $secondary;
   color: #fff;
 }
 
-.logout-btn {
+.logoutBtn {
   background: $danger;
   color: #fff;
   padding: 6px 16px;
   width: auto;
 }
 
-.user-info {
+.userInfo {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.user-avatar {
+.userAvatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
 
-.user-name {
+.userName {
   font-weight: 500;
 }
 
@@ -136,14 +128,14 @@ $bg-card: #fff;
   width: 100%;
 }
 
-.score-row {
+.scoreRow {
   display: flex;
   justify-content: center;
   gap: 40px;
   margin-bottom: 20px;
 }
 
-.score-box {
+.scoreBox {
   font-size: 1.2em;
   background: #e3f2fd;
   padding: 10px 24px;
