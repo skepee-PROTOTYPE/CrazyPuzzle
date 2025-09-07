@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Add useCallback back if using this option
 import { User } from 'firebase/auth';
 import { db } from './firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -61,6 +61,24 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
     }
   }, [flippedTiles, tiles]);
 
+  const saveScore = useCallback(async (score: number, time: number) => {
+    if (!user) return;
+    
+    try {
+      await addDoc(collection(db, 'scores'), {
+        userId: user.uid,
+        userName: user.displayName || 'Anonymous',
+        score,
+        time,
+        difficulty,
+        layout,
+        createdAt: new Date()
+      });
+    } catch (error) {
+      console.error('Error saving score:', error);
+    }
+  }, [user, difficulty, layout]);
+
   // Check game completion
   useEffect(() => {
     if (matchedTiles.length === totalTiles && totalTiles > 0) {
@@ -77,25 +95,7 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
         onComplete();
       }
     }
-  }, [matchedTiles.length, totalTiles, moves, timer, user, onScore, onComplete]);
-
-  const saveScore = async (score: number, time: number) => {
-    if (!user) return;
-    
-    try {
-      await addDoc(collection(db, 'scores'), {
-        userId: user.uid,
-        userName: user.displayName || 'Anonymous',
-        score,
-        time,
-        difficulty,
-        layout,
-        createdAt: new Date()
-      });
-    } catch (error) {
-      console.error('Error saving score:', error);
-    }
-  };
+  }, [matchedTiles.length, totalTiles, moves, timer, user, onScore, onComplete, saveScore]);
 
   const handleTileClick = (index: number) => {
     if (!gameStarted) setGameStarted(true);
