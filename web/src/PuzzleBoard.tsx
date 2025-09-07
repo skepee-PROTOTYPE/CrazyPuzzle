@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import type { User } from 'firebase/auth';
+import { User } from 'firebase/auth';
+import { db } from './firebase';
+import { collection, addDoc } from 'firebase/firestore';
 import styles from './PuzzleBoard.module.scss';
 
 // Add this props interface
@@ -14,128 +16,140 @@ interface PuzzleBoardProps {
 // Use the typed props here
 function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBoardProps) {
   const gridSizes: Record<'easy' | 'medium' | 'hard', number> = { easy: 4, medium: 6, hard: 8 };
-  const gridSize = gridSizes[difficulty as 'easy' | 'medium' | 'hard'] ?? 4;
-
-  const animalImages = useMemo(() => [
-    'https://cdn-icons-png.flaticon.com/512/616/616408.png',
-    'https://cdn-icons-png.flaticon.com/512/616/616430.png',
-    'https://cdn-icons-png.flaticon.com/512/616/616415.png',
-    'https://cdn-icons-png.flaticon.com/512/616/616426.png',
-    'https://cdn-icons-png.flaticon.com/512/616/616418.png',
-    'https://cdn-icons-png.flaticon.com/512/616/616420.png',
-    'https://cdn-icons-png.flaticon.com/512/616/616424.png',
-    'https://cdn-icons-png.flaticon.com/512/616/616422.png',
-  ], []);
-
-  const generateTiles = useCallback(() => {
-    const totalTiles = gridSize * gridSize;
-    let values: (string | number)[] = [];
-    if (difficulty === 'easy') {
-      let pairsNeeded = totalTiles / 2;
-      let selectedImages: string[] = [];
-      for (let i = 0; i < pairsNeeded; i++) {
-        selectedImages.push(animalImages[i % animalImages.length]);
-      }
-      selectedImages.forEach(img => {
-        return values.push(img, img);
-      });
-    } else {
-      for (let i = 1; i <= totalTiles / 2; i++) {
-        values.push(i, i);
-      }
-    }
-    for (let i = values.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [values[i], values[j]] = [values[j], values[i]];
-    }
-    return values;
-  }, [difficulty, gridSize, animalImages]);
-
-  const [tiles, setTiles] = useState<(string | number)[]>([]);
-  const [flipped, setFlipped] = useState<number[]>([]);
-  const [matched, setMatched] = useState<number[]>([]);
-  const [score, setScore] = useState(0);
+  const gridSize = gridSizes[difficulty as 'easy' | 'medium' | 'hard'] || 4;
+  const totalTiles = gridSize * gridSize;
+  
+  const [tiles, setTiles] = useState<number[]>([]);
+  const [flippedTiles, setFlippedTiles] = useState<number[]>([]);
+  const [matchedTiles, setMatchedTiles] = useState<number[]>([]);
+  const [moves, setMoves] = useState(0);
   const [timer, setTimer] = useState(0);
-  const [isActive, setIsActive] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gameCompleted, setGameCompleted] = useState(false);
 
+  // Initialize game
   useEffect(() => {
-    setTiles(generateTiles());
-    setFlipped([]);
-    setMatched([]);
-    setScore(0);
+    const numbers = Array.from({ length: totalTiles / 2 }, (_, i) => i + 1);
+    const shuffledTiles = [...numbers, ...numbers].sort(() => Math.random() - 0.5);
+    setTiles(shuffledTiles);
+    setFlippedTiles([]);
+    setMatchedTiles([]);
+    setMoves(0);
     setTimer(0);
-    setIsActive(true);
-  }, [difficulty, layout, generateTiles]);
+    setGameStarted(false);
+    setGameCompleted(false);
+  }, [difficulty, layout, totalTiles]);
 
+  // Timer effect
   useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    if (isActive && matched.length < tiles.length) {
-      interval = setInterval(() => {
-        setTimer(t => t + 1);
-      }, 1000);
-    } else if (!isActive || matched.length === tiles.length) {
-      if (interval) clearInterval(interval);
+    if (gameStarted && !gameCompleted) {
+      const interval = setInterval(() => setTimer(prev => prev + 1), 1000);
+      return () => clearInterval(interval);
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isActive, matched, tiles.length]);
+  }, [gameStarted, gameCompleted]);
 
+  // Check for matches
   useEffect(() => {
-    if (matched.length === tiles.length && matched.length > 0 && user) {
-      if (onScore) onScore(score, timer);
-      if (onComplete) onComplete();
-    }
-  }, [matched, tiles.length, score, timer, user, onScore, onComplete]);
-
-  const handleTileClick = (idx: number) => {
-    if (flipped.length === 2 || flipped.includes(idx) || matched.includes(idx)) return;
-    const newFlipped = [...flipped, idx];
-    setFlipped(newFlipped);
-    if (newFlipped.length === 2) {
-      const [first, second] = newFlipped;
+    if (flippedTiles.length === 2) {
+      const [first, second] = flippedTiles;
       if (tiles[first] === tiles[second]) {
-        setTimeout(() => {
-          setMatched([...matched, first, second]);
-          setFlipped([]);
-          setScore(s => s + 10);
-        }, 700);
+        setMatchedTiles(prev => [...prev, first, second]);
+        setFlippedTiles([]);
       } else {
-        setTimeout(() => setFlipped([]), 700);
+        setTimeout(() => setFlippedTiles([]), 1000);
       }
     }
+  }, [flippedTiles, tiles]);
+
+  // Check game completion
+  useEffect(() => {
+    if (matchedTiles.length === totalTiles && totalTiles > 0) {
+      setGameCompleted(true);
+      const score = Math.max(1000 - moves * 10 - timer, 100);
+      
+      if (user && onScore) {
+        onScore(score, timer);
+        // Save to Firestore
+        saveScore(score, timer);
+      }
+      
+      if (onComplete) {
+        onComplete();
+      }
+    }
+  }, [matchedTiles.length, totalTiles, moves, timer, user, onScore, onComplete]);
+
+  const saveScore = async (score: number, time: number) => {
+    if (!user) return;
+    
+    try {
+      await addDoc(collection(db, 'scores'), {
+        userId: user.uid,
+        userName: user.displayName || 'Anonymous',
+        score,
+        time,
+        difficulty,
+        layout,
+        createdAt: new Date()
+      });
+    } catch (error) {
+      console.error('Error saving score:', error);
+    }
+  };
+
+  const handleTileClick = (index: number) => {
+    if (!gameStarted) setGameStarted(true);
+    
+    if (flippedTiles.length === 2 || flippedTiles.includes(index) || matchedTiles.includes(index)) {
+      return;
+    }
+
+    setFlippedTiles(prev => [...prev, index]);
+    setMoves(prev => prev + 1);
+  };
+
+  const resetGame = () => {
+    const numbers = Array.from({ length: totalTiles / 2 }, (_, i) => i + 1);
+    const shuffledTiles = [...numbers, ...numbers].sort(() => Math.random() - 0.5);
+    setTiles(shuffledTiles);
+    setFlippedTiles([]);
+    setMatchedTiles([]);
+    setMoves(0);
+    setTimer(0);
+    setGameStarted(false);
+    setGameCompleted(false);
   };
 
   return (
     <div className={styles.boardCard}>
-      <h3 className={styles.boardTitle}>Puzzle Board</h3>
-      {layout === 'grid' ? (
-        <div
-          className={styles.puzzleGrid}
-          style={{ ['--grid-size' as string]: gridSize } as React.CSSProperties}
-        >
-          {tiles.map((val, idx) => (
-            <div
-              key={idx}
-              onClick={() => handleTileClick(idx)}
-              className={`tile${flipped.includes(idx) || matched.includes(idx) ? ' flipped' : ''}`}
-            >
-              {(matched.includes(idx) || flipped.includes(idx)) ? (
-                difficulty === 'easy' ? (
-                  <img src={typeof val === 'string' ? val : ''} alt="animal" className="tile-img" />
-                ) : (
-                  val
-                )
-              ) : '?'}
+      <h3 className={styles.boardTitle}>
+        Puzzle Board - {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} ({gridSize}x{gridSize})
+      </h3>
+      
+      <div style={{ '--grid-size': gridSize } as React.CSSProperties} className={styles.puzzleGrid}>
+        {tiles.map((number, index) => (
+          <div
+            key={index}
+            className={`${styles.tile} ${flippedTiles.includes(index) || matchedTiles.includes(index) ? styles.flipped : ''} ${matchedTiles.includes(index) ? styles.matched : ''}`}
+            onClick={() => handleTileClick(index)}
+          >
+            <div className={styles.tileInner}>
+              <div className={styles.tileFront}></div>
+              <div className={styles.tileBack}>{number}</div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p>Other layouts coming soon!</p>
-      )}
-      {matched.length === tiles.length && (
-        <div className="congrats-msg">
-          🎉 Congratulations! You completed the puzzle.<br />Final Score: {score} | Time: {timer}s
+          </div>
+        ))}
+      </div>
+
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <p>Moves: {moves} | Time: {timer}s</p>
+        <button onClick={resetGame} className={styles.btn}>New Game</button>
+      </div>
+
+      {gameCompleted && (
+        <div className={styles.congratsMsg}>
+          🎉 Congratulations! You completed the puzzle in {moves} moves and {timer} seconds!
+          {user && <p>Score: {Math.max(1000 - moves * 10 - timer, 100)}</p>}
         </div>
       )}
     </div>

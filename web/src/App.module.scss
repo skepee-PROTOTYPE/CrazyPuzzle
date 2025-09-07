@@ -33,7 +33,7 @@ $bg-card: #fff;
 
 .appTitle {
   text-align: center;
-  color: $primary;
+  color: $primary;  // Fixed: was $primary-color
   font-weight: 700;
   font-size: 2.5em;
   margin-bottom: 10px;
@@ -95,6 +95,10 @@ $bg-card: #fff;
 .signInBtn {
   background: $secondary;
   color: #fff;
+  
+  &:hover {
+    background: darken($secondary, 10%);
+  }
 }
 
 .logoutBtn {
@@ -102,6 +106,10 @@ $bg-card: #fff;
   color: #fff;
   padding: 6px 16px;
   width: auto;
+  
+  &:hover {
+    background: darken($danger, 10%);
+  }
 }
 
 .userInfo {
@@ -140,7 +148,7 @@ $bg-card: #fff;
   background: #e3f2fd;
   padding: 10px 24px;
   border-radius: 8px;
-  color: $primary;
+  color: $primary;  // Fixed: was $primary-color
   font-weight: 600;
 }
 

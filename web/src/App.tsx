@@ -1,120 +1,115 @@
-import React, { useState, useEffect } from 'react';
-import { auth, provider, signInWithPopup, signOut } from './auth';
-import { db } from './firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import styles from './App.module.scss';
-import AdBanner from './AdBanner';
+import React, { useEffect, useState } from 'react';
+import { User } from 'firebase/auth';
+import { auth } from './firebase';
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import PuzzleBoard from './PuzzleBoard';
 import Leaderboard from './Leaderboard';
+import AdBanner from './AdBanner';
+import styles from './App.module.scss';
 
 function App() {
-  const [user, setUser] = useState<import('firebase/auth').User | null>(null);
-  const [difficulty, setDifficulty] = useState('easy');
-  const [layout, setLayout] = useState('grid');
+  const [user, setUser] = useState<User | null>(null);
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
+  const [layout, setLayout] = useState<string>('grid');
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
 
-  // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(u => setUser(u));
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
     return () => unsubscribe();
   }, []);
 
-  // Login handler
-  const handleLogin = async () => {
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : String(error);
-      alert('Login failed: ' + msg);
+    } catch (error) {
+      console.error('Error signing in with Google:', error);
     }
   };
 
-  // Logout handler
-  const handleLogout = async () => {
+  const handleSignOut = async () => {
     try {
       await signOut(auth);
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : String(error);
-      alert('Logout failed: ' + msg);
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
   };
 
-  // Save score to Firestore when puzzle is completed
-  const handleScore = async (score: number, timer: number): Promise<void> => {
-    if (user) {
-      try {
-        await addDoc(collection(db, 'scores'), {
-          score,
-          time: timer,
-          difficulty,
-          layout,
-          userId: user.uid,
-          userName: user.displayName,
-          createdAt: Timestamp.now()
-        });
-      } catch (error: unknown) {
-        console.error('Error saving score:', error);
-      }
-    }
-    setScore(score);
-    setTimer(timer);
+  const handleScoreUpdate = (newScore: number, newTimer: number) => {
+    setScore(newScore);
+    setTimer(newTimer);
   };
 
   return (
     <div className={styles.appBg}>
       <div className={styles.appHeaderContainer}>
-        <h1 className={styles.appTitle}>CrazyPuzzle</h1>
-        <AdBanner />
+        <h1 className={styles.appTitle}>🧩 CrazyPuzzle</h1>
+        
         <div className={styles.controlsRow}>
           <div className={styles.card}>
-            <h3 className={styles.cardTitle}>Sign In</h3>
-            {!user ? (
-              <button onClick={handleLogin} className="btn sign-in-btn">
-                Sign in with Google
-              </button>
-            ) : (
-              <div className="user-info">
-                <img src={user.photoURL ?? undefined} alt="profile" className="user-avatar" />
-                <span className="user-name">{user.displayName}</span>
-                <button onClick={handleLogout} className="btn logout-btn">
-                  Logout
+            <h3 className={styles.cardTitle}>Authentication</h3>
+            {user ? (
+              <div className={styles.userInfo}>
+                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
+                <span className={styles.userName}>{user.displayName}</span>
+                <button onClick={handleSignOut} className={`${styles.btn} ${styles.logoutBtn}`}>
+                  Sign Out
                 </button>
               </div>
+            ) : (
+              <button onClick={signInWithGoogle} className={`${styles.btn} ${styles.signInBtn}`}>
+                Sign in with Google
+              </button>
             )}
           </div>
+
           <div className={styles.card}>
-            <h3 className={styles.cardTitle}>Difficulty</h3>
-            <select value={difficulty} onChange={e => setDifficulty(e.target.value)} className="select">
-              <option value="easy">Kids - Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Adults - Hard</option>
-            </select>
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>Layout</h3>
-            <select value={layout} onChange={e => setLayout(e.target.value)} className="select">
-              <option value="grid">Grid</option>
-              <option value="hex">Hexagonal</option>
-            </select>
+            <h3 className={styles.cardTitle}>Game Settings</h3>
+            <div>
+              <label>Difficulty:</label>
+              <select 
+                value={difficulty} 
+                onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
+                className={styles.select}
+              >
+                <option value="easy">Easy (4x4)</option>
+                <option value="medium">Medium (6x6)</option>
+                <option value="hard">Hard (8x8)</option>
+              </select>
+            </div>
+            <div>
+              <label>Layout:</label>
+              <select 
+                value={layout} 
+                onChange={(e) => setLayout(e.target.value)}
+                className={styles.select}
+              >
+                <option value="grid">Grid</option>
+                <option value="circle">Circle</option>
+                <option value="diamond">Diamond</option>
+              </select>
+            </div>
           </div>
         </div>
-        <div className="score-row">
-          <div className="score-box">Score: {score}</div>
-          <div className="score-box">Time: {timer}s</div>
+
+        <div className={styles.scoreRow}>
+          <div className={styles.scoreBox}>Score: {score}</div>
+          <div className={styles.scoreBox}>Time: {timer}s</div>
         </div>
-        <PuzzleBoard
-          difficulty={difficulty}
-          layout={layout}
-          user={user}
-          onScore={handleScore} onComplete={undefined}        />
-        <Leaderboard
-          score={score}
-          timer={timer}
-          difficulty={difficulty}
-          layout={layout}
-        />
+
         <AdBanner />
+
+        <PuzzleBoard 
+          difficulty={difficulty} 
+          layout={layout} 
+          user={user}
+          onScore={handleScoreUpdate}
+        />
+
+        <Leaderboard difficulty={difficulty} layout={layout} score={score} timer={timer} />
       </div>
     </div>
   );

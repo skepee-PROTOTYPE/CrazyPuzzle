@@ -1,29 +1,27 @@
 /* PuzzleBoard specific styles */
 
-:root {
-  --tile-size: 60px;
-  --tile-gap: 10px;
-  --tile-border-radius: 8px;
-  --tile-bg: #eee;
-  --tile-border: #ccc;
-  --tile-success: #4caf50;
-  --board-padding: 20px;
-}
+$tile-size: 60px;
+$tile-gap: 10px;
+$tile-border-radius: 8px;
+$tile-bg: #eee;
+$tile-border: #ccc;
+$tile-success: #4caf50;
+$board-padding: 20px;
 
-/* Board container */
+$primary: #1976d2;
+
 .boardCard {
   margin-top: 30px;
-  padding: var(--board-padding);
+  padding: $board-padding;
   border: 1px solid #ccc;
   border-radius: 12px;
   background: #fff;
   color: #333;
-  box-shadow: 0 2px 8px rgba(33,150,243,0.06);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.06);
 }
 
-/* Board title */
 .boardTitle {
-  color: #1976d2;
+  color: $primary;
   margin-bottom: 16px;
   font-weight: 700;
   font-size: 1.25rem;
@@ -32,31 +30,29 @@
 /* Puzzle grid - uses CSS variable --grid-size */
 .puzzleGrid {
   display: grid;
-  gap: var(--tile-gap);
+  gap: $tile-gap;
   justify-content: center;
   margin-top: 20px;
-  grid-template-columns: repeat(var(--grid-size, 4), var(--tile-size));
+  // Use CSS custom property for dynamic grid size
+  grid-template-columns: repeat(var(--grid-size, 4), $tile-size);
   transform-style: preserve-3d;
 }
 
 /* Tile card */
 .tile {
-  width: var(--tile-size);
-  height: var(--tile-size);
-  background: var(--tile-bg);
-  color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  border-radius: var(--tile-border-radius);
+  width: $tile-size;
+  height: $tile-size;
+  background: $tile-bg;
+  border: 2px solid $tile-border;
+  border-radius: $tile-border-radius;
   cursor: pointer;
-  border: 2px solid var(--tile-border);
-  user-select: none;
-  overflow: hidden;
-  transition: background 0.25s ease, color 0.25s ease, transform 0.4s;
-  position: relative;
-  perspective: 800px;
+  transition: all 0.3s ease;
+
+  &.matched {
+    background: $tile-success;
+    color: #fff;
+    border-color: darken($tile-success, 10%);
+  }
 }
 
 /* Flip effect */
@@ -81,14 +77,14 @@
 
 /* Hidden face */
 .tileFront {
-  background: var(--tile-bg);
+  background: $tile-bg;
   color: transparent;
 }
 
 /* Visible face when flipped */
 .tileBack {
   transform: rotateY(180deg);
-  background: var(--tile-success);
+  background: $tile-success;
   color: #fff;
   font-weight: 700;
 }
@@ -121,7 +117,7 @@
 /* Congrats message */
 .congratsMsg {
   margin-top: 20px;
-  color: var(--tile-success);
+  color: $tile-success;
   font-weight: bold;
   font-size: 1.1rem;
   text-align: center;
@@ -140,9 +136,36 @@
   animation: bounce 1.2s infinite;
 }
 
+/* Button styles */
+.btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: darken(#667eea, 10%);
+  }
+}
+
 /* Responsive - scale tiles on smaller screens */
 @media (max-width: 480px) {
-  :root { --tile-size: 48px; }
-  .boardCard { padding: 12px; }
-  .boardTitle { font-size: 1rem; }
+  .tile {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .puzzleGrid {
+    grid-template-columns: repeat(var(--grid-size, 4), 48px);
+  }
+  
+  .boardCard {
+    padding: 12px;
+  }
+  
+  .boardTitle {
+    font-size: 1rem;
+  }
 }
