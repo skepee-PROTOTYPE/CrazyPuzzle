@@ -157,7 +157,8 @@ $primary: #1976d2;
   background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
   border-radius: 12px;
   margin: 20px 0;
-  border: 2px dashed #bbb;
+  border: 2px dashed #1976d2;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.1);
 }
 
 .comingSoonIcon {
@@ -167,7 +168,7 @@ $primary: #1976d2;
 }
 
 .comingSoonTitle {
-  color: $primary;
+  color: #1976d2;
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 15px;
@@ -179,7 +180,7 @@ $primary: #1976d2;
   margin-bottom: 10px;
   
   strong {
-    color: $primary;
+    color: #1976d2;
     font-weight: 600;
   }
 }
@@ -190,7 +191,7 @@ $primary: #1976d2;
   font-style: italic;
   
   strong {
-    color: $primary;
+    color: #1976d2;
     font-weight: 600;
   }
 }

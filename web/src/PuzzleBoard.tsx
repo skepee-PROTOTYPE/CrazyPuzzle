@@ -4,7 +4,6 @@ import { db } from './firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import styles from './PuzzleBoard.module.scss';
 
-// Add this props interface
 interface PuzzleBoardProps {
   difficulty: 'easy' | 'medium' | 'hard' | string;
   layout: string;
@@ -13,11 +12,7 @@ interface PuzzleBoardProps {
   onComplete?: () => void;
 }
 
-// Use the typed props here
 function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBoardProps) {
-  // Debug logging
-  console.log('PuzzleBoard rendered with layout:', layout);
-  
   const gridSizes: Record<'easy' | 'medium' | 'hard', number> = { easy: 4, medium: 6, hard: 8 };
   const gridSize = gridSizes[difficulty as 'easy' | 'medium' | 'hard'] || 4;
   const totalTiles = gridSize * gridSize;
@@ -32,11 +27,10 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
 
   // Check if current layout is implemented
   const isLayoutImplemented = layout === 'grid';
-  console.log('Is layout implemented?', isLayoutImplemented);
 
   // Initialize game
   useEffect(() => {
-    if (!isLayoutImplemented) return; // Don't initialize game for unimplemented layouts
+    if (!isLayoutImplemented) return;
     
     const numbers = Array.from({ length: totalTiles / 2 }, (_, i) => i + 1);
     const shuffledTiles = [...numbers, ...numbers].sort(() => Math.random() - 0.5);
@@ -100,7 +94,6 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
       
       if (user && onScore) {
         onScore(score, timer);
-        // Save to Firestore
         saveScore(score, timer);
       }
       
@@ -111,7 +104,7 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
   }, [matchedTiles.length, totalTiles, moves, timer, user, onScore, onComplete, saveScore, isLayoutImplemented]);
 
   const handleTileClick = (index: number) => {
-    if (!isLayoutImplemented) return; // Prevent interaction for unimplemented layouts
+    if (!isLayoutImplemented) return;
     
     if (!gameStarted) setGameStarted(true);
     
@@ -142,13 +135,6 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
       <h3 className={styles.boardTitle}>
         Puzzle Board - {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} ({gridSize}x{gridSize}) - {layout.charAt(0).toUpperCase() + layout.slice(1)} Layout
       </h3>
-      
-      {/* Debug info */}
-      {process.env.NODE_ENV === 'development' && (
-        <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
-          Debug: Layout = {layout}, Implemented = {isLayoutImplemented.toString()}
-        </div>
-      )}
       
       {!isLayoutImplemented ? (
         // Show "Coming Soon" message for unimplemented layouts
