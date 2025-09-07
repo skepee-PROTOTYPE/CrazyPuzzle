@@ -150,6 +150,63 @@ $primary: #1976d2;
   }
 }
 
+/* Coming Soon Styles */
+.comingSoon {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+  border-radius: 12px;
+  margin: 20px 0;
+  border: 2px dashed #bbb;
+}
+
+.comingSoonIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: bounce 2s infinite;
+}
+
+.comingSoonTitle {
+  color: $primary;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.comingSoonText {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  
+  strong {
+    color: $primary;
+    font-weight: 600;
+  }
+}
+
+.comingSoonSubtext {
+  color: #777;
+  font-size: 0.95rem;
+  font-style: italic;
+  
+  strong {
+    color: $primary;
+    font-weight: 600;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
 /* Responsive - scale tiles on smaller screens */
 @media (max-width: 480px) {
   .tile {
