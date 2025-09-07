@@ -15,6 +15,9 @@ interface PuzzleBoardProps {
 
 // Use the typed props here
 function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBoardProps) {
+  // Debug logging
+  console.log('PuzzleBoard rendered with layout:', layout);
+  
   const gridSizes: Record<'easy' | 'medium' | 'hard', number> = { easy: 4, medium: 6, hard: 8 };
   const gridSize = gridSizes[difficulty as 'easy' | 'medium' | 'hard'] || 4;
   const totalTiles = gridSize * gridSize;
@@ -29,6 +32,7 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
 
   // Check if current layout is implemented
   const isLayoutImplemented = layout === 'grid';
+  console.log('Is layout implemented?', isLayoutImplemented);
 
   // Initialize game
   useEffect(() => {
@@ -138,6 +142,13 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
       <h3 className={styles.boardTitle}>
         Puzzle Board - {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} ({gridSize}x{gridSize}) - {layout.charAt(0).toUpperCase() + layout.slice(1)} Layout
       </h3>
+      
+      {/* Debug info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+          Debug: Layout = {layout}, Implemented = {isLayoutImplemented.toString()}
+        </div>
+      )}
       
       {!isLayoutImplemented ? (
         // Show "Coming Soon" message for unimplemented layouts

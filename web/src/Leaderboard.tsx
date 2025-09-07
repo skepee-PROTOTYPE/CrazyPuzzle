@@ -23,45 +23,57 @@ interface Score {
 function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
   const [leaderboard, setLeaderboard] = useState<Score[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
         setLoading(true);
+        setError('');
+        
         console.log('Fetching leaderboard for:', { difficulty, layout });
         
-        const scoresRef = collection(db, 'scores');
-        const q = query(
-          scoresRef,
-          where('difficulty', '==', difficulty),
-          where('layout', '==', layout),
-          orderBy('score', 'desc'),
-          limit(10)
-        );
+        // Only try the complex query for grid layout (which works)
+        if (layout === 'grid') {
+          const scoresRef = collection(db, 'scores');
+          const q = query(
+            scoresRef,
+            where('difficulty', '==', difficulty),
+            where('layout', '==', layout),
+            orderBy('score', 'desc'),
+            limit(10)
+          );
+          
+          const querySnapshot = await getDocs(q);
+          const scores = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as Score[];
+          
+          setLeaderboard(scores);
+        } else {
+          // For non-grid layouts, show empty leaderboard since they're not implemented
+          setLeaderboard([]);
+        }
         
-        const querySnapshot = await getDocs(q);
-        const scores = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Score[];
-        
-        console.log('Leaderboard fetched:', scores);
-        setLeaderboard(scores);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching leaderboard:', error);
-        // Fallback: get all scores and sort client-side
+        setError('Unable to load leaderboard. This may be due to missing database indexes.');
+        
+        // Fallback: try to get some scores without complex filtering
         try {
-          const allScoresRef = collection(db, 'scores');
-          const simpleQuery = query(allScoresRef, limit(50));
+          const scoresRef = collection(db, 'scores');
+          const simpleQuery = query(scoresRef, limit(5));
           const snapshot = await getDocs(simpleQuery);
           
           const allScores = snapshot.docs
             .map(doc => ({ id: doc.id, ...doc.data() } as Score))
-            .filter(score => score.difficulty === difficulty && score.layout === layout)
+            .filter(scoreItem => scoreItem.difficulty === difficulty && scoreItem.layout === layout)
             .sort((a, b) => b.score - a.score)
             .slice(0, 10);
             
           setLeaderboard(allScores);
+          setError(''); // Clear error if fallback works
         } catch (fallbackError) {
           console.error('Fallback query failed:', fallbackError);
           setLeaderboard([]);
@@ -89,7 +101,24 @@ function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
         Leaderboard - {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} ({layout})
       </h3>
       
-      {leaderboard.length > 0 ? (
+      {error && (
+        <div style={{ 
+          background: '#fff3cd', 
+          color: '#856404', 
+          padding: '10px', 
+          borderRadius: '4px', 
+          marginBottom: '15px',
+          fontSize: '0.9rem'
+        }}>
+          ⚠️ {error}
+        </div>
+      )}
+      
+      {layout !== 'grid' ? (
+        <div className={styles.noScores}>
+          Leaderboard will be available when <strong>{layout}</strong> layout is implemented.
+        </div>
+      ) : leaderboard.length > 0 ? (
         <table className={styles.leaderboardTable}>
           <thead>
             <tr>
