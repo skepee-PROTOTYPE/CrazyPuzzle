@@ -174,7 +174,16 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
           {gameCompleted && (
             <div className={styles.congratsMsg}>
               🎉 Congratulations! You completed the puzzle in {moves} moves and {timer} seconds!
-              {user && <p>Score: {Math.max(1000 - moves * 10 - timer, 100)}</p>}
+              {user ? (
+                <p>Score: {Math.max(1000 - moves * 10 - timer, 100)} (Saved to leaderboard!)</p>
+              ) : (
+                <div>
+                  <p>Score: {Math.max(1000 - moves * 10 - timer, 100)}</p>
+                  <p className={styles.guestHint}>
+                    💡 Sign in with Google to save your high scores to the leaderboard!
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </>

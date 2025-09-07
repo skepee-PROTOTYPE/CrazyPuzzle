@@ -93,11 +93,12 @@ $bg-card: #fff;
 }
 
 .signInBtn {
-  background: $secondary;
-  color: #fff;
+  background: #4285f4;
+  font-size: 0.9rem;
+  padding: 8px 16px;
   
   &:hover {
-    background: darken($secondary, 10%);
+    background: darken(#4285f4, 10%);
   }
 }
 
@@ -150,6 +151,39 @@ $bg-card: #fff;
   border-radius: 8px;
   color: $primary;  // Fixed: was $primary-color
   font-weight: 600;
+}
+
+.optionalCard {
+  opacity: 0.9;
+  border: 1px dashed #bbb;
+  
+  .cardTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+  }
+}
+
+.optionalBadge {
+  background: #e3f2fd;
+  color: #1976d2;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.guestModeText {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 12px;
+  text-align: center;
+  
+  small {
+    color: #888;
+    font-size: 0.8rem;
+  }
 }
 
 /* leaderboard styles moved to Leaderboard.scss */

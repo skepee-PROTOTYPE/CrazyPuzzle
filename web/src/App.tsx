@@ -49,26 +49,10 @@ function App() {
         <h1 className={styles.appTitle}>🧩 CrazyPuzzle</h1>
         
         <div className={styles.controlsRow}>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>Authentication</h3>
-            {user ? (
-              <div className={styles.userInfo}>
-                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
-                <span className={styles.userName}>{user.displayName}</span>
-                <button onClick={handleSignOut} className={`${styles.btn} ${styles.logoutBtn}`}>
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <button onClick={signInWithGoogle} className={`${styles.btn} ${styles.signInBtn}`}>
-                Sign in with Google
-              </button>
-            )}
-          </div>
-
+          {/* Move authentication to a smaller, optional section */}
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>Game Settings</h3>
-            <div>
+            <div style={{ marginBottom: '15px' }}>
               <label>Difficulty:</label>
               <select 
                 value={difficulty} 
@@ -93,11 +77,44 @@ function App() {
               </select>
             </div>
           </div>
+
+          {/* Optional login section - smaller and less prominent */}
+          <div className={`${styles.card} ${styles.optionalCard}`}>
+            <h3 className={styles.cardTitle}>
+              {user ? 'Player Account' : 'Save Your Progress'} 
+              <span className={styles.optionalBadge}>Optional</span>
+            </h3>
+            {user ? (
+              <div className={styles.userInfo}>
+                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
+                <span className={styles.userName}>{user.displayName}</span>
+                <button onClick={handleSignOut} className={`${styles.btn} ${styles.logoutBtn}`}>
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <div>
+                <p className={styles.guestModeText}>
+                  🎮 You can play as a guest! 
+                  <br />
+                  <small>Sign in to save your high scores</small>
+                </p>
+                <button onClick={signInWithGoogle} className={`${styles.btn} ${styles.signInBtn}`}>
+                  Sign in with Google
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className={styles.scoreRow}>
           <div className={styles.scoreBox}>Score: {score}</div>
           <div className={styles.scoreBox}>Time: {timer}s</div>
+          {!user && (
+            <div className={styles.scoreBox} style={{ background: '#fff3cd', color: '#856404' }}>
+              Guest Mode - Sign in to save scores
+            </div>
+          )}
         </div>
 
         <AdBanner />
