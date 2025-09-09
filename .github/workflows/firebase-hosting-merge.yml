@@ -12,7 +12,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Runner info (debug)
         run: |
@@ -27,54 +28,26 @@ jobs:
         run: |
           echo "----------------- repo top-level -----------------"
           ls -la
-          echo "----------------- src list -----------------"
-          ls -la src || true
+          echo "----------------- web directory -----------------"
+          ls -la web/ || true
           echo "----------------- show firebase files -----------------"
           test -f .firebaserc && echo ".firebaserc:" && cat .firebaserc || echo ".firebaserc missing"
           test -f firebase.json && echo "firebase.json:" && cat firebase.json || echo "firebase.json missing"
-          test -f package.json && echo "package.json:" && cat package.json | sed -n '1,120p'
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'web/package-lock.json'
 
       - name: Install dependencies
+        working-directory: ./web
         run: npm ci
 
-      - name: Build
+      - name: Build React app
+        working-directory: ./web
         run: npm run build
-
-      - name: Dump service account secret to file (debug)
-        env:
-          SA_JSON: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-        run: |
-          echo "Writing SA JSON to temporary file"
-          mkdir -p $RUNNER_TEMP
-          echo "$SA_JSON" > $RUNNER_TEMP/sa.json
-          echo "SA file saved to $RUNNER_TEMP/sa.json"
-          echo "---- client_email -----"
-          jq -r .client_email $RUNNER_TEMP/sa.json || true
-          echo "---- project_id -----"
-          jq -r .project_id $RUNNER_TEMP/sa.json || true
-          echo "---- first 200 chars of SA (debug) -----"
-          head -c 200 $RUNNER_TEMP/sa.json | sed -n '1,200p' || true
-
-      - name: Attempt to list Firebase projects using service account (debug)
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
-        run: |
-          # write secret again to runner.temp for this step
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > ${{ runner.temp }}/sa.json
-          echo "Running firebase-tools projects:list (debug)..."
-          npx --yes firebase-tools --debug projects:list || true
-          echo "Attempt complete."
-
-      - name: Authenticate Google Cloud (optional)
-        if: false
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
