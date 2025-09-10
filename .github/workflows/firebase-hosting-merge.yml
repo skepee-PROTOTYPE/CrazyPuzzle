@@ -56,12 +56,12 @@ jobs:
 
       - name: Create GitHub Release
         if: success()
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "v${{ env.APP_VERSION }}"
-          release_name: "CrazyPuzzle v${{ env.APP_VERSION }}"
+          name: "CrazyPuzzle v${{ env.APP_VERSION }}"
           body: |
             🎉 **CrazyPuzzle v${{ env.APP_VERSION }} Released!**
             
