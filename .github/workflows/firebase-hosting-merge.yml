@@ -8,6 +8,9 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+env:
+  APP_VERSION: ${{ github.run_number }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -36,6 +39,7 @@ jobs:
           REACT_APP_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID }}
           REACT_APP_FIREBASE_APP_ID: ${{ secrets.REACT_APP_FIREBASE_APP_ID }}
           REACT_APP_FIREBASE_MEASUREMENT_ID: ${{ secrets.REACT_APP_FIREBASE_MEASUREMENT_ID }}
+          REACT_APP_VERSION: ${{ env.APP_VERSION }}
         run: npm run build
 
       - name: Deploy to Firebase Hosting
@@ -45,3 +49,33 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
           projectId: crazypuzzlecrazy
           channelId: live
+
+      - name: Create GitHub Release
+        if: success()
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ env.APP_VERSION }}"
+          release_name: "CrazyPuzzle v${{ env.APP_VERSION }}"
+          body: |
+            🎉 **CrazyPuzzle v${{ env.APP_VERSION }} Released!**
+            
+            **🚀 Deployment:** Successfully deployed to Firebase Hosting
+            **📅 Date:** ${{ steps.date.outputs.date }}
+            **💻 Commit:** ${{ github.sha }}
+            **👤 Author:** ${{ github.actor }}
+            
+            **🔗 Links:**
+            - 🌐 [Live App](https://crazypuzzlecrazy.web.app)
+            - 📊 [Firebase Console](https://console.firebase.google.com/project/crazypuzzlecrazy)
+            - 🐛 [Report Issues](https://github.com/${{ github.repository }}/issues)
+            
+            **✨ Recent Changes:**
+            ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
