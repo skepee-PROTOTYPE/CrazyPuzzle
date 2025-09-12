@@ -27,15 +27,64 @@ $primary: #1976d2;
   font-size: 1.25rem;
 }
 
+/* Puzzle container - centralizes the puzzle grid and adds spacing */
+.puzzleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+
+  @media (max-width: 768px) {
+    gap: 15px;
+    margin: 15px 0;
+  }
+}
+
 /* Puzzle grid - uses CSS variable --grid-size */
 .puzzleGrid {
   display: grid;
-  gap: $tile-gap;
-  justify-content: center;
-  margin-top: 20px;
-  // Use CSS custom property for dynamic grid size
-  grid-template-columns: repeat(var(--grid-size, 4), $tile-size);
-  transform-style: preserve-3d;
+  gap: 2px;
+  background: #ddd;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 4px;
+
+  // Easy difficulty (3x3 = 9 pieces)
+  &.easy {
+    grid-template-columns: repeat(3, 1fr);
+    width: min(300px, 90vw);
+    height: min(300px, 90vw);
+
+    @media (max-width: 480px) {
+      width: min(280px, 85vw);
+      height: min(280px, 85vw);
+    }
+  }
+
+  // Medium difficulty (4x4 = 16 pieces)
+  &.medium {
+    grid-template-columns: repeat(4, 1fr);
+    width: min(320px, 90vw);
+    height: min(320px, 90vw);
+
+    @media (max-width: 480px) {
+      width: min(300px, 85vw);
+      height: min(300px, 85vw);
+    }
+  }
+
+  // Hard difficulty (5x5 = 25 pieces)
+  &.hard {
+    grid-template-columns: repeat(5, 1fr);
+    width: min(350px, 90vw);
+    height: min(350px, 90vw);
+
+    @media (max-width: 480px) {
+      width: min(320px, 85vw);
+      height: min(320px, 85vw);
+    }
+  }
 }
 
 /* Tile card */
@@ -52,6 +101,72 @@ $primary: #1976d2;
     background: $tile-success;
     color: #fff;
     border-color: darken($tile-success, 10%);
+  }
+}
+
+/* Puzzle piece - individual pieces of the puzzle */
+.puzzlePiece {
+  background: #f0f0f0;
+  border: 1px solid #999;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  aspect-ratio: 1;
+
+  // Dynamic sizing based on grid size
+  .easy & {
+    font-size: clamp(16px, 4vw, 24px);
+    min-height: 80px;
+
+    @media (max-width: 480px) {
+      font-size: clamp(14px, 4vw, 20px);
+      min-height: 70px;
+    }
+  }
+
+  .medium & {
+    font-size: clamp(14px, 3.5vw, 20px);
+    min-height: 60px;
+
+    @media (max-width: 480px) {
+      font-size: clamp(12px, 3vw, 18px);
+      min-height: 55px;
+    }
+  }
+
+  .hard & {
+    font-size: clamp(12px, 3vw, 18px);
+    min-height: 50px;
+
+    @media (max-width: 480px) {
+      font-size: clamp(10px, 2.5vw, 16px);
+      min-height: 45px;
+    }
+  }
+
+  &:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+  }
+
+  &.empty {
+    background: #ccc;
+    cursor: default;
+
+    &:hover {
+      background: #ccc;
+      transform: none;
+    }
+  }
+
+  &.selected {
+    background: #ffeb3b;
+    border-color: #ff9800;
+    transform: scale(1.1);
   }
 }
 
@@ -178,7 +293,7 @@ $primary: #1976d2;
   color: #555;
   font-size: 1.1rem;
   margin-bottom: 10px;
-  
+
   strong {
     color: #1976d2;
     font-weight: 600;
@@ -189,7 +304,7 @@ $primary: #1976d2;
   color: #777;
   font-size: 0.95rem;
   font-style: italic;
-  
+
   strong {
     color: #1976d2;
     font-weight: 600;
@@ -214,15 +329,15 @@ $primary: #1976d2;
     width: 48px;
     height: 48px;
   }
-  
+
   .puzzleGrid {
     grid-template-columns: repeat(var(--grid-size, 4), 48px);
   }
-  
+
   .boardCard {
     padding: 12px;
   }
-  
+
   .boardTitle {
     font-size: 1rem;
   }
@@ -236,4 +351,66 @@ $primary: #1976d2;
   font-size: 0.9rem;
   margin-top: 10px;
   border-left: 3px solid #4caf50;
+}
+
+/* Game controls and status */
+.gameControls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @media (max-width: 480px) {
+    gap: 8px;
+    width: 100%;
+  }
+}
+
+.controlBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #2196f3;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #1976d2;
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+.gameStatus {
+  text-align: center;
+  margin: 15px 0;
+
+  .statusMessage {
+    font-size: 18px;
+    font-weight: 600;
+
+    &.won {
+      color: #4caf50;
+    }
+
+    &.playing {
+      color: #2196f3;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 16px;
+    }
+  }
 }
