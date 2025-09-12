@@ -33,10 +33,20 @@ $bg-card: #fff;
 
 .appTitle {
   text-align: center;
-  color: $primary;  // Fixed: was $primary-color
+  color: $primary;
   font-weight: 700;
   font-size: 2.5em;
   margin-bottom: 10px;
+  
+  // Mobile responsive title
+  @media (max-width: 768px) {
+    font-size: 2em;
+    margin-bottom: 15px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.8em;
+  }
 }
 
 .appLink {
@@ -58,6 +68,15 @@ $bg-card: #fff;
   max-width: 900px;
   margin: 0 auto;
   padding: 40px 20px 20px 20px;
+  
+  // Mobile responsive padding
+  @media (max-width: 768px) {
+    padding: 20px 15px 15px 15px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 15px 10px 10px 10px;
+  }
 }
 
 .controlsRow {
@@ -67,6 +86,19 @@ $bg-card: #fff;
   margin: 30px 0 20px 0;
   flex-wrap: wrap;
   gap: 20px;
+  
+  // Mobile responsive controls
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0 15px 0;
+    width: 100%;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin: 15px 0 12px 0;
+  }
 }
 
 .card {
@@ -76,11 +108,30 @@ $bg-card: #fff;
   padding: 20px;
   min-width: 220px;
   flex: 1 1 220px;
+  
+  // Mobile responsive card
+  @media (max-width: 768px) {
+    width: 100%;
+    min-width: unset;
+    flex: 1 1 100%;
+    padding: 15px;
+    margin: 0;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px;
+    border-radius: 8px;
+  }
 }
 
 .cardTitle {
   color: $secondary;
   margin-bottom: 10px;
+  
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
 }
 
 .btn {
@@ -90,6 +141,11 @@ $bg-card: #fff;
   border: none;
   cursor: pointer;
   width: 100%;
+  
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
 }
 
 .signInBtn {
@@ -99,6 +155,11 @@ $bg-card: #fff;
   
   &:hover {
     background: darken(#4285f4, 10%);
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 6px 12px;
   }
 }
 
@@ -111,22 +172,40 @@ $bg-card: #fff;
   &:hover {
     background: darken($danger, 10%);
   }
+  
+  @media (max-width: 480px) {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+  }
 }
 
 .userInfo {
   display: flex;
   align-items: center;
   gap: 12px;
+  
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
 }
 
 .userAvatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .userName {
   font-weight: 500;
+  
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
 }
 
 .select {
@@ -135,6 +214,11 @@ $bg-card: #fff;
   border-radius: 6px;
   border: 1px solid $secondary;
   width: 100%;
+  
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
 }
 
 .scoreRow {
@@ -142,6 +226,18 @@ $bg-card: #fff;
   justify-content: center;
   gap: 40px;
   margin-bottom: 20px;
+  
+  // Mobile responsive score row
+  @media (max-width: 768px) {
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 15px;
+    margin-bottom: 12px;
+  }
 }
 
 .scoreBox {
@@ -149,8 +245,21 @@ $bg-card: #fff;
   background: #e3f2fd;
   padding: 10px 24px;
   border-radius: 8px;
-  color: $primary;  // Fixed: was $primary-color
+  color: $primary;
   font-weight: 600;
+  
+  // Mobile responsive score box
+  @media (max-width: 768px) {
+    font-size: 1.1em;
+    padding: 8px 16px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1em;
+    padding: 6px 12px;
+    flex: 1;
+    text-align: center;
+  }
 }
 
 .optionalCard {
@@ -162,6 +271,11 @@ $bg-card: #fff;
     align-items: center;
     gap: 8px;
     font-size: 0.95rem;
+    
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+      gap: 6px;
+    }
   }
 }
 
@@ -172,6 +286,11 @@ $bg-card: #fff;
   padding: 2px 8px;
   border-radius: 12px;
   font-weight: 500;
+  
+  @media (max-width: 480px) {
+    font-size: 0.6rem;
+    padding: 1px 6px;
+  }
 }
 
 .guestModeText {
@@ -183,6 +302,27 @@ $bg-card: #fff;
   small {
     color: #888;
     font-size: 0.8rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    
+    small {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+/* Additional mobile-specific utilities */
+@media (max-width: 480px) {
+  * {
+    box-sizing: border-box;
+  }
+  
+  // Prevent horizontal overflow
+  body {
+    overflow-x: hidden;
   }
 }
 
