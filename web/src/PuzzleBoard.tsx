@@ -176,14 +176,27 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
             role="grid"
             aria-label={`Puzzle grid ${difficulty}`}
           >
-            {tiles.map((tile, i) => (
-              <div key={i} className={styles.tile}>
-                <div className={styles.tileInner}>
-                  <div className={styles.tileFront}></div>
-                  <div className={styles.tileBack}>{tile}</div>
+            {tiles.map((tile, i) => {
+              const isFlipped = flippedTiles.includes(i) || matchedTiles.includes(i);
+              return (
+                <div
+                  key={i}
+                  className={styles.tile}
+                  onClick={() => handleTileClick(i)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTileClick(i); }}
+                >
+                  <div className={styles.tileInner} style={{ width: '100%', height: '100%' }}>
+                    {isFlipped ? (
+                      <div className={styles.tileBack}>{tile !== 0 ? tile : ''}</div>
+                    ) : (
+                      <div className={styles.tileFront} />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
