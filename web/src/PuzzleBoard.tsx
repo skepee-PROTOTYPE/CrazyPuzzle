@@ -13,8 +13,11 @@ interface PuzzleBoardProps {
 }
 
 function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBoardProps) {
+  // normalize grid sizes to even totals (pairs) to avoid missing tiles
   const gridSizes: Record<'easy' | 'medium' | 'hard', number> = { easy: 4, medium: 6, hard: 8 };
-  const gridSize = gridSizes[difficulty as 'easy' | 'medium' | 'hard'] || 4;
+  // use the mapping (fallback to 4)
+  const gridSize = (gridSizes[(difficulty as 'easy' | 'medium' | 'hard')] || 4);
+  const difficultyClass = (difficulty || 'easy').toLowerCase(); // 'easy' | 'medium' | 'hard'
   const totalTiles = gridSize * gridSize;
   
   const [tiles, setTiles] = useState<number[]>([]);
@@ -32,8 +35,15 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
   useEffect(() => {
     if (!isLayoutImplemented) return;
     
-    const numbers = Array.from({ length: totalTiles / 2 }, (_, i) => i + 1);
+    // ensure totalTiles is even (pairs). If odd, reduce by 1 to make it even
+    const safeTotal = totalTiles % 2 === 0 ? totalTiles : totalTiles - 1;
+    const pairCount = safeTotal / 2;
+    const numbers = Array.from({ length: pairCount }, (_, i) => i + 1);
     const shuffledTiles = [...numbers, ...numbers].sort(() => Math.random() - 0.5);
+
+    // if grid has an extra cell (odd), fill with a placeholder (0) — though mapping above uses even totals
+    if (shuffledTiles.length < totalTiles) shuffledTiles.push(0);
+
     setTiles(shuffledTiles);
     setFlippedTiles([]);
     setMatchedTiles([]);
@@ -130,6 +140,14 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
     setGameCompleted(false);
   };
 
+  // Inline CSS variable for SCSS --grid-size
+  const gridStyle: React.CSSProperties = {
+    ['--grid-size' as any]: gridSize
+  };
+
+  console.log('Grid classes:', styles.puzzleGrid, styles[difficultyClass]); // debug mapped class names
+  // Also log actual DOM classes after render if needed
+
   return (
     <div className={styles.boardCard}>
       <h3 className={styles.boardTitle}>
@@ -151,16 +169,18 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
       ) : (
         // Show the actual game for implemented layouts (grid)
         <>
-          <div style={{ '--grid-size': gridSize } as React.CSSProperties} className={styles.puzzleGrid}>
-            {tiles.map((number, index) => (
-              <div
-                key={index}
-                className={`${styles.tile} ${flippedTiles.includes(index) || matchedTiles.includes(index) ? styles.flipped : ''} ${matchedTiles.includes(index) ? styles.matched : ''}`}
-                onClick={() => handleTileClick(index)}
-              >
+          <div
+            // apply both module classes: puzzleGrid + difficulty (module lookup ensures hashed name)
+            className={`${styles.puzzleGrid} ${styles[difficultyClass] || ''}`}
+            style={gridStyle}
+            role="grid"
+            aria-label={`Puzzle grid ${difficulty}`}
+          >
+            {tiles.map((tile, i) => (
+              <div key={i} className={styles.tile}>
                 <div className={styles.tileInner}>
                   <div className={styles.tileFront}></div>
-                  <div className={styles.tileBack}>{number}</div>
+                  <div className={styles.tileBack}>{tile}</div>
                 </div>
               </div>
             ))}

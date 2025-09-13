@@ -210,22 +210,35 @@ $primary: #1976d2;
 
 /* Responsive - scale tiles on smaller screens */
 @media (max-width: 480px) {
+  /* use a CSS variable --cell-size (fallback 48px) so size can change by difficulty */
   .tile {
-    width: 48px;
-    height: 48px;
+    width: var(--cell-size, 48px);
+    height: var(--cell-size, 48px);
   }
-  
+
+  /* ensure grid rows match columns and inner content fills the tile */
   .puzzleGrid {
-    grid-template-columns: repeat(var(--grid-size, 4), 48px);
+    grid-template-columns: repeat(var(--grid-size, 4), var(--cell-size, 48px));
+    grid-auto-rows: var(--cell-size, 48px);
+    gap: 6px;
+    margin: 0 auto;
   }
-  
-  .boardCard {
-    padding: 12px;
+
+  .tileInner {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
   }
-  
-  .boardTitle {
-    font-size: 1rem;
-  }
+
+  /* difficulty-specific variable values */
+  .puzzleGrid.easy  { --cell-size: 48px; }
+  .puzzleGrid.medium{ --cell-size: 40px; }
+  .puzzleGrid.hard  { --cell-size: 35px; }
+
+  /* optional image scaling */
+  .puzzleGrid.easy  .tileImg  { width: calc(var(--cell-size) * 0.65); height: calc(var(--cell-size) * 0.65); }
+  .puzzleGrid.medium .tileImg { width: calc(var(--cell-size) * 0.65); height: calc(var(--cell-size) * 0.65); }
+  .puzzleGrid.hard  .tileImg  { width: calc(var(--cell-size) * 0.65); height: calc(var(--cell-size) * 0.65); }
 }
 
 .guestHint {
