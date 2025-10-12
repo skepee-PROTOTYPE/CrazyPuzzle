@@ -108,5 +108,5 @@
   "include": [
     "src/**/*",
     "src/types/**/*"
-  ]
+, "public/service-worker.js"  ]
 }

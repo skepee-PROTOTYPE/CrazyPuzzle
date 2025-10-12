@@ -2,20 +2,39 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#1976d2" />
-    <meta name="description" content="CrazyPuzzle - Fun puzzle game" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>CrazyPuzzle</title>
+    <meta name="description" content="CrazyPuzzle - Fast, responsive HTML5 tile-matching puzzle game" />
     
-    <!-- Add AdSense script here -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1917839501702299"
-         crossorigin="anonymous"></script>
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png" />
+    
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CrazyPuzzle" />
+    
+    <title>CrazyPuzzle - Tile Matching Game</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    
+    <!-- Register Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
