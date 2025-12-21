@@ -5,7 +5,11 @@ import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from
 import PuzzleBoard from './PuzzleBoard';
 import Leaderboard from './Leaderboard';
 import AdBanner from './AdBanner';
+import MultiplayerLobby from './MultiplayerLobby';
+import MultiplayerGame from './MultiplayerGame';
 import styles from './App.module.scss';
+
+type GameMode = 'menu' | 'singleplayer' | 'multiplayer-lobby' | 'multiplayer-game';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -13,12 +17,18 @@ function App() {
   const [layout, setLayout] = useState<string>('grid');
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
+  const [gameMode, setGameMode] = useState<GameMode>('menu');
+  const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-    return () => unsubscribe();
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const signInWithGoogle = async () => {
@@ -43,10 +53,110 @@ function App() {
     setTimer(newTimer);
   };
 
+  const handleJoinRoom = (roomId: string, roomDifficulty: 'easy' | 'medium' | 'hard') => {
+    setCurrentRoomId(roomId);
+    setDifficulty(roomDifficulty);
+    setGameMode('multiplayer-game');
+  };
+
+  const handleLeaveRoom = () => {
+    setCurrentRoomId(null);
+    setGameMode('multiplayer-lobby');
+  };
+
+  // Menu view
+  if (gameMode === 'menu') {
+    return (
+      <div className={styles.appBg}>
+        <div className={styles.menuContainer}>
+          <h1 className={styles.mainTitle}>🧩 CrazyPuzzle</h1>
+          <p className={styles.subtitle}>Test your memory and compete with friends!</p>
+          
+          <div className={styles.authSection}>
+            {user ? (
+              <div className={styles.userWelcome}>
+                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
+                <span>Welcome, {user.displayName}!</span>
+                <button onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
+              </div>
+            ) : (
+              <div className={styles.guestInfo}>
+                <p>🎮 Play as guest or sign in for more features</p>
+                <button onClick={signInWithGoogle} className={styles.signInBtn}>
+                  Sign in with Google
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.modeSelection}>
+            <button 
+              onClick={() => setGameMode('singleplayer')} 
+              className={styles.modeBtn}
+            >
+              <span className={styles.modeIcon}>🎯</span>
+              <span className={styles.modeTitle}>Single Player</span>
+              <span className={styles.modeDesc}>Play solo and beat your best time</span>
+            </button>
+
+            <button 
+              onClick={() => {
+                if (!user) {
+                  alert('Please sign in to play multiplayer!');
+                  return;
+                }
+                setGameMode('multiplayer-lobby');
+              }} 
+              className={styles.modeBtn}
+            >
+              <span className={styles.modeIcon}>👥</span>
+              <span className={styles.modeTitle}>Multiplayer</span>
+              <span className={styles.modeDesc}>Compete with friends in real-time</span>
+              {!user && <span className={styles.requiresAuth}>Requires sign in</span>}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Multiplayer lobby
+  if (gameMode === 'multiplayer-lobby' && user) {
+    return (
+      <div className={styles.appBg}>
+        <MultiplayerLobby 
+          user={user}
+          onJoinRoom={handleJoinRoom}
+          onBackToSinglePlayer={() => setGameMode('menu')}
+        />
+      </div>
+    );
+  }
+
+  // Multiplayer game
+  if (gameMode === 'multiplayer-game' && user && currentRoomId) {
+    return (
+      <div className={styles.appBg}>
+        <MultiplayerGame 
+          roomId={currentRoomId}
+          user={user}
+          difficulty={difficulty}
+          onLeaveRoom={handleLeaveRoom}
+        />
+      </div>
+    );
+  }
+
+  // Single player mode
   return (
     <div className={styles.appBg}>
       <div className={styles.appHeaderContainer}>
-        <h1 className={styles.appTitle}>🧩 CrazyPuzzle</h1>
+        <div className={styles.headerRow}>
+          <h1 className={styles.appTitle}>🧩 CrazyPuzzle</h1>
+          <button onClick={() => setGameMode('menu')} className={styles.menuBtn}>
+            ← Back to Menu
+          </button>
+        </div>
         
         <div className={styles.controlsRow}>
           {/* Move authentication to a smaller, optional section */}
