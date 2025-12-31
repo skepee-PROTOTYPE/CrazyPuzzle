@@ -24,34 +24,39 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    // Set auth persistence first
-    setPersistence(auth, browserLocalPersistence)
-      .then(() => {
-        console.log('Auth persistence set to LOCAL');
-        // Check for redirect result FIRST before setting up listener
-        return getRedirectResult(auth);
-      })
-      .then((result) => {
+    let unsubscribe: any = null;
+
+    // Set auth persistence and handle redirect result FIRST
+    const initAuth = async () => {
+      try {
+        // Set persistence
+        await setPersistence(auth, browserLocalPersistence);
+        console.log('🔐 Auth persistence set to LOCAL');
+        
+        // Check for redirect result (only exists after Google redirect on mobile)
+        const result = await getRedirectResult(auth);
         if (result?.user) {
-          console.log('✅ Redirect sign-in successful:', result.user.displayName);
+          console.log('✅ Redirect sign-in successful:', result.user.displayName, result.user.email);
           setUser(result.user);
         } else {
-          console.log('No redirect result');
+          console.log('ℹ️ No redirect result - checking current auth state');
         }
-      })
-      .catch((error) => {
-        console.error('❌ Error in auth setup:', error);
+      } catch (error: any) {
+        console.error('❌ Error in redirect handling:', error);
         if (error.code !== 'auth/popup-closed-by-user') {
           alert(`Sign in error: ${error.message}`);
         }
-      })
-      .finally(() => {
+      } finally {
         setAuthLoading(false);
-      });
+      }
+    };
 
-    // Set up auth state listener
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log('Auth state changed:', currentUser?.displayName || 'No user');
+    // Initialize auth
+    initAuth();
+
+    // Set up auth state listener AFTER redirect check
+    unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log('👤 Auth state changed:', currentUser?.displayName || 'No user', currentUser?.email || '');
       setUser(currentUser);
       setAuthLoading(false);
     });
@@ -117,6 +122,18 @@ function App() {
     setCurrentRoomId(null);
     setGameMode('multiplayer-lobby');
   };
+
+  // Show loading while checking auth state
+  if (authLoading) {
+    return (
+      <div className={styles.appBg}>
+        <div className={styles.menuContainer}>
+          <h1 className={styles.mainTitle}>🧩 CrazyPuzzle</h1>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Menu view
   if (gameMode === 'menu') {
