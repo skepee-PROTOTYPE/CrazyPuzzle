@@ -40,26 +40,29 @@ function App() {
           setUser(result.user);
         } else {
           console.log('ℹ️ No redirect result - checking current auth state');
+          // Check if there's already a logged-in user
+          if (auth.currentUser) {
+            console.log('✅ Current user found:', auth.currentUser.displayName, auth.currentUser.email);
+            setUser(auth.currentUser);
+          }
         }
       } catch (error: any) {
         console.error('❌ Error in redirect handling:', error);
         if (error.code !== 'auth/popup-closed-by-user') {
           alert(`Sign in error: ${error.message}`);
         }
-      } finally {
-        setAuthLoading(false);
       }
+      
+      // Set up auth state listener AFTER redirect check
+      unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        console.log('👤 Auth state changed:', currentUser?.displayName || 'No user', currentUser?.email || '');
+        setUser(currentUser);
+        setAuthLoading(false);
+      });
     };
 
     // Initialize auth
     initAuth();
-
-    // Set up auth state listener AFTER redirect check
-    unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log('👤 Auth state changed:', currentUser?.displayName || 'No user', currentUser?.email || '');
-      setUser(currentUser);
-      setAuthLoading(false);
-    });
 
     return () => {
       if (typeof unsubscribe === 'function') {
@@ -224,9 +227,17 @@ function App() {
       <div className={styles.appHeaderContainer}>
         <div className={styles.headerRow}>
           <h1 className={styles.appTitle}>🧩 CrazyPuzzle</h1>
-          <button onClick={() => setGameMode('menu')} className={styles.menuBtn}>
-            ← Back to Menu
-          </button>
+          <div className={styles.headerRight}>
+            {user && (
+              <div className={styles.userInfoHeader}>
+                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatarSmall} />
+                <span className={styles.userNameSmall}>Logged in as {user.displayName}</span>
+              </div>
+            )}
+            <button onClick={() => setGameMode('menu')} className={styles.menuBtn}>
+              ← Back to Menu
+            </button>
+          </div>
         </div>
         
         <div className={styles.controlsRow}>

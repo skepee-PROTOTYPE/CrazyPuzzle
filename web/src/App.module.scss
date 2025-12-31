@@ -195,6 +195,35 @@ $bg-card: #fff;
   margin-bottom: 20px;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.userInfoHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 15px;
+  border-radius: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.userAvatarSmall {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #667eea;
+}
+
+.userNameSmall {
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+}
+
 .menuBtn {
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.2);
