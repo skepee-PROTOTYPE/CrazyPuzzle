@@ -9,6 +9,8 @@ import MultiplayerLobby from './MultiplayerLobby';
 import MultiplayerGame from './MultiplayerGame';
 import styles from './App.module.scss';
 
+// Version: 1.0.1 - Fixed mobile sign-in
+
 type GameMode = 'menu' | 'singleplayer' | 'multiplayer-lobby' | 'multiplayer-game';
 
 function App() {
@@ -29,11 +31,15 @@ function App() {
     getRedirectResult(auth)
       .then((result) => {
         if (result?.user) {
+          console.log('Redirect sign-in successful:', result.user.displayName);
           setUser(result.user);
         }
       })
       .catch((error) => {
         console.error('Error getting redirect result:', error);
+        if (error.code !== 'auth/popup-closed-by-user') {
+          alert(`Sign in error: ${error.message}`);
+        }
       });
 
     return () => {
@@ -49,15 +55,20 @@ function App() {
       // Detect if mobile device
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       
+      console.log('Sign in initiated, isMobile:', isMobile);
+      
       if (isMobile) {
         // Use redirect for mobile devices (works better on iOS)
+        console.log('Using signInWithRedirect for mobile');
         await signInWithRedirect(auth, provider);
       } else {
         // Use popup for desktop
+        console.log('Using signInWithPopup for desktop');
         await signInWithPopup(auth, provider);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing in with Google:', error);
+      alert(`Sign in failed: ${error.message || 'Please try again'}`);
     }
   };
 
