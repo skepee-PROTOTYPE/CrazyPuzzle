@@ -1,4 +1,4 @@
-const CACHE_NAME = 'crazypuzzle-v1';
+const CACHE_NAME = 'crazypuzzle-v2'; // Increment version to force cache refresh
 const urlsToCache = [
   '/',
   '/index.html',

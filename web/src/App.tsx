@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
 import { auth } from './firebase';
-import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import PuzzleBoard from './PuzzleBoard';
 import Leaderboard from './Leaderboard';
 import AdBanner from './AdBanner';
@@ -21,26 +21,40 @@ function App() {
   const [timer, setTimer] = useState(0);
   const [gameMode, setGameMode] = useState<GameMode>('menu');
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-
-    // Handle redirect result for mobile sign-in
-    getRedirectResult(auth)
+    // Set auth persistence first
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        console.log('Auth persistence set to LOCAL');
+        // Check for redirect result FIRST before setting up listener
+        return getRedirectResult(auth);
+      })
       .then((result) => {
         if (result?.user) {
-          console.log('Redirect sign-in successful:', result.user.displayName);
+          console.log('✅ Redirect sign-in successful:', result.user.displayName);
           setUser(result.user);
+        } else {
+          console.log('No redirect result');
         }
       })
       .catch((error) => {
-        console.error('Error getting redirect result:', error);
+        console.error('❌ Error in auth setup:', error);
         if (error.code !== 'auth/popup-closed-by-user') {
           alert(`Sign in error: ${error.message}`);
         }
+      })
+      .finally(() => {
+        setAuthLoading(false);
       });
+
+    // Set up auth state listener
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log('Auth state changed:', currentUser?.displayName || 'No user');
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
 
     return () => {
       if (typeof unsubscribe === 'function') {
@@ -51,23 +65,31 @@ function App() {
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
+    // Force account selection
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    
     try {
       // Detect if mobile device
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       
-      console.log('Sign in initiated, isMobile:', isMobile);
+      console.log('🔐 Sign in initiated, isMobile:', isMobile);
+      
+      // Set persistence before sign-in
+      await setPersistence(auth, browserLocalPersistence);
       
       if (isMobile) {
         // Use redirect for mobile devices (works better on iOS)
-        console.log('Using signInWithRedirect for mobile');
+        console.log('📱 Using signInWithRedirect for mobile');
         await signInWithRedirect(auth, provider);
       } else {
         // Use popup for desktop
-        console.log('Using signInWithPopup for desktop');
+        console.log('💻 Using signInWithPopup for desktop');
         await signInWithPopup(auth, provider);
       }
     } catch (error: any) {
-      console.error('Error signing in with Google:', error);
+      console.error('❌ Error signing in with Google:', error);
       alert(`Sign in failed: ${error.message || 'Please try again'}`);
     }
   };

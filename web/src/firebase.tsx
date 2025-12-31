@@ -14,6 +14,12 @@ const firebaseConfig = {
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL
 };
 
+console.log('Firebase config loaded:', {
+  apiKey: firebaseConfig.apiKey ? '✓ Present' : '✗ Missing',
+  authDomain: firebaseConfig.authDomain ? '✓ Present' : '✗ Missing',
+  projectId: firebaseConfig.projectId ? '✓ Present' : '✗ Missing'
+});
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
