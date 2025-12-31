@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
 import { auth } from './firebase';
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut } from 'firebase/auth';
 import PuzzleBoard from './PuzzleBoard';
 import Leaderboard from './Leaderboard';
 import AdBanner from './AdBanner';
@@ -24,6 +24,18 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
+
+    // Handle redirect result for mobile sign-in
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          setUser(result.user);
+        }
+      })
+      .catch((error) => {
+        console.error('Error getting redirect result:', error);
+      });
+
     return () => {
       if (typeof unsubscribe === 'function') {
         unsubscribe();
@@ -34,7 +46,16 @@ function App() {
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      // Detect if mobile device
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // Use redirect for mobile devices (works better on iOS)
+        await signInWithRedirect(auth, provider);
+      } else {
+        // Use popup for desktop
+        await signInWithPopup(auth, provider);
+      }
     } catch (error) {
       console.error('Error signing in with Google:', error);
     }
