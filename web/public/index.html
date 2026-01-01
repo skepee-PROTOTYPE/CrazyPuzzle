@@ -24,12 +24,24 @@
     
     <!-- Register Service Worker -->
     <script>
+      // TEMPORARILY DISABLED SERVICE WORKER TO FIX AUTH
+      // Service worker may be interfering with OAuth redirect
+      if ('serviceWorker' in navigator) {
+        // Unregister any existing service workers
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+            console.log('SW unregistered:', registration);
+          }
+        });
+      }
+      
+      /* ORIGINAL CODE - RE-ENABLE AFTER AUTH IS FIXED
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/service-worker.js')
             .then((registration) => {
               console.log('SW registered: ', registration);
-              // Check for updates every time
               registration.update();
             })
             .catch((registrationError) => {
@@ -37,6 +49,7 @@
             });
         });
       }
+      */
     </script>
   </body>
 </html>

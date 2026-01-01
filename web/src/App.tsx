@@ -12,6 +12,7 @@ import styles from './App.module.scss';
 // Version: 1.0.1 - Fixed mobile sign-in
 
 type GameMode = 'menu' | 'singleplayer' | 'multiplayer-lobby' | 'multiplayer-game';
+type StatusTone = 'info' | 'success' | 'error';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -22,46 +23,69 @@ function App() {
   const [gameMode, setGameMode] = useState<GameMode>('menu');
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [statusMessage, setStatusMessage] = useState<{ text: string; tone: StatusTone } | null>(null);
 
   useEffect(() => {
-    let unsubscribe: any = null;
+    let unsubscribe: (() => void) | null = null;
 
-    // Set auth persistence and handle redirect result FIRST
     const initAuth = async () => {
       try {
-        // Set persistence
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasOAuthParams = ['code', 'state', 'error'].some((key) => urlParams.has(key));
+
         await setPersistence(auth, browserLocalPersistence);
-        console.log('🔐 Auth persistence set to LOCAL');
-        
-        // Check for redirect result (only exists after Google redirect on mobile)
-        const result = await getRedirectResult(auth);
-        if (result?.user) {
-          console.log('✅ Redirect sign-in successful:', result.user.displayName, result.user.email);
-          setUser(result.user);
-        } else {
-          console.log('ℹ️ No redirect result - checking current auth state');
-          // Check if there's already a logged-in user
-          if (auth.currentUser) {
-            console.log('✅ Current user found:', auth.currentUser.displayName, auth.currentUser.email);
-            setUser(auth.currentUser);
+        console.log('✅ Auth persistence set to LOCAL');
+
+        try {
+          const result = await getRedirectResult(auth);
+          console.log('getRedirectResult returned:', result);
+          if (result) {
+            setUser(result.user);
+            setStatusMessage({
+              text: `Signed in as ${result.user.displayName || result.user.email}`,
+              tone: 'success'
+            });
+            setAuthLoading(false);
+          } else if (hasOAuthParams) {
+            console.warn('Redirect completed but no user returned', window.location.href);
+            setStatusMessage({
+              text: 'We could not complete Google sign-in. Please try again.',
+              tone: 'error'
+            });
           }
+        } catch (redirectError: any) {
+          console.error('❌ Redirect error:', redirectError);
+          setStatusMessage({
+            text: `Sign-in redirect failed: ${redirectError.message}`,
+            tone: 'error'
+          });
         }
+
+        unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          console.log('👤 Auth state changed:', currentUser?.displayName || 'No user', currentUser?.email || '');
+
+          if (currentUser) {
+            setUser(currentUser);
+            setStatusMessage({
+              text: `Signed in as ${currentUser.displayName || currentUser.email}`,
+              tone: 'success'
+            });
+          } else {
+            setUser(null);
+            setStatusMessage((prev) => (prev?.tone === 'error' ? prev : null));
+          }
+          setAuthLoading(false);
+        });
       } catch (error: any) {
-        console.error('❌ Error in redirect handling:', error);
-        if (error.code !== 'auth/popup-closed-by-user') {
-          alert(`Sign in error: ${error.message}`);
-        }
-      }
-      
-      // Set up auth state listener AFTER redirect check
-      unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        console.log('👤 Auth state changed:', currentUser?.displayName || 'No user', currentUser?.email || '');
-        setUser(currentUser);
+        console.error('❌ Error in auth init:', error);
+        setStatusMessage({
+          text: `Auth initialization failed: ${error.message}`,
+          tone: 'error'
+        });
         setAuthLoading(false);
-      });
+      }
     };
 
-    // Initialize auth
     initAuth();
 
     return () => {
@@ -73,38 +97,46 @@ function App() {
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    // Force account selection
-    provider.setCustomParameters({
-      prompt: 'select_account'
-    });
-    
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    console.log('🔐 Sign in initiated, isMobile:', isMobile);
+
     try {
-      // Detect if mobile device
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      
-      console.log('🔐 Sign in initiated, isMobile:', isMobile);
-      
-      // Set persistence before sign-in
       await setPersistence(auth, browserLocalPersistence);
-      
-      if (isMobile) {
-        // Use redirect for mobile devices (works better on iOS)
-        console.log('📱 Using signInWithRedirect for mobile');
-        await signInWithRedirect(auth, provider);
-      } else {
-        // Use popup for desktop
-        console.log('💻 Using signInWithPopup for desktop');
+      setStatusMessage({ text: 'Opening Google sign-in…', tone: 'info' });
+      console.log('✅ Persistence set');
+
+      try {
+        console.log('✨ Trying signInWithPopup first');
         await signInWithPopup(auth, provider);
+      } catch (popupError: any) {
+        const fallbackErrors = ['auth/popup-blocked', 'auth/popup-closed-by-user', 'auth/cancelled-popup-request', 'auth/operation-not-supported-in-this-environment'];
+        const shouldFallbackToRedirect = isMobile || fallbackErrors.includes(popupError.code);
+        console.warn('⚠️ Popup sign-in failed:', popupError.code, 'fallback?', shouldFallbackToRedirect);
+
+        if (!shouldFallbackToRedirect) {
+          throw popupError;
+        }
+
+        console.log('📱 Falling back to signInWithRedirect');
+        await signInWithRedirect(auth, provider);
       }
     } catch (error: any) {
       console.error('❌ Error signing in with Google:', error);
-      alert(`Sign in failed: ${error.message || 'Please try again'}`);
+      setStatusMessage({
+        text: error.code === 'auth/unauthorized-domain'
+          ? 'Domain not authorized for Google sign-in. Please add crazypuzzlecrazy.web.app in Firebase Console.'
+          : `Sign in failed: ${error.message}`,
+        tone: 'error'
+      });
     }
   };
 
   const handleSignOut = async () => {
     try {
       await signOut(auth);
+      setStatusMessage({ text: 'Signed out successfully.', tone: 'info' });
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -161,6 +193,19 @@ function App() {
                 </button>
               </div>
             )}
+            {statusMessage && (
+              <div
+                className={`${styles.statusMessage} ${
+                  statusMessage.tone === 'success'
+                    ? styles.statusSuccess
+                    : statusMessage.tone === 'error'
+                    ? styles.statusError
+                    : styles.statusInfo
+                }`}
+              >
+                {statusMessage.text}
+              </div>
+            )}
           </div>
 
           <div className={styles.modeSelection}>
@@ -176,7 +221,7 @@ function App() {
             <button 
               onClick={() => {
                 if (!user) {
-                  alert('Please sign in to play multiplayer!');
+                  setStatusMessage({ text: 'Please sign in to play multiplayer.', tone: 'info' });
                   return;
                 }
                 setGameMode('multiplayer-lobby');
@@ -194,7 +239,7 @@ function App() {
     );
   }
 
-  // Multiplayer lobby
+  // Multiplayer lobby view
   if (gameMode === 'multiplayer-lobby' && user) {
     return (
       <div className={styles.appBg}>
@@ -207,7 +252,7 @@ function App() {
     );
   }
 
-  // Multiplayer game
+  // Multiplayer game view
   if (gameMode === 'multiplayer-game' && user && currentRoomId) {
     return (
       <div className={styles.appBg}>
@@ -239,7 +284,7 @@ function App() {
             </button>
           </div>
         </div>
-        
+
         <div className={styles.controlsRow}>
           {/* Move authentication to a smaller, optional section */}
           <div className={styles.card}>

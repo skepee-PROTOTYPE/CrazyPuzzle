@@ -14,14 +14,21 @@ const firebaseConfig = {
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL
 };
 
-console.log('Firebase config loaded:', {
-  apiKey: firebaseConfig.apiKey ? '✓ Present' : '✗ Missing',
+console.log('🔥 Firebase config loaded:', {
+  apiKey: firebaseConfig.apiKey ? `✓ Present (${firebaseConfig.apiKey.substring(0, 20)}...)` : '✗ Missing',
   authDomain: firebaseConfig.authDomain ? '✓ Present' : '✗ Missing',
-  projectId: firebaseConfig.projectId ? '✓ Present' : '✗ Missing'
+  projectId: firebaseConfig.projectId ? '✓ Present' : '✗ Missing',
+  storageBucket: firebaseConfig.storageBucket ? '✓ Present' : '✗ Missing',
+  messagingSenderId: firebaseConfig.messagingSenderId ? '✓ Present' : '✗ Missing',
+  appId: firebaseConfig.appId ? '✓ Present' : '✗ Missing',
+  measurementId: firebaseConfig.measurementId ? '✓ Present' : '✗ Missing',
+  databaseURL: firebaseConfig.databaseURL ? '✓ Present' : '✗ Missing'
 });
 
 // Initialize Firebase
+console.log('🚀 Initializing Firebase app...');
 const app = initializeApp(firebaseConfig);
+console.log('✅ Firebase app initialized');
 
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
