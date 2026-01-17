@@ -8,19 +8,68 @@ import SinglePlayerGame from './SinglePlayerGame';
 import MultiplayerLobby from './MultiplayerLobby';
 import MultiplayerGame from './MultiplayerGame';
 import { Difficulty, Layout } from './DifficultySelector';
+import { isFacebookInstantGame } from './platform';
+import { platformAuth, PlatformUser } from './platformAuth';
+import { facebookAds } from './facebookAds';
 import styles from './App.module.scss';
-// Version: 1.0.1 - Fixed mobile sign-in
+
+// Version: 1.0.2 - Added Facebook Instant Games support
+
 type GameMode = 'menu' | 'singleplayer' | 'multiplayer-lobby' | 'multiplayer-game';
 type StatusTone = 'info' | 'success' | 'error';
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [platformUser, setPlatformUser] = useState<PlatformUser | null>(null);
   const [gameMode, setGameMode] = useState<GameMode>('menu');
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
   const [currentRoomDifficulty, setCurrentRoomDifficulty] = useState<Difficulty>('easy');
   const [currentRoomLayout, setCurrentRoomLayout] = useState<Layout>('grid');
   const [authLoading, setAuthLoading] = useState(true);
+  const [platformLoading, setPlatformLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<{ text: string; tone: StatusTone } | null>(null);
   const [userStats, setUserStats] = useState<{ singlePlayerPoints: number; multiplayerPoints: number }>({ singlePlayerPoints: 0, multiplayerPoints: 0 });
+
+  // Initialize Facebook Instant Games if on that platform
+  useEffect(() => {
+    const initPlatform = async () => {
+      if (isFacebookInstantGame()) {
+        try {
+          await window.FBInstant!.initializeAsync();
+          
+          // Initialize Facebook ads
+          await facebookAds.initialize();
+          
+          // Get Facebook player info
+          const fbUser = await platformAuth.fromFacebookPlayer();
+          if (fbUser) {
+            setPlatformUser(fbUser);
+            setStatusMessage({
+              text: `Welcome ${fbUser.displayName}!`,
+              tone: 'success'
+            });
+          }
+          
+          // Start the game (removes loading screen)
+          await window.FBInstant!.startGameAsync();
+          
+          setPlatformLoading(false);
+        } catch (error: any) {
+          setStatusMessage({
+            text: `Facebook Instant Games initialization failed: ${error.message}`,
+            tone: 'error'
+          });
+          setPlatformLoading(false);
+        }
+      } else {
+        // Web platform - no special initialization needed
+        setPlatformLoading(false);
+      }
+    };
+
+    initPlatform();
+  }, []);
+
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
     const initAuth = async () => {
@@ -79,19 +128,22 @@ function App() {
   }, []);
   // Fetch user stats
   useEffect(() => {
-    if (!user) {
+    const currentUserId = platformUser?.uid || user?.uid;
+    
+    if (!currentUserId) {
       setUserStats({ singlePlayerPoints: 0, multiplayerPoints: 0 });
       return;
     }
+
     const fetchStats = async () => {
       try {
         // Get single player points from Firestore
         const scoresRef = collection(db, 'scores');
-        const q = query(scoresRef, where('userId', '==', user.uid));
+        const q = query(scoresRef, where('userId', '==', currentUserId));
         const snapshot = await getDocs(q);
         const singlePlayerPoints = snapshot.docs.reduce((sum, doc) => sum + (doc.data().score || 0), 0);
         // Get multiplayer points from Realtime Database
-        const userStatsRef = ref(realtimeDb, `userStats/${user.uid}`);
+        const userStatsRef = ref(realtimeDb, `userStats/${currentUserId}`);
         onValue(userStatsRef, (snapshot) => {
           const data = snapshot.val();
           const multiplayerPoints = data?.multiplayerPoints || 0;
@@ -101,7 +153,7 @@ function App() {
       }
     };
     fetchStats();
-  }, [user]);
+  }, [user, platformUser]);
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
@@ -145,8 +197,8 @@ function App() {
     setCurrentRoomId(null);
     setGameMode('multiplayer-lobby');
   };
-  // Show loading while checking auth state
-  if (authLoading) {
+  // Show loading while checking auth state or platform
+  if (authLoading || platformLoading) {
     return (
       <div className={styles.appBg}>
         <div className={styles.menuContainer}>
@@ -156,6 +208,15 @@ function App() {
       </div>
     );
   }
+
+  // Get the current active user (Facebook or Google)
+  const activeUser = platformUser || (user ? {
+    uid: user.uid,
+    displayName: user.displayName,
+    photoURL: user.photoURL,
+    platform: 'web' as const
+  } : null);
+
   // Menu view
   if (gameMode === 'menu') {
     return (
@@ -164,11 +225,11 @@ function App() {
           <h1 className={styles.mainTitle}>🧩 CrazyPuzzle</h1>
           <p className={styles.subtitle}>Test your memory and compete with friends!</p>
           <div className={styles.authSection}>
-            {user ? (
+            {activeUser ? (
               <div className={styles.userWelcome}>
-                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
+                <img src={activeUser.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
                 <div className={styles.userInfo}>
-                  <span className={styles.userName}>Welcome, {user.displayName}!</span>
+                  <span className={styles.userName}>Welcome, {activeUser.displayName}!</span>
                   <div className={styles.userPoints}>
                     <span className={styles.pointsBadge}>
                       🎯 Single: {userStats.singlePlayerPoints} pts
@@ -178,15 +239,19 @@ function App() {
                     </span>
                   </div>
                 </div>
-                <button onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
+                {!isFacebookInstantGame() && (
+                  <button onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
+                )}
               </div>
             ) : (
-              <div className={styles.guestInfo}>
-                <p>🎮 Play as guest or sign in for more features</p>
-                <button onClick={signInWithGoogle} className={styles.signInBtn}>
-                  Sign in with Google
-                </button>
-              </div>
+              !isFacebookInstantGame() && (
+                <div className={styles.guestInfo}>
+                  <p>🎮 Play as guest or sign in for more features</p>
+                  <button onClick={signInWithGoogle} className={styles.signInBtn}>
+                    Sign in with Google
+                  </button>
+                </div>
+              )
             )}
             {statusMessage && (
               <div
@@ -213,7 +278,7 @@ function App() {
             </button>
             <button 
               onClick={() => {
-                if (!user) {
+                if (!activeUser) {
                   setStatusMessage({ text: 'Please sign in to play multiplayer.', tone: 'info' });
                   return;
                 }
@@ -224,7 +289,7 @@ function App() {
               <span className={styles.modeIcon}>👥</span>
               <span className={styles.modeTitle}>Multiplayer</span>
               <span className={styles.modeDesc}>Compete with friends in real-time</span>
-              {!user && <span className={styles.requiresAuth}>Requires sign in</span>}
+              {!activeUser && <span className={styles.requiresAuth}>Requires sign in</span>}
             </button>
           </div>
         </div>
@@ -232,11 +297,32 @@ function App() {
     );
   }
   // Multiplayer lobby view
-  if (gameMode === 'multiplayer-lobby' && user) {
+  if (gameMode === 'multiplayer-lobby' && activeUser) {
+    // Convert platform user to User-like object for compatibility
+    const compatUser = user || {
+      uid: activeUser.uid,
+      displayName: activeUser.displayName,
+      email: null,
+      photoURL: activeUser.photoURL,
+      emailVerified: false,
+      isAnonymous: false,
+      metadata: {},
+      providerData: [],
+      refreshToken: '',
+      tenantId: null,
+      delete: async () => {},
+      getIdToken: async () => '',
+      getIdTokenResult: async () => ({} as any),
+      reload: async () => {},
+      toJSON: () => ({}),
+      phoneNumber: null,
+      providerId: 'facebook.com'
+    } as any;
+
     return (
       <div className={styles.appBg}>
         <MultiplayerLobby 
-          user={user}
+          user={compatUser}
           onJoinRoom={handleJoinRoom}
           onBackToSinglePlayer={() => setGameMode('menu')}
         />
@@ -244,12 +330,33 @@ function App() {
     );
   }
   // Multiplayer game view
-  if (gameMode === 'multiplayer-game' && user && currentRoomId) {
+  if (gameMode === 'multiplayer-game' && activeUser && currentRoomId) {
+    // Convert platform user to User-like object for compatibility
+    const compatUser = user || {
+      uid: activeUser.uid,
+      displayName: activeUser.displayName,
+      email: null,
+      photoURL: activeUser.photoURL,
+      emailVerified: false,
+      isAnonymous: false,
+      metadata: {},
+      providerData: [],
+      refreshToken: '',
+      tenantId: null,
+      delete: async () => {},
+      getIdToken: async () => '',
+      getIdTokenResult: async () => ({} as any),
+      reload: async () => {},
+      toJSON: () => ({}),
+      phoneNumber: null,
+      providerId: 'facebook.com'
+    } as any;
+
     return (
       <div className={styles.appBg}>
         <MultiplayerGame 
           roomId={currentRoomId}
-          user={user}
+          user={compatUser}
           difficulty={currentRoomDifficulty}
           layout={currentRoomLayout}
           onLeaveRoom={handleLeaveRoom}
@@ -261,7 +368,25 @@ function App() {
   // Single player mode
   return (
     <SinglePlayerGame 
-      user={user}
+      user={user || (activeUser ? {
+        uid: activeUser.uid,
+        displayName: activeUser.displayName,
+        email: null,
+        photoURL: activeUser.photoURL,
+        emailVerified: false,
+        isAnonymous: false,
+        metadata: {},
+        providerData: [],
+        refreshToken: '',
+        tenantId: null,
+        delete: async () => {},
+        getIdToken: async () => '',
+        getIdTokenResult: async () => ({} as any),
+        reload: async () => {},
+        toJSON: () => ({}),
+        phoneNumber: null,
+        providerId: 'facebook.com'
+      } as any : null)}
       onBackToMenu={() => setGameMode('menu')}
       onSignInWithGoogle={signInWithGoogle}
       onSignOut={handleSignOut}
