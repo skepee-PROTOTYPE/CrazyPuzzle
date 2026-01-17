@@ -5,7 +5,7 @@ import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectRes
 import SinglePlayerGame from './SinglePlayerGame';
 import MultiplayerLobby from './MultiplayerLobby';
 import MultiplayerGame from './MultiplayerGame';
-import DifficultySelector, { Difficulty, Layout } from './DifficultySelector';
+import { Difficulty, Layout } from './DifficultySelector';
 import styles from './App.module.scss';
 
 // Version: 1.0.1 - Fixed mobile sign-in
