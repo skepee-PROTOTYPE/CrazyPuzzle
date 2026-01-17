@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { realtimeDb } from './firebase';
-import { ref, onValue, set, get, update, remove } from 'firebase/database';
+import { ref, onValue, set, get, update, remove, runTransaction } from 'firebase/database';
 import { Difficulty, Layout } from './DifficultySelector';
+import MultiplayerLeaderboard from './MultiplayerLeaderboard';
 import styles from './MultiplayerGame.module.scss';
 
 interface Player {
@@ -13,9 +14,11 @@ interface Player {
 }
 
 interface GameState {
+  hostId: string;
   tiles: number[];
   currentTurn: string;
   players: { [key: string]: Player };
+  pendingPlayers?: { [key: string]: { name: string } };
   status: 'waiting' | 'playing' | 'finished';
   difficulty: Difficulty;
   layout: Layout;
@@ -29,9 +32,10 @@ interface MultiplayerGameProps {
   difficulty: Difficulty;
   layout: Layout;
   onLeaveRoom: () => void;
+  onBackToMenu?: () => void;
 }
 
-function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom }: MultiplayerGameProps) {
+function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBackToMenu }: MultiplayerGameProps) {
   const gridSizes: Record<Difficulty, number> = { easy: 4, medium: 6, hard: 8 };
   const gridSize = gridSizes[difficulty] || 4;
   const totalTiles = gridSize * gridSize;
@@ -168,6 +172,18 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom }: Mult
         ) + 2 >= gameState.tiles.length;
 
         if (allMatched) {
+          // Update user stats for all players
+          const playerEntries = Object.entries(gameState.players);
+          for (const [playerId, player] of playerEntries) {
+            const finalScore = playerId === user.uid ? newScore : player.score;
+            await runTransaction(ref(realtimeDb, `userStats/${playerId}`), (current) => {
+              const currentPoints = current?.multiplayerPoints || 0;
+              return {
+                multiplayerPoints: currentPoints + finalScore
+              };
+            });
+          }
+          
           await update(ref(realtimeDb, `rooms/${roomId}`), {
             status: 'finished',
             flippedTiles: []
@@ -207,6 +223,26 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom }: Mult
     onLeaveRoom();
   };
 
+  const handleApprovePlayer = async (playerId: string) => {
+    const pendingPlayer = gameState?.pendingPlayers?.[playerId];
+    if (!pendingPlayer) return;
+
+    // Move from pending to players
+    await set(ref(realtimeDb, `rooms/${roomId}/players/${playerId}`), {
+      name: pendingPlayer.name,
+      ready: true,
+      score: 0,
+      matchedTiles: []
+    });
+
+    // Remove from pending
+    await remove(ref(realtimeDb, `rooms/${roomId}/pendingPlayers/${playerId}`));
+  };
+
+  const handleRejectPlayer = async (playerId: string) => {
+    await remove(ref(realtimeDb, `rooms/${roomId}/pendingPlayers/${playerId}`));
+  };
+
   if (!gameState || !gameState.players) {
     return <div className={styles.loading}>Loading game...</div>;
   }
@@ -228,7 +264,14 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom }: Mult
             {difficulty.toUpperCase()} ({gridSize}x{gridSize}) - {layout.toUpperCase()} Layout
           </p>
         </div>
-        <button onClick={handleLeaveRoom} className={styles.leaveBtn}>Leave Room</button>
+        <div className={styles.headerButtons}>
+          {onBackToMenu && (
+            <button onClick={onBackToMenu} className={styles.menuBtn}>
+              🏠 Home
+            </button>
+          )}
+          <button onClick={handleLeaveRoom} className={styles.leaveBtn}>Leave Room</button>
+        </div>
       </div>
 
       <div className={styles.gameInfo}>
@@ -242,65 +285,127 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom }: Mult
 
       <div className={styles.playersPanel}>
         <h3>Players</h3>
-        {players.map(([id, player]) => (
-          <div key={id} className={`${styles.playerCard} ${id === user.uid ? styles.currentUser : ''} ${gameState.currentTurn === id ? styles.activeTurn : ''}`}>
-            <div className={styles.playerName}>
-              {player.name} {id === user.uid && '(You)'}
-            </div>
-            <div className={styles.playerStats}>
-              {gameState.status === 'waiting' ? (
-                <span className={player.ready ? styles.ready : styles.notReady}>
-                  {player.ready ? '✓ Ready' : '○ Not Ready'}
-                </span>
-              ) : (
-                <span className={styles.score}>Score: {player.score || 0}</span>
+        {players.map(([id, player]) => {
+          const isCurrentUser = id === user.uid;
+          const isHost = gameState.hostId === user.uid;
+          const isWaiting = gameState.status === 'waiting';
+          const showRemoveButton = !isCurrentUser && isHost && isWaiting;
+          
+          return (
+            <div key={id} className={`${styles.playerCard} ${isCurrentUser ? styles.currentUser : ''} ${gameState.currentTurn === id ? styles.activeTurn : ''}`}>
+              <div className={styles.playerInfo}>
+                <div className={styles.playerName}>
+                  {player.name} {isCurrentUser && '(You)'}
+                  {gameState.hostId === id && ' 👑'}
+                </div>
+                <div className={styles.playerStats}>
+                  {gameState.status === 'waiting' ? (
+                    <span className={player.ready ? styles.ready : styles.notReady}>
+                      {player.ready ? '✓ Ready' : '○ Not Ready'}
+                    </span>
+                  ) : (
+                    <span className={styles.score}>Score: {player.score || 0}</span>
+                  )}
+                </div>
+              </div>
+              {showRemoveButton && (
+                <button 
+                  onClick={async () => {
+                    if (window.confirm(`Remove ${player.name} from the room?`)) {
+                      await remove(ref(realtimeDb, `rooms/${roomId}/players/${id}`));
+                    }
+                  }}
+                  className={styles.removePlayerBtn}
+                  title="Remove player"
+                >
+                  ✕
+                </button>
+              )}
+              {isCurrentUser && !isHost && isWaiting && (
+                <button 
+                  onClick={handleLeaveRoom}
+                  className={styles.leaveRoomBtn}
+                >
+                  Leave
+                </button>
               )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {gameState.status === 'waiting' && (
-        <div className={styles.waitingRoom}>
-          <h2>Waiting for players...</h2>
-          <p>Players: {players.length}/{maxPlayers}</p>
-          {!isReady ? (
-            <button onClick={handleReady} className={styles.readyBtn}>I'm Ready!</button>
-          ) : (
-            <p className={styles.readyMessage}>Waiting for other players to ready up...</p>
-          )}
+      {gameState.status === 'waiting' && gameState.hostId === user.uid && gameState.pendingPlayers && Object.keys(gameState.pendingPlayers).length > 0 && (
+        <div className={styles.pendingPanel}>
+          <h3>Pending Join Requests</h3>
+          {Object.entries(gameState.pendingPlayers).map(([id, pendingPlayer]) => (
+            <div key={id} className={styles.pendingCard}>
+              <span className={styles.pendingName}>{pendingPlayer.name}</span>
+              <div className={styles.pendingActions}>
+                <button 
+                  onClick={() => handleApprovePlayer(id)}
+                  className={styles.approveBtn}
+                >
+                  ✓ Accept
+                </button>
+                <button 
+                  onClick={() => handleRejectPlayer(id)}
+                  className={styles.rejectBtn}
+                >
+                  ✕ Reject
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {gameState.status === 'playing' && gameState.tiles && (
-        <div className={styles.boardContainer}>
-          <div 
-            className={`${styles.puzzleGrid} ${styles[`grid${gridSize}`]}`}
-          >
-            {gameState.tiles.map((value, index) => {
-              const allMatchedTiles = Object.values(gameState.players).flatMap(p => p.matchedTiles || []);
-              const isMatched = allMatchedTiles.includes(index);
-              const isFlipped = flippedTiles.includes(index);
-              const matchedBy = Object.entries(gameState.players).find(([_, p]) => 
-                (p.matchedTiles || []).includes(index)
-              );
-
-              return (
-                <div
-                  key={index}
-                  className={`${styles.tile} ${isFlipped || isMatched ? styles.flipped : ''} ${
-                    isMatched ? styles.matched : ''
-                  }`}
-                  onClick={() => handleTileClick(index)}
-                  style={isMatched && matchedBy ? { borderColor: getPlayerColor(matchedBy[0]) } : {}}
-                >
-                  <div className={styles.tileFront}>?</div>
-                  <div className={styles.tileBack}>{value}</div>
-                </div>
-              );
-            })}
+      {gameState.status === 'waiting' && (
+        <>
+          <div className={styles.waitingRoom}>
+            <h2>Waiting for players...</h2>
+            <p>Players: {players.length}/{maxPlayers}</p>
+            {!isReady ? (
+              <button onClick={handleReady} className={styles.readyBtn}>I'm Ready!</button>
+            ) : (
+              <p className={styles.readyMessage}>Waiting for other players to ready up...</p>
+            )}
           </div>
-        </div>
+          <MultiplayerLeaderboard />
+        </>
+      )}
+
+      {gameState.status === 'playing' && gameState.tiles && (
+        <>
+          <div className={styles.boardContainer}>
+            <div 
+              className={`${styles.puzzleGrid} ${styles[`grid${gridSize}`]}`}
+            >
+              {gameState.tiles.map((value, index) => {
+                const allMatchedTiles = Object.values(gameState.players).flatMap(p => p.matchedTiles || []);
+                const isMatched = allMatchedTiles.includes(index);
+                const isFlipped = flippedTiles.includes(index);
+                const matchedBy = Object.entries(gameState.players).find(([_, p]) => 
+                  (p.matchedTiles || []).includes(index)
+                );
+
+                return (
+                  <div
+                    key={index}
+                    className={`${styles.tile} ${isFlipped || isMatched ? styles.flipped : ''} ${
+                      isMatched ? styles.matched : ''
+                    }`}
+                    onClick={() => handleTileClick(index)}
+                    style={isMatched && matchedBy ? { borderColor: getPlayerColor(matchedBy[0]) } : {}}
+                  >
+                    <div className={styles.tileFront}>?</div>
+                    <div className={styles.tileBack}>{value}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <MultiplayerLeaderboard />
+        </>
       )}
 
       {gameState.status === 'finished' && (

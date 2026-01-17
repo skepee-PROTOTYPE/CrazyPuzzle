@@ -26,9 +26,7 @@ console.log('🔥 Firebase config loaded:', {
 });
 
 // Initialize Firebase
-console.log('🚀 Initializing Firebase app...');
 const app = initializeApp(firebaseConfig);
-console.log('✅ Firebase app initialized');
 
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);

@@ -31,8 +31,6 @@ function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
         setLoading(true);
         setError('');
         
-        console.log('Fetching leaderboard for:', { difficulty, layout });
-        
         // Only try the complex query for grid layout (which works)
         if (layout === 'grid') {
           const scoresRef = collection(db, 'scores');
@@ -57,7 +55,6 @@ function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
         }
         
       } catch (error: any) {
-        console.error('Error fetching leaderboard:', error);
         setError('Unable to load leaderboard. This may be due to missing database indexes.');
         
         // Fallback: try to get some scores without complex filtering
@@ -75,7 +72,6 @@ function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
           setLeaderboard(allScores);
           setError(''); // Clear error if fallback works
         } catch (fallbackError) {
-          console.error('Fallback query failed:', fallbackError);
           setLeaderboard([]);
         }
       } finally {

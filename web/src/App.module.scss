@@ -114,11 +114,33 @@ $bg-card: #fff;
     height: 50px;
     border-radius: 50%;
   }
-  
-  span {
-    font-size: 1.2rem;
-    color: #333;
-  }
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.userName {
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.userPoints {
+  display: flex;
+  gap: 10px;
+}
+
+.pointsBadge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .signOutBtn {

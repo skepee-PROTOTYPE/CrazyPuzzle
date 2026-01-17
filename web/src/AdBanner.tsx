@@ -7,20 +7,15 @@ const AdBanner = React.memo(() => {
   const [debugInfo, setDebugInfo] = useState('');
 
   useEffect(() => {
-    console.log('AdBanner mounted');
     setDebugInfo('Initializing...');
     
     const checkAds = () => {
-      console.log('Checking ads...');
       setDebugInfo('Checking AdSense availability...');
       
       const adsbygoogle = (window as any).adsbygoogle;
-      console.log('adsbygoogle available:', !!adsbygoogle);
-      console.log('Ad element:', adRef.current);
       
       try {
         if (adsbygoogle && adRef.current) {
-          console.log('Pushing ad...');
           setDebugInfo('Pushing ad request...');
           
           // Initialize adsbygoogle array if it doesn't exist
@@ -37,9 +32,6 @@ const AdBanner = React.memo(() => {
             if (adRef.current) {
               const rect = adRef.current.getBoundingClientRect();
               const hasContent = adRef.current.innerHTML.trim().length > 100;
-              
-              console.log('Ad element dimensions:', rect);
-              console.log('Ad element has content:', hasContent);
               
               if (rect.height > 50 && hasContent) {
                 setDebugInfo('✅ Ad loaded successfully');
@@ -58,7 +50,6 @@ const AdBanner = React.memo(() => {
           }
         }
       } catch (e) {
-        console.error('AdSense error:', e);
         const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
         setDebugInfo(`❌ Error: ${errorMessage}`);
         setAdBlocked(true);
@@ -69,9 +60,6 @@ const AdBanner = React.memo(() => {
     const waitForScript = () => {
       const script = document.querySelector('script[src*="adsbygoogle.js"]');
       const adsbygoogle = (window as any).adsbygoogle;
-      
-      console.log('AdSense script element found:', !!script);
-      console.log('AdSense object available:', !!adsbygoogle);
       
       if (script) {
         setDebugInfo('AdSense script found, initializing...');

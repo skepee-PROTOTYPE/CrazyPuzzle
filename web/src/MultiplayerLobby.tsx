@@ -3,6 +3,7 @@ import { User } from 'firebase/auth';
 import { realtimeDb } from './firebase';
 import { ref, push, onValue, set, get, remove } from 'firebase/database';
 import DifficultySelector, { Difficulty, Layout } from './DifficultySelector';
+import MultiplayerLeaderboard from './MultiplayerLeaderboard';
 import styles from './MultiplayerLobby.module.scss';
 
 interface Room {
@@ -36,17 +37,26 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
 
   useEffect(() => {
     const roomsRef = ref(realtimeDb, 'rooms');
+    
+    // Add error listener
     const unsubscribe = onValue(roomsRef, (snapshot) => {
       const data = snapshot.val();
+      console.log('Rooms data:', JSON.stringify(data, null, 2));
+      
       if (data) {
-        const roomList = Object.entries(data).map(([id, room]: [string, any]) => ({
+        const allRooms = Object.entries(data).map(([id, room]: [string, any]) => ({
           id,
           ...room
-        })).filter(room => room.status === 'waiting');
-        setRooms(roomList);
+        }));
+        
+        const waitingRooms = allRooms.filter(room => room.status === 'waiting');
+        console.log('Waiting rooms (filtered):', waitingRooms);
+        
+        setRooms(waitingRooms);
       } else {
         setRooms([]);
       }
+    }, (error: any) => {
     });
 
     return () => unsubscribe();
@@ -54,8 +64,9 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
 
   const createRoom = async () => {
     try {
-      console.log('Creating room with difficulty:', difficulty, 'layout:', layout);
+      
       const roomsRef = ref(realtimeDb, 'rooms');
+      
       const newRoomRef = push(roomsRef);
       
       const room = {
@@ -72,15 +83,17 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
         status: 'waiting',
         createdAt: Date.now()
       };
-
       await set(newRoomRef, room);
-      console.log('Room created successfully:', newRoomRef.key);
-      console.log('Calling onJoinRoom with roomId:', newRoomRef.key, 'difficulty:', difficulty, 'layout:', layout);
       setShowCreateModal(false);
       onJoinRoom(newRoomRef.key!, difficulty, layout);
-    } catch (error) {
-      console.error('Error creating room:', error);
-      alert('Failed to create room. Please check your Firebase configuration.');
+    } catch (error: any) {
+      console.error('Full error:', JSON.stringify(error, null, 2));
+      
+      const errorMsg = error.code === 'PERMISSION_DENIED' 
+        ? 'Permission denied. Your Firebase Realtime Database security rules may have expired. Please update them in the Firebase Console.'
+        : `Failed to create room: ${error.message}`;
+      
+      alert(errorMsg);
     }
   };
 
@@ -91,21 +104,34 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
     if (snapshot.exists()) {
       const room = snapshot.val();
       const playerCount = Object.keys(room.players || {}).length;
+      const pendingCount = Object.keys(room.pendingPlayers || {}).length;
       const maxPlayers = getMaxPlayers(roomDifficulty);
       
-      if (playerCount < maxPlayers) {
-        await set(ref(realtimeDb, `rooms/${roomId}/players/${user.uid}`), {
-          name: user.displayName || 'Anonymous',
-          ready: false
+      if (playerCount + pendingCount < maxPlayers) {
+        // Send join request to pending instead of directly joining
+        await set(ref(realtimeDb, `rooms/${roomId}/pendingPlayers/${user.uid}`), {
+          name: user.displayName || 'Anonymous'
         });
-        onJoinRoom(roomId, roomDifficulty, roomLayout);
+        alert('Join request sent! Waiting for host approval...');
       } else {
         alert('Room is full!');
       }
     }
   };
 
+  const deleteRoom = async (roomId: string, roomName: string) => {
+    if (window.confirm(`Are you sure you want to delete "${roomName}"?`)) {
+      try {
+        await remove(ref(realtimeDb, `rooms/${roomId}`));
+      } catch (error) {
+        alert('Failed to delete room');
+      }
+    }
+  };
+
   const deleteOldRooms = async () => {
+    // Only run cleanup if user has created rooms before
+    // This prevents permission errors for users just viewing the lobby
     try {
       const roomsRef = ref(realtimeDb, 'rooms');
       const snapshot = await get(roomsRef);
@@ -113,22 +139,32 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
       if (snapshot && snapshot.exists()) {
         const data = snapshot.val();
         const now = Date.now();
-      const thirtyMinutes = 30 * 60 * 1000;
+        const thirtyMinutes = 30 * 60 * 1000;
       
-      Object.entries(data).forEach(async ([id, room]: [string, any]) => {
-        if (now - room.createdAt > thirtyMinutes) {
-          await remove(ref(realtimeDb, `rooms/${id}`));
+        // Only delete rooms created by current user
+        const userRooms = Object.entries(data).filter(([id, room]: [string, any]) => 
+          room.hostId === user.uid && now - room.createdAt > thirtyMinutes
+        );
+
+        if (userRooms.length > 0) {
+          for (const [id] of userRooms) {
+            try {
+              await remove(ref(realtimeDb, `rooms/${id}`));
+            } catch (deleteError) {
+              // Skip rooms we can't delete
+            }
+          }
         }
-      });
-    }
+      }
     } catch (error) {
-      // Ignore errors in test environment
-      console.log('Error cleaning old rooms:', error);
+      // Silently fail - this is not critical functionality
+      // Most likely a permission error for users who haven't created rooms
     }
   };
 
   useEffect(() => {
-    deleteOldRooms();
+    // Only attempt cleanup, don't wait for it
+    deleteOldRooms().catch(() => {});
   }, []);
 
   return (
@@ -143,7 +179,6 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
       <div className={styles.lobbyActions}>
         <button 
           onClick={() => {
-            console.log('Create Room button clicked');
             setShowCreateModal(true);
           }} 
           className={styles.createRoomBtn}
@@ -183,6 +218,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
               const playerCount = Object.keys(room.players || {}).length;
               const maxPlayers = getMaxPlayers(room.difficulty);
               const isFull = playerCount >= maxPlayers;
+              const isHost = room.hostId === user.uid;
               
               return (
                 <div key={room.id} className={styles.roomCard}>
@@ -195,19 +231,32 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
                     <p>⏱️ Difficulty: {room.difficulty.toUpperCase()}</p>
                     <p>🎨 Layout: {room.layout?.toUpperCase() || 'GRID'}</p>
                   </div>
-                  <button 
-                    onClick={() => joinRoom(room.id, room.difficulty, room.layout || 'grid')} 
-                    className={styles.joinBtn}
-                    disabled={isFull}
-                  >
-                    {isFull ? 'Full' : 'Join Room'}
-                  </button>
+                  <div className={styles.roomActions}>
+                    <button 
+                      onClick={() => joinRoom(room.id, room.difficulty, room.layout || 'grid')} 
+                      className={styles.joinBtn}
+                      disabled={isFull}
+                    >
+                      {isFull ? 'Full' : 'Join Room'}
+                    </button>
+                    {isHost && (
+                      <button 
+                        onClick={() => deleteRoom(room.id, `Room by ${room.hostName}`)} 
+                        className={styles.deleteBtn}
+                        title="Delete this room"
+                      >
+                        🗑️
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
           </div>
         )}
       </div>
+
+      <MultiplayerLeaderboard />
     </div>
   );
 }

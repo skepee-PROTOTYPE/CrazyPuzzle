@@ -3,6 +3,10 @@
   margin: 0 auto;
   padding: 20px;
   color: #333;
+  min-height: 100vh;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .gameHeader {
@@ -10,18 +14,47 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border-radius: 10px;
+  color: white !important;
   
   h1 {
     font-size: 2.5rem;
     margin: 0;
+    color: white !important;
   }
 }
 
 .gameSettings {
   font-size: 0.9rem;
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   margin: 5px 0 0 0;
   font-weight: normal;
+}
+
+.headerButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.menuBtn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+  background: white !important;
+  color: #5c6bc0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  
+  &:hover {
+    background: #f5f5f5 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
 }
 
 .leaveBtn, .readyBtn, .playAgainBtn {
@@ -35,12 +68,14 @@
 }
 
 .leaveBtn {
-  background: rgba(244, 67, 54, 0.8);
-  color: white;
+  background: white !important;
+  color: #f44336 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   
   &:hover {
-    background: rgba(244, 67, 54, 1);
+    background: #ffebee !important;
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -126,6 +161,13 @@
   }
 }
 
+.playerInfo {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .playerName {
   font-weight: 600;
   font-size: 1.1rem;
@@ -152,6 +194,28 @@
   padding: 5px 15px;
   border-radius: 20px;
   font-weight: 600;
+}
+
+.removePlayerBtn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-left: 10px;
+  
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .waitingRoom {
@@ -344,4 +408,88 @@
   padding: 100px 20px;
   font-size: 1.5rem;
   color: #333;
+}
+
+.leaveRoomBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-left: 10px;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  }
+}
+
+.pendingPanel {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #FF9800;
+  
+  h3 {
+    margin-top: 0;
+    font-size: 1.3rem;
+    color: #FF9800;
+  }
+}
+
+.pendingCard {
+  background: #fff9e6;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid #FFE082;
+}
+
+.pendingName {
+  font-weight: 600;
+  color: #333;
+}
+
+.pendingActions {
+  display: flex;
+  gap: 8px;
+}
+
+.approveBtn, .rejectBtn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.approveBtn {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  }
+}
+
+.rejectBtn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  }
 }

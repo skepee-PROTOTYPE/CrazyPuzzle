@@ -90,7 +90,6 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
         createdAt: new Date()
       });
     } catch (error) {
-      console.error('Error saving score:', error);
     }
   }, [user, difficulty, layout]);
 
@@ -144,8 +143,7 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
   const gridStyle: React.CSSProperties = {
     ['--grid-size' as any]: gridSize
   };
-
-  console.log('Grid classes:', styles.puzzleGrid, styles[difficultyClass]); // debug mapped class names
+ // debug mapped class names
   // Also log actual DOM classes after render if needed
 
   return (
