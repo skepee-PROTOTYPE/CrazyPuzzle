@@ -165,6 +165,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
   useEffect(() => {
     // Only attempt cleanup, don't wait for it
     deleteOldRooms().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
