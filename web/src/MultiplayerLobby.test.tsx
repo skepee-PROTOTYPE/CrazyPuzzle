@@ -296,6 +296,9 @@ describe('MultiplayerLobby', () => {
     });
 
     mockFirebase.set.mockResolvedValue(undefined);
+    
+    // Mock window.alert
+    const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MultiplayerLobby
@@ -309,8 +312,14 @@ describe('MultiplayerLobby', () => {
     fireEvent.click(joinButton);
     
     await waitFor(() => {
-      expect(mockOnJoinRoom).toHaveBeenCalledWith('room-1', 'medium', 'diamond');
+      // Now joining creates a pending request instead of immediately joining
+      expect(mockFirebase.set).toHaveBeenCalled();
+      const setCall = mockFirebase.set.mock.calls[0];
+      expect(setCall[1]).toEqual({ name: mockUser.displayName });
+      expect(mockAlert).toHaveBeenCalledWith('Join request sent! Waiting for host approval...');
     });
+    
+    mockAlert.mockRestore();
   });
 
   test('disables join button for full rooms', () => {

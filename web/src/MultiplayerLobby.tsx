@@ -41,7 +41,6 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
     // Add error listener
     const unsubscribe = onValue(roomsRef, (snapshot) => {
       const data = snapshot.val();
-      console.log('Rooms data:', JSON.stringify(data, null, 2));
       
       if (data) {
         const allRooms = Object.entries(data).map(([id, room]: [string, any]) => ({
@@ -50,7 +49,6 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
         }));
         
         const waitingRooms = allRooms.filter(room => room.status === 'waiting');
-        console.log('Waiting rooms (filtered):', waitingRooms);
         
         setRooms(waitingRooms);
       } else {
