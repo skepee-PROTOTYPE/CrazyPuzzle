@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { realtimeDb } from './firebase';
 import { ref, onValue, set, get, update, remove } from 'firebase/database';
+import { Difficulty, Layout } from './DifficultySelector';
 import styles from './MultiplayerGame.module.scss';
 
 interface Player {
@@ -16,7 +17,8 @@ interface GameState {
   currentTurn: string;
   players: { [key: string]: Player };
   status: 'waiting' | 'playing' | 'finished';
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: Difficulty;
+  layout: Layout;
   startTime?: number;
   flippedTiles?: number[];
 }
@@ -24,17 +26,18 @@ interface GameState {
 interface MultiplayerGameProps {
   roomId: string;
   user: User;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: Difficulty;
+  layout: Layout;
   onLeaveRoom: () => void;
 }
 
-function MultiplayerGame({ roomId, user, difficulty, onLeaveRoom }: MultiplayerGameProps) {
-  const gridSizes: Record<'easy' | 'medium' | 'hard', number> = { easy: 4, medium: 6, hard: 8 };
+function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom }: MultiplayerGameProps) {
+  const gridSizes: Record<Difficulty, number> = { easy: 4, medium: 6, hard: 8 };
   const gridSize = gridSizes[difficulty] || 4;
   const totalTiles = gridSize * gridSize;
 
   // Get max players based on difficulty
-  const getMaxPlayers = (diff: 'easy' | 'medium' | 'hard'): number => {
+  const getMaxPlayers = (diff: Difficulty): number => {
     const limits = { easy: 2, medium: 3, hard: 4 };
     return limits[diff];
   };
@@ -219,7 +222,12 @@ function MultiplayerGame({ roomId, user, difficulty, onLeaveRoom }: MultiplayerG
   return (
     <div className={styles.gameContainer}>
       <div className={styles.gameHeader}>
-        <h1>🎮 Multiplayer Game</h1>
+        <div>
+          <h1>🎮 Multiplayer Game</h1>
+          <p className={styles.gameSettings}>
+            {difficulty.toUpperCase()} ({gridSize}x{gridSize}) - {layout.toUpperCase()} Layout
+          </p>
+        </div>
         <button onClick={handleLeaveRoom} className={styles.leaveBtn}>Leave Room</button>
       </div>
 

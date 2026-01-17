@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { realtimeDb } from './firebase';
 import { ref, push, onValue, set, get, remove } from 'firebase/database';
+import DifficultySelector, { Difficulty, Layout } from './DifficultySelector';
 import styles from './MultiplayerLobby.module.scss';
 
 interface Room {
   id: string;
   hostId: string;
   hostName: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: Difficulty;
+  layout: Layout;
   players: { [key: string]: { name: string; ready: boolean } };
   status: 'waiting' | 'playing' | 'finished';
   createdAt: number;
@@ -16,17 +18,18 @@ interface Room {
 
 interface MultiplayerLobbyProps {
   user: User;
-  onJoinRoom: (roomId: string, difficulty: 'easy' | 'medium' | 'hard') => void;
+  onJoinRoom: (roomId: string, difficulty: Difficulty, layout: Layout) => void;
   onBackToSinglePlayer: () => void;
 }
 
 function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: MultiplayerLobbyProps) {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [layout, setLayout] = useState<Layout>('grid');
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Player limits based on difficulty
-  const getMaxPlayers = (diff: 'easy' | 'medium' | 'hard'): number => {
+  const getMaxPlayers = (diff: Difficulty): number => {
     const limits = { easy: 2, medium: 3, hard: 4 };
     return limits[diff];
   };
@@ -51,7 +54,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
 
   const createRoom = async () => {
     try {
-      console.log('Creating room with difficulty:', difficulty);
+      console.log('Creating room with difficulty:', difficulty, 'layout:', layout);
       const roomsRef = ref(realtimeDb, 'rooms');
       const newRoomRef = push(roomsRef);
       
@@ -59,6 +62,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
         hostId: user.uid,
         hostName: user.displayName || 'Anonymous',
         difficulty,
+        layout,
         players: {
           [user.uid]: {
             name: user.displayName || 'Anonymous',
@@ -71,16 +75,16 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
 
       await set(newRoomRef, room);
       console.log('Room created successfully:', newRoomRef.key);
-      console.log('Calling onJoinRoom with roomId:', newRoomRef.key, 'difficulty:', difficulty);
+      console.log('Calling onJoinRoom with roomId:', newRoomRef.key, 'difficulty:', difficulty, 'layout:', layout);
       setShowCreateModal(false);
-      onJoinRoom(newRoomRef.key!, difficulty);
+      onJoinRoom(newRoomRef.key!, difficulty, layout);
     } catch (error) {
       console.error('Error creating room:', error);
       alert('Failed to create room. Please check your Firebase configuration.');
     }
   };
 
-  const joinRoom = async (roomId: string, roomDifficulty: 'easy' | 'medium' | 'hard') => {
+  const joinRoom = async (roomId: string, roomDifficulty: Difficulty, roomLayout: Layout) => {
     const roomRef = ref(realtimeDb, `rooms/${roomId}`);
     const snapshot = await get(roomRef);
     
@@ -94,7 +98,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
           name: user.displayName || 'Anonymous',
           ready: false
         });
-        onJoinRoom(roomId, roomDifficulty);
+        onJoinRoom(roomId, roomDifficulty, roomLayout);
       } else {
         alert('Room is full!');
       }
@@ -153,16 +157,13 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
           <div className={styles.modalContent}>
             <h2>Create New Room</h2>
             <div className={styles.formGroup}>
-              <label>Difficulty:</label>
-              <select 
-                value={difficulty} 
-                onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
-                className={styles.select}
-              >
-                <option value="easy">Easy (4x4)</option>
-                <option value="medium">Medium (6x6)</option>
-                <option value="hard">Hard (8x8)</option>
-              </select>
+              <DifficultySelector 
+                difficulty={difficulty}
+                layout={layout}
+                onDifficultyChange={setDifficulty}
+                onLayoutChange={setLayout}
+                showLayout={true}
+              />
             </div>
             <div className={styles.modalActions}>
               <button onClick={createRoom} className={styles.confirmBtn}>Create</button>
@@ -192,9 +193,10 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
                   <div className={styles.roomInfo}>
                     <p>👥 Players: {playerCount}/{maxPlayers}</p>
                     <p>⏱️ Difficulty: {room.difficulty.toUpperCase()}</p>
+                    <p>🎨 Layout: {room.layout?.toUpperCase() || 'GRID'}</p>
                   </div>
                   <button 
-                    onClick={() => joinRoom(room.id, room.difficulty)} 
+                    onClick={() => joinRoom(room.id, room.difficulty, room.layout || 'grid')} 
                     className={styles.joinBtn}
                     disabled={isFull}
                   >

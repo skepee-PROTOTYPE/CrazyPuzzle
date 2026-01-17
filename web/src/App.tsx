@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
 import { auth } from './firebase';
 import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
-import PuzzleBoard from './PuzzleBoard';
-import Leaderboard from './Leaderboard';
-import AdBanner from './AdBanner';
+import SinglePlayerGame from './SinglePlayerGame';
 import MultiplayerLobby from './MultiplayerLobby';
 import MultiplayerGame from './MultiplayerGame';
+import DifficultySelector, { Difficulty, Layout } from './DifficultySelector';
 import styles from './App.module.scss';
 
 // Version: 1.0.1 - Fixed mobile sign-in
@@ -16,12 +15,10 @@ type StatusTone = 'info' | 'success' | 'error';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
-  const [layout, setLayout] = useState<string>('grid');
-  const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(0);
   const [gameMode, setGameMode] = useState<GameMode>('menu');
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+  const [currentRoomDifficulty, setCurrentRoomDifficulty] = useState<Difficulty>('easy');
+  const [currentRoomLayout, setCurrentRoomLayout] = useState<Layout>('grid');
   const [authLoading, setAuthLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<{ text: string; tone: StatusTone } | null>(null);
 
@@ -142,14 +139,10 @@ function App() {
     }
   };
 
-  const handleScoreUpdate = (newScore: number, newTimer: number) => {
-    setScore(newScore);
-    setTimer(newTimer);
-  };
-
-  const handleJoinRoom = (roomId: string, roomDifficulty: 'easy' | 'medium' | 'hard') => {
+  const handleJoinRoom = (roomId: string, roomDifficulty: Difficulty, roomLayout: Layout) => {
     setCurrentRoomId(roomId);
-    setDifficulty(roomDifficulty);
+    setCurrentRoomDifficulty(roomDifficulty);
+    setCurrentRoomLayout(roomLayout);
     setGameMode('multiplayer-game');
   };
 
@@ -259,7 +252,8 @@ function App() {
         <MultiplayerGame 
           roomId={currentRoomId}
           user={user}
-          difficulty={difficulty}
+          difficulty={currentRoomDifficulty}
+          layout={currentRoomLayout}
           onLeaveRoom={handleLeaveRoom}
         />
       </div>
@@ -268,104 +262,12 @@ function App() {
 
   // Single player mode
   return (
-    <div className={styles.appBg}>
-      <div className={styles.appHeaderContainer}>
-        <div className={styles.headerRow}>
-          <h1 className={styles.appTitle}>🧩 CrazyPuzzle</h1>
-          <div className={styles.headerRight}>
-            {user && (
-              <div className={styles.userInfoHeader}>
-                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatarSmall} />
-                <span className={styles.userNameSmall}>Logged in as {user.displayName}</span>
-              </div>
-            )}
-            <button onClick={() => setGameMode('menu')} className={styles.menuBtn}>
-              ← Back to Menu
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.controlsRow}>
-          {/* Move authentication to a smaller, optional section */}
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>Game Settings</h3>
-            <div style={{ marginBottom: '15px' }}>
-              <label>Difficulty:</label>
-              <select 
-                value={difficulty} 
-                onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
-                className={styles.select}
-              >
-                <option value="easy">Easy (4x4)</option>
-                <option value="medium">Medium (6x6)</option>
-                <option value="hard">Hard (8x8)</option>
-              </select>
-            </div>
-            <div>
-              <label>Layout:</label>
-              <select 
-                value={layout} 
-                onChange={(e) => setLayout(e.target.value)}
-                className={styles.select}
-              >
-                <option value="grid">Grid</option>
-                <option value="circle">Circle</option>
-                <option value="diamond">Diamond</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Optional login section - smaller and less prominent */}
-          <div className={`${styles.card} ${styles.optionalCard}`}>
-            <h3 className={styles.cardTitle}>
-              {user ? 'Player Account' : 'Save Your Progress'} 
-              <span className={styles.optionalBadge}>Optional</span>
-            </h3>
-            {user ? (
-              <div className={styles.userInfo}>
-                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
-                <span className={styles.userName}>{user.displayName}</span>
-                <button onClick={handleSignOut} className={`${styles.btn} ${styles.logoutBtn}`}>
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <div>
-                <p className={styles.guestModeText}>
-                  🎮 You can play as a guest! 
-                  <br />
-                  <small>Sign in to save your high scores</small>
-                </p>
-                <button onClick={signInWithGoogle} className={`${styles.btn} ${styles.signInBtn}`}>
-                  Sign in with Google
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.scoreRow}>
-          <div className={styles.scoreBox}>Score: {score}</div>
-          <div className={styles.scoreBox}>Time: {timer}s</div>
-          {!user && (
-            <div className={styles.scoreBox} style={{ background: '#fff3cd', color: '#856404' }}>
-              Guest Mode - Sign in to save scores
-            </div>
-          )}
-        </div>
-
-        <AdBanner />
-
-        <PuzzleBoard 
-          difficulty={difficulty} 
-          layout={layout} 
-          user={user}
-          onScore={handleScoreUpdate}
-        />
-
-        <Leaderboard difficulty={difficulty} layout={layout} score={score} timer={timer} />
-      </div>
-    </div>
+    <SinglePlayerGame 
+      user={user}
+      onBackToMenu={() => setGameMode('menu')}
+      onSignInWithGoogle={signInWithGoogle}
+      onSignOut={handleSignOut}
+    />
   );
 }
 
