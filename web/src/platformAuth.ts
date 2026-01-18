@@ -32,13 +32,27 @@ class PlatformAuth {
     try {
       const FBInstant = window.FBInstant!;
       
-      const playerId = FBInstant.player.getID();
-      const playerName = FBInstant.player.getName();
+      let playerId = FBInstant.player.getID();
+      let playerName = FBInstant.player.getName();
       const playerPhoto = FBInstant.player.getPhoto();
+      
+      // Check if player ID is available - in test/dev environment it might be null
+      if (!playerId) {
+        // Generate a test ID based on current time for development
+        playerId = `test_${Date.now()}`;
+      }
+
+      // getName() might return null if called too early or permission not granted
+      // Use the actual name if available, otherwise create a fallback
+      if (!playerName || playerName.trim() === '') {
+        playerName = playerId.startsWith('test_') 
+          ? 'Test Player' 
+          : `Player ${playerId.substring(0, 8)}`;
+      }
 
       return {
         uid: `fb_${playerId}`,
-        displayName: playerName || 'Facebook Player',
+        displayName: playerName,
         photoURL: playerPhoto || null,
         platform: 'facebook'
       };

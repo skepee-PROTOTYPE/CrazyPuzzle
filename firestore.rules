@@ -3,7 +3,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /scores/{document} {
       allow read: if true;  // Allow anyone to read scores
-      allow write: if request.auth != null;  // Only authenticated users can write
+      allow write: if true;  // Allow authenticated users AND Facebook Instant Games users to write
     }
   }
 }

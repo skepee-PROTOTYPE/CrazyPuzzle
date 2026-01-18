@@ -4,6 +4,7 @@ import DifficultySelector, { Difficulty, Layout } from './DifficultySelector';
 import PuzzleBoard from './PuzzleBoard';
 import Leaderboard from './Leaderboard';
 import AdBanner from './AdBanner';
+import { isFacebookInstantGame } from './platform';
 import styles from './App.module.scss';
 
 interface SinglePlayerGameProps {
@@ -56,38 +57,40 @@ function SinglePlayerGame({ user, onBackToMenu, onSignInWithGoogle, onSignOut }:
           </div>
 
           {/* Optional login section - smaller and less prominent */}
-          <div className={`${styles.card} ${styles.optionalCard}`}>
-            <h3 className={styles.cardTitle}>
-              {user ? 'Player Account' : 'Save Your Progress'} 
-              <span className={styles.optionalBadge}>Optional</span>
-            </h3>
-            {user ? (
-              <div className={styles.userInfo}>
-                <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
-                <span className={styles.userName}>{user.displayName}</span>
-                <button onClick={onSignOut} className={`${styles.btn} ${styles.logoutBtn}`}>
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <div>
-                <p className={styles.guestModeText}>
-                  🎮 You can play as a guest! 
-                  <br />
-                  <small>Sign in to save your high scores</small>
-                </p>
-                <button onClick={onSignInWithGoogle} className={`${styles.btn} ${styles.signInBtn}`}>
-                  Sign in with Google
-                </button>
-              </div>
-            )}
-          </div>
+          {!isFacebookInstantGame() && (
+            <div className={`${styles.card} ${styles.optionalCard}`}>
+              <h3 className={styles.cardTitle}>
+                {user ? 'Player Account' : 'Save Your Progress'} 
+                <span className={styles.optionalBadge}>Optional</span>
+              </h3>
+              {user ? (
+                <div className={styles.userInfo}>
+                  <img src={user.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
+                  <span className={styles.userName}>{user.displayName}</span>
+                  <button onClick={onSignOut} className={`${styles.btn} ${styles.logoutBtn}`}>
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p className={styles.guestModeText}>
+                    🎮 You can play as a guest! 
+                    <br />
+                    <small>Sign in to save your high scores</small>
+                  </p>
+                  <button onClick={onSignInWithGoogle} className={`${styles.btn} ${styles.signInBtn}`}>
+                    Sign in with Google
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className={styles.scoreRow}>
           <div className={styles.scoreBox}>Score: {score}</div>
           <div className={styles.scoreBox}>Time: {timer}s</div>
-          {!user && (
+          {!user && !isFacebookInstantGame() && (
             <div className={styles.scoreBox} style={{ background: '#fff3cd', color: '#856404' }}>
               Guest Mode - Sign in to save scores
             </div>

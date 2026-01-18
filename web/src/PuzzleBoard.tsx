@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { User } from 'firebase/auth';
 import { db } from './firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import { isFacebookInstantGame } from './platform';
 import styles from './PuzzleBoard.module.scss';
 
 interface PuzzleBoardProps {
@@ -90,6 +91,7 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
         createdAt: new Date()
       });
     } catch (error) {
+      // Silent fail - could add error tracking here
     }
   }, [user, difficulty, layout]);
 
@@ -176,21 +178,21 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
           >
             {tiles.map((tile, i) => {
               const isFlipped = flippedTiles.includes(i) || matchedTiles.includes(i);
+              const isMatched = matchedTiles.includes(i);
+              const tileClasses = `${styles.tile} ${isFlipped ? styles.flipped : ''} ${isMatched ? styles.matched : ''}`;
+              
               return (
                 <div
                   key={i}
-                  className={styles.tile}
+                  className={tileClasses}
                   onClick={() => handleTileClick(i)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTileClick(i); }}
                 >
-                  <div className={styles.tileInner} style={{ width: '100%', height: '100%' }}>
-                    {isFlipped ? (
-                      <div className={styles.tileBack}>{tile !== 0 ? tile : ''}</div>
-                    ) : (
-                      <div className={styles.tileFront} />
-                    )}
+                  <div className={styles.tileInner}>
+                    <div className={styles.tileFront} />
+                    <div className={styles.tileBack}>{tile !== 0 ? tile : ''}</div>
                   </div>
                 </div>
               );
@@ -210,9 +212,11 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
               ) : (
                 <div>
                   <p>Score: {Math.max(1000 - moves * 10 - timer, 100)}</p>
-                  <p className={styles.guestHint}>
-                    💡 Sign in with Google to save your high scores to the leaderboard!
-                  </p>
+                  {!isFacebookInstantGame() && (
+                    <p className={styles.guestHint}>
+                      💡 Sign in with Google to save your high scores to the leaderboard!
+                    </p>
+                  )}
                 </div>
               )}
             </div>

@@ -40,7 +40,10 @@ function App() {
           // Initialize Facebook ads
           await facebookAds.initialize();
           
-          // Get Facebook player info
+          // Start the game (removes loading screen) - MUST be called before getName()
+          await window.FBInstant!.startGameAsync();
+          
+          // Get Facebook player info AFTER startGameAsync
           const fbUser = await platformAuth.fromFacebookPlayer();
           if (fbUser) {
             setPlatformUser(fbUser);
@@ -49,9 +52,6 @@ function App() {
               tone: 'success'
             });
           }
-          
-          // Start the game (removes loading screen)
-          await window.FBInstant!.startGameAsync();
           
           setPlatformLoading(false);
         } catch (error: any) {
@@ -289,7 +289,7 @@ function App() {
               <span className={styles.modeIcon}>👥</span>
               <span className={styles.modeTitle}>Multiplayer</span>
               <span className={styles.modeDesc}>Compete with friends in real-time</span>
-              {!activeUser && <span className={styles.requiresAuth}>Requires sign in</span>}
+              {!activeUser && !isFacebookInstantGame() && <span className={styles.requiresAuth}>Requires sign in</span>}
             </button>
           </div>
         </div>
@@ -366,27 +366,29 @@ function App() {
     );
   }
   // Single player mode
+  const compatUser = user || (activeUser ? {
+    uid: activeUser.uid,
+    displayName: activeUser.displayName,
+    email: null,
+    photoURL: activeUser.photoURL,
+    emailVerified: false,
+    isAnonymous: false,
+    metadata: {},
+    providerData: [],
+    refreshToken: '',
+    tenantId: null,
+    delete: async () => {},
+    getIdToken: async () => '',
+    getIdTokenResult: async () => ({} as any),
+    reload: async () => {},
+    toJSON: () => ({}),
+    phoneNumber: null,
+    providerId: activeUser.platform === 'facebook' ? 'facebook.com' : 'google.com'
+  } as any : null);
+
   return (
     <SinglePlayerGame 
-      user={user || (activeUser ? {
-        uid: activeUser.uid,
-        displayName: activeUser.displayName,
-        email: null,
-        photoURL: activeUser.photoURL,
-        emailVerified: false,
-        isAnonymous: false,
-        metadata: {},
-        providerData: [],
-        refreshToken: '',
-        tenantId: null,
-        delete: async () => {},
-        getIdToken: async () => '',
-        getIdTokenResult: async () => ({} as any),
-        reload: async () => {},
-        toJSON: () => ({}),
-        phoneNumber: null,
-        providerId: 'facebook.com'
-      } as any : null)}
+      user={compatUser}
       onBackToMenu={() => setGameMode('menu')}
       onSignInWithGoogle={signInWithGoogle}
       onSignOut={handleSignOut}

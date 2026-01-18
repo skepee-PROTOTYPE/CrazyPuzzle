@@ -4,6 +4,8 @@ import { realtimeDb } from './firebase';
 import { ref, onValue, set, get, update, remove, runTransaction } from 'firebase/database';
 import { Difficulty, Layout } from './DifficultySelector';
 import MultiplayerLeaderboard from './MultiplayerLeaderboard';
+import { facebookAds } from './facebookAds';
+import { isFacebookInstantGame } from './platform';
 import styles from './MultiplayerGame.module.scss';
 
 interface Player {
@@ -424,7 +426,18 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
                 </div>
               ))}
           </div>
-          <button onClick={handleLeaveRoom} className={styles.playAgainBtn}>Back to Menu</button>
+          <button 
+            onClick={async () => {
+              // Show interstitial ad when leaving (Facebook only)
+              if (isFacebookInstantGame()) {
+                await facebookAds.showInterstitialAd();
+              }
+              handleLeaveRoom();
+            }} 
+            className={styles.playAgainBtn}
+          >
+            Back to Menu
+          </button>
         </div>
       )}
     </div>
