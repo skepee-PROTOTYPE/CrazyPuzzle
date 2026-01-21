@@ -11,6 +11,7 @@ interface DifficultySelectorProps {
   onLayoutChange?: (layout: Layout) => void;
   showLayout?: boolean;
   compact?: boolean;
+  showMaxPlayers?: boolean;
 }
 
 function DifficultySelector({ 
@@ -19,7 +20,8 @@ function DifficultySelector({
   onDifficultyChange, 
   onLayoutChange,
   showLayout = true,
-  compact = false
+  compact = false,
+  showMaxPlayers = false
 }: DifficultySelectorProps) {
   return (
     <div className={compact ? styles.compactContainer : styles.container}>
@@ -30,9 +32,9 @@ function DifficultySelector({
           onChange={(e) => onDifficultyChange(e.target.value as Difficulty)}
           className={styles.select}
         >
-          <option value="easy">Easy (4x4)</option>
-          <option value="medium">Medium (6x6)</option>
-          <option value="hard">Hard (8x8)</option>
+          <option value="easy">Easy (4x4){showMaxPlayers ? ' - Max 2 players' : ''}</option>
+          <option value="medium">Medium (6x6){showMaxPlayers ? ' - Max 3 players' : ''}</option>
+          <option value="hard">Hard (8x8){showMaxPlayers ? ' - Max 4 players' : ''}</option>
         </select>
       </div>
 

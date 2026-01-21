@@ -39,15 +39,12 @@ interface MultiplayerGameProps {
 
 function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBackToMenu }: MultiplayerGameProps) {
   const gridSizes: Record<Difficulty, number> = { easy: 4, medium: 6, hard: 8 };
-  const gridSize = gridSizes[difficulty] || 4;
-  const totalTiles = gridSize * gridSize;
-
+  
   // Get max players based on difficulty
   const getMaxPlayers = (diff: Difficulty): number => {
     const limits = { easy: 2, medium: 3, hard: 4 };
     return limits[diff];
   };
-  const maxPlayers = getMaxPlayers(difficulty);
 
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
@@ -227,7 +224,17 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
 
   const handleApprovePlayer = async (playerId: string) => {
     const pendingPlayer = gameState?.pendingPlayers?.[playerId];
-    if (!pendingPlayer) return;
+    if (!pendingPlayer || !gameState) return;
+
+    // Check if room is full based on actual room difficulty
+    const currentPlayerCount = Object.keys(gameState.players || {}).length;
+    const maxPlayers = getMaxPlayers(gameState.difficulty);
+    
+    if (currentPlayerCount >= maxPlayers) {
+      alert(`Room is full! Maximum ${maxPlayers} players allowed for ${gameState.difficulty} difficulty.`);
+      await remove(ref(realtimeDb, `rooms/${roomId}/pendingPlayers/${playerId}`));
+      return;
+    }
 
     // Move from pending to players
     await set(ref(realtimeDb, `rooms/${roomId}/players/${playerId}`), {
@@ -249,6 +256,12 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
     return <div className={styles.loading}>Loading game...</div>;
   }
 
+  // Use the actual difficulty from gameState
+  const actualDifficulty = gameState.difficulty || difficulty;
+  const gridSize = gridSizes[actualDifficulty] || 4;
+  const totalTiles = gridSize * gridSize;
+  const maxPlayers = getMaxPlayers(actualDifficulty);
+
   const players = Object.entries(gameState.players || {});
   const isReady = gameState.players[user.uid]?.ready;
 
@@ -263,7 +276,7 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
         <div>
           <h1>🎮 Multiplayer Game</h1>
           <p className={styles.gameSettings}>
-            {difficulty.toUpperCase()} ({gridSize}x{gridSize}) - {layout.toUpperCase()} Layout
+            {actualDifficulty.toUpperCase()} ({gridSize}x{gridSize}) - {(gameState.layout || layout).toUpperCase()} Layout
           </p>
         </div>
         <div className={styles.headerButtons}>

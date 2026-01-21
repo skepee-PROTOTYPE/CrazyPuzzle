@@ -197,6 +197,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
                 onDifficultyChange={setDifficulty}
                 onLayoutChange={setLayout}
                 showLayout={true}
+                showMaxPlayers={true}
               />
             </div>
             <div className={styles.modalActions}>
