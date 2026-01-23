@@ -110,6 +110,15 @@ describe('MultiplayerGame', () => {
   });
 
   test('displays difficulty and layout in game settings', () => {
+    // Mock for medium difficulty and circle layout
+    mockFirebase.onValue.mockImplementation((ref: any, callback: any) => {
+      callback({
+        val: () => ({ ...mockGameStateWaiting, difficulty: 'medium', layout: 'circle' }),
+        exists: () => true
+      });
+      return jest.fn();
+    });
+
     render(
       <MultiplayerGame 
         roomId="room-123" 
@@ -298,7 +307,16 @@ describe('MultiplayerGame', () => {
   });
 
   test('displays different grid sizes based on difficulty', () => {
-    const { rerender } = render(
+    // Test easy difficulty
+    mockFirebase.onValue.mockImplementation((ref: any, callback: any) => {
+      callback({
+        val: () => ({ ...mockGameStateWaiting, difficulty: 'easy' }),
+        exists: () => true
+      });
+      return jest.fn();
+    });
+
+    const { unmount: unmount1 } = render(
       <MultiplayerGame 
         roomId="room-123" 
         user={mockUser} 
@@ -308,8 +326,18 @@ describe('MultiplayerGame', () => {
       />
     );
     expect(screen.getByText(/EASY.*4x4/)).toBeInTheDocument();
+    unmount1();
 
-    rerender(
+    // Test medium difficulty
+    mockFirebase.onValue.mockImplementation((ref: any, callback: any) => {
+      callback({
+        val: () => ({ ...mockGameStateWaiting, difficulty: 'medium' }),
+        exists: () => true
+      });
+      return jest.fn();
+    });
+
+    const { unmount: unmount2 } = render(
       <MultiplayerGame 
         roomId="room-123" 
         user={mockUser} 
@@ -319,8 +347,18 @@ describe('MultiplayerGame', () => {
       />
     );
     expect(screen.getByText(/MEDIUM.*6x6/)).toBeInTheDocument();
+    unmount2();
 
-    rerender(
+    // Test hard difficulty
+    mockFirebase.onValue.mockImplementation((ref: any, callback: any) => {
+      callback({
+        val: () => ({ ...mockGameStateWaiting, difficulty: 'hard' }),
+        exists: () => true
+      });
+      return jest.fn();
+    });
+
+    render(
       <MultiplayerGame 
         roomId="room-123" 
         user={mockUser} 
