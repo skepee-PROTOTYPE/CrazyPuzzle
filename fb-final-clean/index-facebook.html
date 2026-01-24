@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1976d2" />
+    <meta name="description" content="CrazyPuzzle - Fast, responsive HTML5 tile-matching puzzle game" />
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png" />
+    
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CrazyPuzzle" />
+    
+    <!-- Facebook Instant Games SDK -->
+    <script src="https://connect.facebook.net/en_US/fbinstant.6.3.js"></script>
+    
+    <title>CrazyPuzzle - Tile Matching Game</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    
+    <!-- Register Service Worker -->
+    <script>
+      // TEMPORARILY DISABLED SERVICE WORKER TO FIX AUTH
+      // if ('serviceWorker' in navigator) {
+      //   window.addEventListener('load', () => {
+      //     navigator.serviceWorker.register('/service-worker.js')
+      //       .then((registration) => {
+      //         console.log('ServiceWorker registered: ', registration);
+      //       })
+      //       .catch((registrationError) => {
+      //         console.log('ServiceWorker registration failed: ', registrationError);
+      //       });
+      //   });
+      // }
+    </script>
+  </body>
+</html>

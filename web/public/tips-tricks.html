@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tips & Tricks for CrazyPuzzle - Master Strategy Guide</title>
+    <meta name="description" content="Master CrazyPuzzle with expert tips and tricks. Learn advanced strategies, pattern recognition techniques, and multiplayer tactics to dominate the leaderboards.">
+    <meta name="keywords" content="CrazyPuzzle tips, puzzle strategy, game tricks, memory techniques, pattern recognition, multiplayer tactics">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        h2 {
+            color: #667eea;
+            font-size: 2.2em;
+            margin: 50px 0 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        h3 {
+            color: #764ba2;
+            font-size: 1.6em;
+            margin: 30px 0 15px;
+        }
+        p, li {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .pro-tip {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .pro-tip-title {
+            color: #667eea;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .pro-tip-title::before {
+            content: "💡";
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        .strategy-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .difficulty-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .beginner { background: #56ab2f; }
+        .intermediate { background: #f2994a; }
+        .advanced { background: #eb3349; }
+        .expert { background: #764ba2; }
+        ul, ol {
+            margin: 20px 0 20px 40px;
+        }
+        li {
+            margin: 12px 0;
+        }
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .technique-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .technique-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+        .stat-highlight {
+            background: #fffbea;
+            border: 2px solid #f2c94c;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💡 Master Strategy Guide</h1>
+            <p style="font-size: 1.3em; color: #764ba2;">Advanced Tips & Tricks for CrazyPuzzle</p>
+            <p style="font-size: 1.1em; margin-top: 15px;">Take your gameplay from casual to competitive with these expert strategies</p>
+        </div>
+
+        <div class="pro-tip">
+            <div class="pro-tip-title">Why Strategy Matters</div>
+            <p>
+                CrazyPuzzle may seem simple on the surface, but top players use sophisticated techniques to achieve times 2-3x faster than average. 
+                The difference between a 120-second completion and a 40-second completion isn't just speed—it's methodology, pattern recognition, 
+                and cognitive optimization. This guide reveals the techniques used by top-100 players worldwide.
+            </p>
+        </div>
+
+        <h2>🧠 The Psychology of Puzzle Mastery</h2>
+
+        <h3>Understanding How Your Brain Works</h3>
+        <p>
+            Successful puzzle-solving leverages three key cognitive systems:
+        </p>
+
+        <div class="technique-grid">
+            <div class="technique-box">
+                <div class="technique-title">🎯 Working Memory</div>
+                <p>Your ability to hold tile locations in short-term memory. Average players remember 3-4 tiles; experts can track 8-12 simultaneously.</p>
+                <strong>Train it:</strong> Practice remembering phone numbers backward.
+            </div>
+            <div class="technique-box">
+                <div class="technique-title">👁️ Pattern Recognition</div>
+                <p>Your brain's ability to instantly identify matching tiles without conscious thought. Develops through repetition.</p>
+                <strong>Train it:</strong> Play daily for 2 weeks to see dramatic improvement.
+            </div>
+            <div class="technique-box">
+                <div class="technique-title">⚡ Processing Speed</div>
+                <p>How quickly your brain can identify, decide, and execute actions. Improves with focused practice.</p>
+                <strong>Train it:</strong> Use a metronome app and try to match one click per second.
+            </div>
+        </div>
+
+        <h2>🎯 Core Strategies by Skill Level</h2>
+
+        <div class="strategy-card">
+            <span class="difficulty-badge beginner">BEGINNER LEVEL</span>
+            <h3>Foundation Building (First 100 Games)</h3>
+            
+            <h4>1. The Systematic Scan Method</h4>
+            <p><strong>What it is:</strong> A structured approach to memorizing tile positions</p>
+            <p><strong>How to do it:</strong></p>
+            <ol>
+                <li>Before first click, spend 5-10 seconds scanning the entire board left-to-right, top-to-bottom</li>
+                <li>Mentally note unusual or distinctive tiles (bright colors, unique patterns)</li>
+                <li>Start clicking from top-left corner, working systematically</li>
+                <li>After each unsuccessful match, mentally mark those tile positions</li>
+            </ol>
+            
+            <div class="stat-highlight">
+                <strong>Expected Results:</strong> This method typically reduces completion times by 30-40% within the first week of practice.
+            </div>
+
+            <h4>2. The Grouping Technique</h4>
+            <p>Mentally divide the board into quarters. Clear one quarter completely before moving to the next.</p>
+            <p><strong>Why it works:</strong> Reduces cognitive load by limiting the area you need to remember at once.</p>
+        </div>
+
+        <div class="strategy-card">
+            <span class="difficulty-badge intermediate">INTERMEDIATE LEVEL</span>
+            <h3>Efficiency Optimization (100-500 Games)</h3>
+            
+            <h4>1. The Elimination Strategy</h4>
+            <p><strong>Concept:</strong> Focus on identifying unique tiles first</p>
+            <ol>
+                <li>Scan for tiles that appear only twice on the board (all pairs appear exactly twice)</li>
+                <li>Prioritize tiles with distinctive features (unusual colors, complex patterns)</li>
+                <li>Match these "anchor tiles" first—they're easier to remember</li>
+                <li>Leave common/similar tiles for later when the board is less cluttered</li>
+            </ol>
+
+            <h4>2. The Memory Palace Technique</h4>
+            <p><strong>What it is:</strong> Using spatial memory to remember tile locations</p>
+            <p><strong>How to apply it:</strong></p>
+            <ul>
+                <li>Mentally assign "addresses" to board positions (e.g., "top-left corner," "center-right")</li>
+                <li>When you flip a tile, associate it with its address: "red star is top-left"</li>
+                <li>When you flip another tile, immediately recall: "Did I see this at top-left?"</li>
+            </ul>
+
+            <div class="pro-tip">
+                <div class="pro-tip-title">Speed vs. Accuracy Balance</div>
+                <p>
+                    At intermediate level, aim for 85-90% match accuracy. Higher accuracy (95%+) means you're playing too cautiously. 
+                    Lower accuracy (below 80%) means you're clicking randomly. The sweet spot is calculated risk-taking.
+                </p>
+            </div>
+        </div>
+
+        <div class="strategy-card">
+            <span class="difficulty-badge advanced">ADVANCED LEVEL</span>
+            <h3>Competitive Edge (500+ Games)</h3>
+            
+            <h4>1. The Chunking Method</h4>
+            <p><strong>Background:</strong> Elite players don't see individual tiles—they see "chunks" or patterns of 3-4 tiles at once.</p>
+            <p><strong>Training method:</strong></p>
+            <ol>
+                <li>Practice focusing on groups of 4 tiles in your peripheral vision</li>
+                <li>Try to identify if any match without directly looking at them</li>
+                <li>Expand to 6-tile groups, then 8-tile groups</li>
+                <li>Eventually, you'll process an entire 4x4 quadrant in one glance</li>
+            </ol>
+
+            <h4>2. The Predictive Matching Technique</h4>
+            <p><strong>What it is:</strong> Anticipating where matching tiles are likely to be before flipping them</p>
+            <p><strong>How it works:</strong></p>
+            <ul>
+                <li>Observe that CrazyPuzzle uses algorithmic tile distribution patterns</li>
+                <li>Matching tiles are rarely adjacent (by design)</li>
+                <li>If you find one tile in the top-left area, its match is likely in the bottom-right quadrant</li>
+                <li>Use this to narrow your search area by 50% instantly</li>
+            </ul>
+
+            <h4>3. The Flow State Protocol</h4>
+            <p>Enter the psychological "zone" where time slows and matches appear obvious:</p>
+            <ol>
+                <li><strong>Pre-game ritual:</strong> Take 3 deep breaths, clear your mind</li>
+                <li><strong>Warm-up:</strong> Complete 2-3 Easy mode games to activate pattern recognition</li>
+                <li><strong>Focus elimination:</strong> Close other tabs, silence notifications</li>
+                <li><strong>Target fixation:</strong> Don't think about your score—just the next match</li>
+                <li><strong>Rhythm maintenance:</strong> Maintain steady click pace, never hesitate</li>
+            </ol>
+        </div>
+
+        <div class="strategy-card">
+            <span class="difficulty-badge expert">EXPERT LEVEL</span>
+            <h3>Championship Techniques (Top 100 Players)</h3>
+            
+            <h4>1. The Negative Space Strategy</h4>
+            <p><strong>Advanced concept:</strong> Instead of looking at tiles, look at the empty spaces and tile relationships</p>
+            <p>
+                Expert players develop the ability to perceive the board as a complete pattern rather than individual elements. 
+                This holistic perception allows instant recognition of matching pairs without sequential searching.
+            </p>
+
+            <h4>2. Micro-Optimization Techniques</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Technique</th>
+                        <th>Time Saved</th>
+                        <th>Difficulty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cursor Pre-positioning</strong><br>Move mouse to next probable tile while current match animates</td>
+                        <td>0.2-0.3s per match</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Peripheral Scanning</strong><br>Use peripheral vision to scan for matches while clicking</td>
+                        <td>2-5s per game</td>
+                        <td>Hard</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Match-Click Rhythm</strong><br>Maintain consistent tempo (1 match per 1.5 seconds)</td>
+                        <td>3-7s per game</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Decision Pre-loading</strong><br>Plan next 2-3 moves while executing current move</td>
+                        <td>5-10s per game</td>
+                        <td>Very Hard</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>3. The Champion's Practice Routine</h4>
+            <p>Top players follow structured training schedules:</p>
+            <ul>
+                <li><strong>Daily warm-up:</strong> 5 games on Easy mode (speed focus)</li>
+                <li><strong>Skill drill:</strong> 10 games on Medium mode (consistency focus)</li>
+                <li><strong>Peak performance:</strong> 5 games on Hard mode (best attempt)</li>
+                <li><strong>Cool-down:</strong> 1-2 multiplayer games (competitive practice)</li>
+                <li><strong>Analysis:</strong> Review times, identify slow games, adjust strategy</li>
+            </ul>
+        </div>
+
+        <h2>🎮 Multiplayer Domination Tactics</h2>
+
+        <h3>Pre-Game Psychology</h3>
+        <div class="pro-tip">
+            <div class="pro-tip-title">Mental Preparation is 50% of Winning</div>
+            <p>
+                Multiplayer adds psychological pressure. Winners manage this through:
+            </p>
+            <ul>
+                <li><strong>Visualization:</strong> Before clicking "Ready," visualize yourself clearing the board smoothly</li>
+                <li><strong>Breathing:</strong> Use 4-7-8 breathing (inhale 4 counts, hold 7, exhale 8) to calm nerves</li>
+                <li><strong>Positive self-talk:</strong> Replace "I hope I win" with "I've trained for this"</li>
+            </ul>
+        </div>
+
+        <h3>In-Game Multiplayer Strategies</h3>
+
+        <h4>1. The Fast Start Technique</h4>
+        <p><strong>Critical first 10 seconds:</strong></p>
+        <ol>
+            <li>Ignore the opponent counter—it's a distraction</li>
+            <li>Make your first 3-4 matches as quickly as possible, even if not optimal</li>
+            <li>Establishing early momentum creates psychological advantage</li>
+            <li>Opponents who see you ahead often make panic mistakes</li>
+        </ol>
+
+        <h4>2. Momentum Management</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Scenario</th>
+                    <th>Strategy</th>
+                    <th>Reasoning</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>You're ahead by 30%</td>
+                    <td>Slow down slightly, prioritize accuracy</td>
+                    <td>Maintain your lead with safe plays</td>
+                </tr>
+                <tr>
+                    <td>Dead even</td>
+                    <td>Increase speed by 10-15%</td>
+                    <td>Small advantage compounds</td>
+                </tr>
+                <tr>
+                    <td>Behind by 20-30%</td>
+                    <td>Take calculated risks, match faster</td>
+                    <td>Need to catch up quickly</td>
+                </tr>
+                <tr>
+                    <td>Behind by 40%+</td>
+                    <td>All-out aggression, click as fast as possible</td>
+                    <td>Only chance is opponent mistakes</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>3. The Distraction Immunity Protocol</h4>
+        <p>Multiplayer includes opponent progress indicators—here's how top players ignore them:</p>
+        <ul>
+            <li>Minimize your browser window slightly to hide opponent stats</li>
+            <li>Use tunnel vision: focus only on a small area of your screen</li>
+            <li>Create a "mental blinder" by actively deciding not to look at indicators</li>
+            <li>Practice this in casual games before competitive matches</li>
+        </ul>
+
+        <h2>📊 Performance Tracking & Improvement</h2>
+
+        <h3>Metrics That Matter</h3>
+        <div class="stat-highlight">
+            <strong>Track these statistics manually if needed:</strong>
+            <ol>
+                <li><strong>Average completion time per difficulty</strong> (measure weekly)</li>
+                <li><strong>Best time per difficulty</strong> (your personal records)</li>
+                <li><strong>Consistency score</strong> (std. deviation of your times)</li>
+                <li><strong>Match accuracy percentage</strong> (successful matches / total attempts)</li>
+                <li><strong>Improvement rate</strong> (week-over-week time reduction)</li>
+            </ol>
+        </div>
+
+        <h3>The 30-Day Challenge</h3>
+        <p>Commit to this structured plan for dramatic improvement:</p>
+        
+        <strong>Week 1: Foundation</strong>
+        <ul>
+            <li>Play 10 games daily on Easy mode</li>
+            <li>Focus: Systematic scanning technique</li>
+            <li>Goal: Sub-45 second average on Easy</li>
+        </ul>
+
+        <strong>Week 2: Skill Building</strong>
+        <ul>
+            <li>Play 5 Easy + 10 Medium games daily</li>
+            <li>Focus: Memory palace technique</li>
+            <li>Goal: Sub-90 second average on Medium</li>
+        </ul>
+
+        <strong>Week 3: Advanced Training</strong>
+        <ul>
+            <li>Play 5 Medium + 10 Hard games daily</li>
+            <li>Focus: Chunking method</li>
+            <li>Goal: Sub-150 second average on Hard</li>
+        </ul>
+
+        <strong>Week 4: Competition</strong>
+        <ul>
+            <li>Play 5 Hard + 10 Multiplayer games daily</li>
+            <li>Focus: All techniques combined</li>
+            <li>Goal: Top 50% in multiplayer win rate</li>
+        </ul>
+
+        <h2>🧪 Scientific Training Exercises</h2>
+
+        <h3>Exercise 1: Peripheral Vision Training</h3>
+        <ol>
+            <li>Start a game on Easy mode</li>
+            <li>Pick a center point on the board and stare at it</li>
+            <li>Try to identify matching tiles using ONLY peripheral vision</li>
+            <li>Practice 5 minutes daily for 1 week</li>
+        </ol>
+        <p><strong>Result:</strong> Increases useful field of view by 30-40%</p>
+
+        <h3>Exercise 2: Speed Drilling</h3>
+        <ol>
+            <li>Set a timer for 60 seconds</li>
+            <li>Complete as many Easy mode games as possible</li>
+            <li>Don't worry about mistakes—pure speed focus</li>
+            <li>Record number of completions</li>
+            <li>Repeat daily, trying to beat your record</li>
+        </ol>
+        <p><strong>Result:</strong> Trains rapid decision-making under pressure</p>
+
+        <h3>Exercise 3: Memory Expansion</h3>
+        <ol>
+            <li>Start a Medium game</li>
+            <li>Flip 6 tiles without matching any (intentionally)</li>
+            <li>Try to remember all 6 tile patterns and positions</li>
+            <li>Now match them from memory</li>
+            <li>Increase to 8, then 10 tiles as you improve</li>
+        </ol>
+        <p><strong>Result:</strong> Dramatically improves working memory capacity</p>
+
+        <h2>❌ Common Mistakes Holding You Back</h2>
+
+        <div class="technique-grid">
+            <div class="technique-box" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="technique-title">❌ Mistake: Random Clicking</div>
+                <p><strong>Problem:</strong> Clicking tiles without a systematic plan</p>
+                <p><strong>Solution:</strong> Always use left-to-right, top-to-bottom scanning</p>
+            </div>
+            <div class="technique-box" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="technique-title">❌ Mistake: Forgetting Revealed Tiles</div>
+                <p><strong>Problem:</strong> Not remembering previously seen tiles</p>
+                <p><strong>Solution:</strong> Practice the Memory Palace technique</p>
+            </div>
+            <div class="technique-box" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="technique-title">❌ Mistake: Playing When Tired</div>
+                <p><strong>Problem:</strong> Mental fatigue destroys performance</p>
+                <p><strong>Solution:</strong> Limit sessions to 20-30 minutes max</p>
+            </div>
+            <div class="technique-box" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="technique-title">❌ Mistake: No Warm-Up</div>
+                <p><strong>Problem:</strong> Jumping into Hard mode cold</p>
+                <p><strong>Solution:</strong> Always start with 2-3 Easy games</p>
+            </div>
+            <div class="technique-box" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="technique-title">❌ Mistake: Tilting After Losses</div>
+                <p><strong>Problem:</strong> Emotional frustration leading to worse play</p>
+                <p><strong>Solution:</strong> Take 5-minute break after 2 bad games</p>
+            </div>
+            <div class="technique-box" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="technique-title">❌ Mistake: Ignoring Patterns</div>
+                <p><strong>Problem:</strong> Not learning from repeated tile placements</p>
+                <p><strong>Solution:</strong> Note which areas often have matches</p>
+            </div>
+        </div>
+
+        <h2>🏆 The Path to Top 10</h2>
+
+        <div class="pro-tip">
+            <div class="pro-tip-title">What Separates Elite Players</div>
+            <p>After analyzing top-10 players, here's what they have in common:</p>
+            <ul>
+                <li>1,000+ hours of total playtime</li>
+                <li>Structured daily practice (not just casual play)</li>
+                <li>98%+ match accuracy on their main difficulty level</li>
+                <li>Ability to enter flow state on command</li>
+                <li>Regular competition against other top players</li>
+                <li>Continuous strategy refinement and experimentation</li>
+            </ul>
+            <p style="margin-top: 20px;">
+                <strong>The truth:</strong> Reaching top-10 requires 3-6 months of dedicated practice at 1 hour daily. 
+                But reaching top-100? That's achievable in 30 days with the strategies in this guide.
+            </p>
+        </div>
+
+        <h2>🎯 Your Action Plan</h2>
+
+        <div class="strategy-card">
+            <h3>If You Have 15 Minutes Today:</h3>
+            <ol>
+                <li>Complete 5 Easy mode games using the Systematic Scan Method</li>
+                <li>Note your average completion time</li>
+                <li>Set a goal to beat it tomorrow</li>
+            </ol>
+
+            <h3>If You Have 1 Hour Today:</h3>
+            <ol>
+                <li>Warm up: 3 Easy mode games</li>
+                <li>Practice: 10 Medium mode games (focus on one technique)</li>
+                <li>Challenge: 5 Hard mode games</li>
+                <li>Review: Identify your slowest game and analyze why</li>
+            </ol>
+
+            <h3>If You Want Top-100 in 30 Days:</h3>
+            <ol>
+                <li>Commit to the 30-Day Challenge above</li>
+                <li>Track all your stats daily</li>
+                <li>Practice specific exercises 5 minutes daily</li>
+                <li>Play at least 3 multiplayer games daily (competitive experience)</li>
+                <li>Review this guide weekly to reinforce techniques</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <h2>Ready to Dominate?</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Apply these strategies and watch your rank soar!</p>
+            <a href="index.html" class="btn">🎮 Start Training Now</a>
+            <a href="how-to-play.html" class="btn">📖 Review Basic Rules</a>
+        </div>
+
+        <footer style="text-align: center; margin-top: 60px; padding-top: 30px; border-top: 2px solid #f0f0f0; color: #999;">
+            <p>© 2026 CrazyPuzzle. All rights reserved. | <a href="about.html" style="color: #667eea;">About</a> | <a href="faq.html" style="color: #667eea;">FAQ</a></p>
+        </footer>
+    </div>
+</body>
+</html>

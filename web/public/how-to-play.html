@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Play CrazyPuzzle - Complete Guide & Strategy Tips</title>
+    <meta name="description" content="Learn how to play CrazyPuzzle with our comprehensive guide. Master the rules, understand difficulty levels, and discover winning strategies for single and multiplayer modes.">
+    <meta name="keywords" content="CrazyPuzzle guide, how to play, puzzle game rules, game strategy, tutorial, multiplayer guide">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        .quick-start {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .step-container {
+            margin: 30px 0;
+        }
+        .step {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            transition: transform 0.3s;
+        }
+        .step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            flex-shrink: 0;
+        }
+        .step-content h3 {
+            margin-top: 0;
+        }
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .difficulty-card {
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .difficulty-card.easy {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        }
+        .difficulty-card.medium {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        }
+        .difficulty-card.hard {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+        .difficulty-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .difficulty-specs {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .tip-box {
+            background: #fffbea;
+            border-left: 4px solid #f2c94c;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .tip-box strong {
+            color: #f2994a;
+            font-size: 1.2em;
+        }
+        .warning-box {
+            background: #fff3f3;
+            border-left: 4px solid #eb3349;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .warning-box strong {
+            color: #eb3349;
+            font-size: 1.2em;
+        }
+        ul, ol {
+            margin: 20px 0 20px 40px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        li {
+            margin: 10px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+        }
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .mode-card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 12px;
+            padding: 30px;
+            border: 2px solid #667eea;
+        }
+        .mode-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .mode-title {
+            color: #667eea;
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 How to Play CrazyPuzzle</h1>
+            <p style="font-size: 1.3em; color: #764ba2;">Complete Guide for Beginners & Advanced Players</p>
+        </div>
+
+        <div class="quick-start">
+            <h3 style="margin-top: 0;">⚡ Quick Start (60 seconds)</h3>
+            <ol>
+                <li><strong>Click "Play Now"</strong> on the homepage</li>
+                <li><strong>Select difficulty</strong> (Start with Easy!)</li>
+                <li><strong>Match identical tiles</strong> by clicking them</li>
+                <li><strong>Clear the board</strong> before time runs out</li>
+                <li><strong>Beat your score</strong> and climb the leaderboard!</li>
+            </ol>
+        </div>
+
+        <h2>🎮 Game Rules & Objectives</h2>
+        
+        <div class="step-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Find Matching Tiles</h3>
+                    <p>Your game board is filled with tiles displaying various patterns, colors, or symbols. Your goal is to find and match pairs of identical tiles.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Click to Select</h3>
+                    <p>Click on two tiles that you think match. If they're identical, they'll disappear from the board. If they don't match, they'll flip back, and you can try again.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Clear the Board</h3>
+                    <p>Continue matching tiles until the entire board is cleared. The game ends when all tiles are matched or when time runs out (in timed modes).</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Beat the Clock</h3>
+                    <p>Complete the puzzle as quickly as possible. Your completion time determines your score and leaderboard position. Faster times mean higher rankings!</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Difficulty Levels Explained</h2>
+        
+        <div class="difficulty-grid">
+            <div class="difficulty-card easy">
+                <div class="difficulty-title">🟢 EASY</div>
+                <div class="difficulty-specs">
+                    <strong>Grid:</strong> 4×4 (16 tiles)<br>
+                    <strong>Pairs:</strong> 8 pairs to match<br>
+                    <strong>Best for:</strong> Beginners, quick games<br>
+                    <strong>Avg Time:</strong> 30-60 seconds<br>
+                    <strong>Challenge:</strong> ⭐⭐☆☆☆
+                </div>
+            </div>
+
+            <div class="difficulty-card medium">
+                <div class="difficulty-title">🟡 MEDIUM</div>
+                <div class="difficulty-specs">
+                    <strong>Grid:</strong> 6×6 (36 tiles)<br>
+                    <strong>Pairs:</strong> 18 pairs to match<br>
+                    <strong>Best for:</strong> Regular players<br>
+                    <strong>Avg Time:</strong> 60-120 seconds<br>
+                    <strong>Challenge:</strong> ⭐⭐⭐⭐☆
+                </div>
+            </div>
+
+            <div class="difficulty-card hard">
+                <div class="difficulty-title">🔴 HARD</div>
+                <div class="difficulty-specs">
+                    <strong>Grid:</strong> 8×8 (64 tiles)<br>
+                    <strong>Pairs:</strong> 32 pairs to match<br>
+                    <strong>Best for:</strong> Expert players<br>
+                    <strong>Avg Time:</strong> 120-240 seconds<br>
+                    <strong>Challenge:</strong> ⭐⭐⭐⭐⭐
+                </div>
+            </div>
+        </div>
+
+        <h2>🕹️ Game Modes</h2>
+        
+        <div class="game-modes">
+            <div class="mode-card">
+                <div class="mode-icon">👤</div>
+                <div class="mode-title">Single Player</div>
+                <p><strong>How it works:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Play solo against the clock</li>
+                    <li>Choose your preferred difficulty</li>
+                    <li>Beat your personal best times</li>
+                    <li>Compete on global leaderboards</li>
+                    <li>Track your progress over time</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 Pro Tip:</strong> Single player mode is perfect for practicing and developing your strategy before challenging others in multiplayer!
+                </div>
+            </div>
+
+            <div class="mode-card">
+                <div class="mode-icon">👥</div>
+                <div class="mode-title">Multiplayer</div>
+                <p><strong>How it works:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Create a room or join an existing one</li>
+                    <li>Wait for 2-4 players to join</li>
+                    <li>All players get the same board</li>
+                    <li>First to clear wins the round</li>
+                    <li>Real-time competitive gameplay</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 Pro Tip:</strong> In multiplayer, speed is crucial! Practice pattern recognition to spot matches faster than your opponents.
+                </div>
+            </div>
+        </div>
+
+        <h2>🏆 Scoring System</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>How It's Calculated</th>
+                    <th>Impact on Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Completion Time</strong></td>
+                    <td>Measured in seconds</td>
+                    <td>Lower is better - directly affects leaderboard rank</td>
+                </tr>
+                <tr>
+                    <td><strong>Difficulty Multiplier</strong></td>
+                    <td>Easy: 1x, Medium: 2x, Hard: 3x</td>
+                    <td>Hard mode scores rank higher globally</td>
+                </tr>
+                <tr>
+                    <td><strong>Match Accuracy</strong></td>
+                    <td>Successful matches / Total attempts</td>
+                    <td>Higher accuracy = bonus points</td>
+                </tr>
+                <tr>
+                    <td><strong>Multiplayer Wins</strong></td>
+                    <td>Number of games won</td>
+                    <td>Contributes to overall player rating</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>💡 Winning Strategies & Tips</h2>
+
+        <h3>For Beginners</h3>
+        <ol>
+            <li><strong>Start with Easy Mode:</strong> Build your confidence and learn tile patterns before advancing</li>
+            <li><strong>Scan the Entire Board First:</strong> Before making your first move, look at all tiles to get familiar with what's available</li>
+            <li><strong>Work from Outside In:</strong> Start matching tiles from the edges and work toward the center</li>
+            <li><strong>Focus on One Section:</strong> Don't jump randomly around the board - concentrate on clearing one area at a time</li>
+            <li><strong>Don't Rush:</strong> Accuracy matters more than speed when you're learning. Speed will come with practice!</li>
+        </ol>
+
+        <h3>For Intermediate Players</h3>
+        <ol>
+            <li><strong>Develop Memory Patterns:</strong> Train yourself to remember tile locations even after unsuccessful matches</li>
+            <li><strong>Look for Unique Tiles:</strong> Identify rare or distinctive tiles first - they're easier to match</li>
+            <li><strong>Use a Systematic Approach:</strong> Scan left-to-right, top-to-bottom in a consistent pattern</li>
+            <li><strong>Practice Daily:</strong> Regular 10-15 minute sessions improve pattern recognition dramatically</li>
+            <li><strong>Challenge Yourself:</strong> Gradually increase difficulty as your times improve</li>
+        </ol>
+
+        <h3>For Advanced Players</h3>
+        <ol>
+            <li><strong>Chunk the Board:</strong> Mentally divide the board into quadrants and clear systematically</li>
+            <li><strong>Peripheral Vision:</strong> Train yourself to spot matching patterns without directly looking at them</li>
+            <li><strong>Speed Matching:</strong> In multiplayer, prioritize speed over perfect accuracy (80% accuracy at high speed beats 100% slowly)</li>
+            <li><strong>Pattern Prediction:</strong> Learn common tile distribution patterns to anticipate matches</li>
+            <li><strong>Muscle Memory:</strong> Practice clicking speed and precision for faster tile selection</li>
+        </ol>
+
+        <div class="warning-box">
+            <strong>⚠️ Common Mistakes to Avoid:</strong>
+            <ul style="margin-top: 10px;">
+                <li>Clicking too fast without looking properly (leads to mistakes)</li>
+                <li>Forgetting previously revealed tile locations</li>
+                <li>Getting frustrated and losing focus mid-game</li>
+                <li>Not taking breaks (mental fatigue reduces performance)</li>
+                <li>Playing only one difficulty level (variety improves overall skills)</li>
+            </ul>
+        </div>
+
+        <h2>🎯 Multiplayer Strategy</h2>
+
+        <h3>Before the Game</h3>
+        <ul>
+            <li><strong>Warm Up:</strong> Play 2-3 single-player games first to get in the zone</li>
+            <li><strong>Choose Your Difficulty Wisely:</strong> Pick a level where you're confident and fast</li>
+            <li><strong>Check Your Connection:</strong> Ensure stable internet for lag-free gameplay</li>
+        </ul>
+
+        <h3>During the Game</h3>
+        <ul>
+            <li><strong>Fast Start is Crucial:</strong> The first 5-10 seconds set the pace - clear easy matches immediately</li>
+            <li><strong>Don't Second-Guess:</strong> Trust your instincts - hesitation costs precious seconds</li>
+            <li><strong>Stay Calm Under Pressure:</strong> Seeing opponents' progress can be stressful, but focus on your own board</li>
+            <li><strong>Adapt Your Strategy:</strong> If you're behind, take calculated risks; if ahead, play safe</li>
+        </ul>
+
+        <h3>Creating/Joining Rooms</h3>
+        <ol>
+            <li><strong>Create a Room:</strong> Click "Multiplayer" → "Create Room" → Select difficulty → Share room code with friends</li>
+            <li><strong>Join a Room:</strong> Click "Multiplayer" → "Join Room" → Enter room code → Wait for host to start</li>
+            <li><strong>Quick Match:</strong> Click "Quick Match" to join any available room automatically</li>
+        </ol>
+
+        <h2>📊 Understanding the Leaderboard</h2>
+        <p>
+            The global leaderboard displays the top performers across all difficulty levels. Rankings are updated in real-time and are based on:
+        </p>
+        <ul>
+            <li><strong>Completion Time:</strong> Your fastest time for each difficulty</li>
+            <li><strong>Consistency:</strong> Average of your top 10 scores</li>
+            <li><strong>Difficulty Played:</strong> Hard mode times are weighted more heavily</li>
+            <li><strong>Recent Activity:</strong> Regular players get visibility boosts</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>💡 Leaderboard Tips:</strong>
+            <ul style="margin-top: 10px;">
+                <li>Sign in with Google to save your scores permanently</li>
+                <li>Your best score per difficulty is displayed</li>
+                <li>Leaderboards reset monthly for fresh competition</li>
+                <li>View friends-only leaderboards by connecting your social accounts</li>
+            </ul>
+        </div>
+
+        <h2>⚙️ Game Controls</h2>
+        
+        <h3>Desktop Controls</h3>
+        <ul>
+            <li><strong>Mouse Click:</strong> Select tiles</li>
+            <li><strong>ESC Key:</strong> Pause game / Return to menu</li>
+            <li><strong>R Key:</strong> Restart current game (single player only)</li>
+            <li><strong>Spacebar:</strong> Ready up (multiplayer lobby)</li>
+        </ul>
+
+        <h3>Mobile/Touch Controls</h3>
+        <ul>
+            <li><strong>Tap:</strong> Select tiles</li>
+            <li><strong>Swipe Down:</strong> Access menu</li>
+            <li><strong>Pinch:</strong> Zoom (on larger boards)</li>
+        </ul>
+
+        <h2>❓ Frequently Asked Questions</h2>
+
+        <h3>Q: Can I play offline?</h3>
+        <p><strong>A:</strong> Yes! As a Progressive Web App (PWA), you can install CrazyPuzzle and play single-player mode offline. However, multiplayer and leaderboards require an internet connection.</p>
+
+        <h3>Q: How do I save my progress?</h3>
+        <p><strong>A:</strong> Sign in with your Google account to automatically save scores and track progress across devices.</p>
+
+        <h3>Q: Is there a penalty for incorrect matches?</h3>
+        <p><strong>A:</strong> There's no direct time penalty, but incorrect matches waste time as tiles flip back. Focus on accuracy!</p>
+
+        <h3>Q: Can I customize the game board?</h3>
+        <p><strong>A:</strong> Currently, you can choose from multiple layout styles. Custom themes are coming soon!</p>
+
+        <h3>Q: What happens if I disconnect during multiplayer?</h3>
+        <p><strong>A:</strong> You'll have 30 seconds to reconnect. After that, you'll forfeit the match.</p>
+
+        <h3>Q: How often does the leaderboard update?</h3>
+        <p><strong>A:</strong> Leaderboards update in real-time. Your scores appear immediately after completion.</p>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <h2>Ready to Play?</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Put your skills to the test!</p>
+            <a href="index.html" class="btn">🎮 Start Playing Now</a>
+            <a href="tips-tricks.html" class="btn">💡 More Strategy Tips</a>
+        </div>
+
+        <footer style="text-align: center; margin-top: 60px; padding-top: 30px; border-top: 2px solid #f0f0f0; color: #999;">
+            <p>© 2026 CrazyPuzzle. All rights reserved. | <a href="about.html" style="color: #667eea;">About Us</a> | <a href="faq.html" style="color: #667eea;">FAQ</a></p>
+        </footer>
+    </div>
+</body>
+</html>
