@@ -28,6 +28,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [layout, setLayout] = useState<Layout>('grid');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [pendingRoomIds, setPendingRoomIds] = useState<Set<string>>(new Set());
 
   // Player limits based on difficulty
   const getMaxPlayers = (diff: Difficulty): number => {
@@ -51,6 +52,22 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
         const waitingRooms = allRooms.filter(room => room.status === 'waiting');
         
         setRooms(waitingRooms);
+
+        // Check if the current user has been accepted into any room they were pending for
+        for (const roomId of Array.from(pendingRoomIds)) {
+          const room = data[roomId];
+          if (room && room.players && room.players[user.uid]) {
+            // User was accepted into the room
+            setPendingRoomIds(prev => {
+              const next = new Set(prev);
+              next.delete(roomId);
+              return next;
+            });
+            // Navigate to the game
+            onJoinRoom(roomId, room.difficulty, room.layout);
+            return; // Stop checking other rooms
+          }
+        }
       } else {
         setRooms([]);
       }
@@ -58,7 +75,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user.uid, onJoinRoom, pendingRoomIds]);
 
   const createRoom = async () => {
     try {
@@ -110,6 +127,8 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
         await set(ref(realtimeDb, `rooms/${roomId}/pendingPlayers/${user.uid}`), {
           name: user.displayName || 'Anonymous'
         });
+        // Track that we're waiting for approval for this room
+        setPendingRoomIds(prev => new Set(prev).add(roomId));
         alert('Join request sent! Waiting for host approval...');
       } else {
         alert('Room is full!');
