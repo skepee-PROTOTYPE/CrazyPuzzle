@@ -262,7 +262,7 @@ describe('MultiplayerLobby', () => {
     );
     
     expect(screen.getByText('Room by Host Player')).toBeInTheDocument();
-    expect(screen.getByText(/👥 Players: 1\/2/)).toBeInTheDocument();
+    expect(screen.getByText(/👥 Players: 1\/999/)).toBeInTheDocument();
     expect(screen.getByText(/EASY/)).toBeInTheDocument();
     expect(screen.getByText(/GRID/)).toBeInTheDocument();
   });
@@ -414,7 +414,8 @@ describe('MultiplayerLobby', () => {
         layout: 'grid',
         players: {
           'user-456': { name: 'Host Player', ready: false },
-          'user-789': { name: 'Player 2', ready: false }
+          'user-789': { name: 'Player 2', ready: false },
+          'user-111': { name: 'Player 3', ready: false }
         },
         status: 'waiting',
         createdAt: Date.now()
@@ -437,8 +438,10 @@ describe('MultiplayerLobby', () => {
       />
     );
     
-    const fullButton = screen.getByText('Full');
-    expect(fullButton).toBeDisabled();
+    // Room should show 3/999 players and still allow joining
+    expect(screen.getByText(/👥 Players: 3\/999/)).toBeInTheDocument();
+    const joinButton = screen.getByText('Join Room');
+    expect(joinButton).not.toBeDisabled();
   });
 
   test('filters out non-waiting rooms', () => {
