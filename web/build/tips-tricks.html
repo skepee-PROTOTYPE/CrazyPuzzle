@@ -158,6 +158,21 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            h1 { font-size: 2em !important; }
+            h2 { font-size: 1.5em !important; }
+            h3, h4 { font-size: 1.2em !important; }
+            p, li { font-size: 1em !important; }
+            .technique-grid { grid-template-columns: 1fr; gap: 15px; }
+            .technique-box, .strategy-card { padding: 20px; }
+            .difficulty-badge { font-size: 0.85em; }
+            .btn { padding: 12px 20px; font-size: 1em; display: block; margin: 10px 0; }
+            table { font-size: 0.85em; display: block; overflow-x: auto; }
+            th, td { padding: 8px 6px; }
+            .pro-tip, .stat-highlight { padding: 15px; margin: 15px 0; }
+        }
     </style>
 </head>
 <body>

@@ -213,6 +213,22 @@
         tr:hover {
             background: #f5f5f5;
         }
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            h1 { font-size: 2em !important; }
+            h2 { font-size: 1.5em !important; }
+            h3 { font-size: 1.2em !important; }
+            p, li { font-size: 1em !important; }
+            .difficulty-grid, .game-modes { grid-template-columns: 1fr; gap: 15px; }
+            .difficulty-card, .mode-card { padding: 20px; }
+            .step { flex-direction: column; padding: 15px; }
+            .step-number { margin: 0 auto 15px; }
+            .btn { padding: 12px 20px; font-size: 1em; display: block; margin: 10px 0; }
+            table { font-size: 0.9em; }
+            th, td { padding: 10px 8px; }
+            .search-box input { font-size: 1em; }
+        }
     </style>
 </head>
 <body>

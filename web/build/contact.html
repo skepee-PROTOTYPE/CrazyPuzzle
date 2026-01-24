@@ -119,6 +119,20 @@
         li {
             margin: 10px 0;
         }
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            h1 { font-size: 2em !important; }
+            h2 { font-size: 1.5em !important; }
+            h3 { font-size: 1.2em !important; }
+            p, li { font-size: 1em !important; }
+            .contact-grid { grid-template-columns: 1fr; gap: 20px; }
+            .contact-card { padding: 20px; }
+            .contact-icon { font-size: 2.5em; }
+            .btn { padding: 12px 20px; font-size: 1em; display: block; margin: 10px 0; }
+            .info-box, .response-time { padding: 15px; }
+            div[style*="columns: 2"] { columns: 1 !important; }
+        }
     </style>
 </head>
 <body>
