@@ -30,10 +30,9 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [pendingRoomIds, setPendingRoomIds] = useState<Set<string>>(new Set());
 
-  // Player limits based on difficulty
+  // No player limits - room owner controls by accepting/denying
   const getMaxPlayers = (diff: Difficulty): number => {
-    const limits = { easy: 2, medium: 3, hard: 4 };
-    return limits[diff];
+    return 999; // Unlimited - owner decides by accepting players
   };
 
   useEffect(() => {

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Frequently Asked Questions about CrazyPuzzle</title>
+    <meta name="description" content="Find answers to common questions about CrazyPuzzle. Learn about gameplay, accounts, technical issues, multiplayer, privacy, and more.">
+    <meta name="keywords" content="CrazyPuzzle FAQ, help, support, questions, troubleshooting, game help">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin: 40px 0 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .faq-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+        .faq-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        .question {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .question::before {
+            content: "Q:";
+            color: #764ba2;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        .answer {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.8;
+            padding-left: 35px;
+        }
+        .answer strong {
+            color: #333;
+        }
+        .category-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .help-box {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+        }
+        .search-box {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            outline: none;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❓ Frequently Asked Questions</h1>
+            <p style="font-size: 1.2em; color: #764ba2;">Get quick answers to common questions about CrazyPuzzle</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search for answers..." onkeyup="searchFAQ()">
+        </div>
+
+        <h2>🎮 Gameplay Questions</h2>
+
+        <div class="faq-item">
+            <div class="question">How do I play CrazyPuzzle?</div>
+            <div class="answer">
+                Click on tiles to reveal their patterns, then click another tile to find its match. If the two tiles match, they disappear. If they don't match, they flip back. Continue until you've cleared the entire board. The faster you complete it, the higher your rank on the leaderboard! For detailed instructions, check our <a href="how-to-play.html" style="color: #667eea;">How to Play guide</a>.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">What's the difference between Easy, Medium, and Hard modes?</div>
+            <div class="answer">
+                <strong>Easy:</strong> 4×4 grid with 8 pairs (16 tiles total) - great for beginners<br>
+                <strong>Medium:</strong> 6×6 grid with 18 pairs (36 tiles total) - balanced challenge<br>
+                <strong>Hard:</strong> 8×8 grid with 32 pairs (64 tiles total) - expert level difficulty
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Is there a time limit?</div>
+            <div class="answer">
+                There's no strict time limit that ends your game, but your completion time is tracked and determines your leaderboard position. Faster times result in higher rankings. You can take as long as you need to complete a puzzle.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Can I pause the game?</div>
+            <div class="answer">
+                Yes! In single-player mode, press ESC or click the menu button to pause. Your timer will stop while paused. Note that multiplayer games cannot be paused since they involve real-time competition with other players.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">How is my score calculated?</div>
+            <div class="answer">
+                Your score is primarily based on completion time (faster = better). The difficulty level acts as a multiplier, so a Hard mode completion ranks higher than an Easy mode completion with the same time. Match accuracy also contributes a small bonus to your score.
+            </div>
+        </div>
+
+        <h2>👥 Multiplayer Questions</h2>
+
+        <div class="faq-item">
+            <div class="question">How does multiplayer mode work?</div>
+            <div class="answer">
+                Multiplayer allows you to compete against 2-4 players in real-time. All players get the same board configuration. The first player to completely clear their board wins. You can create a private room for friends or join public rooms for quick matches.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">How do I play with friends?</div>
+            <div class="answer">
+                Click "Multiplayer" → "Create Room" → Choose your difficulty level → Share the room code with your friends → They join using "Join Room" and entering your code → When everyone's ready, the host starts the game.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">What happens if I disconnect during a multiplayer game?</div>
+            <div class="answer">
+                If you disconnect, you have 30 seconds to reconnect and resume your game. After 30 seconds, you'll automatically forfeit the match. Make sure you have a stable internet connection before starting multiplayer games!
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Can I chat with other players?</div>
+            <div class="answer">
+                Currently, there's no built-in chat feature to keep the game focused and family-friendly. You can use external communication tools like Discord, Facebook Messenger, or phone calls to coordinate with friends while playing.
+            </div>
+        </div>
+
+        <h2>👤 Account & Progress</h2>
+
+        <div class="faq-item">
+            <div class="question">Do I need to create an account to play?</div>
+            <div class="answer">
+                No! You can play as a guest without signing in. However, signing in with Google is recommended because it saves your scores, tracks your progress across devices, and allows you to appear on the global leaderboard.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">How do I save my progress?</div>
+            <div class="answer">
+                Click the "Sign in with Google" button. Once signed in, all your scores, stats, and achievements are automatically saved to the cloud. You can then access your progress from any device by signing in with the same Google account.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Can I play on multiple devices?</div>
+            <div class="answer">
+                Yes! As long as you're signed in with your Google account, your progress syncs across all devices. Play on your phone during commute, then switch to your computer at home without losing any progress.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">How do I delete my account and data?</div>
+            <div class="answer">
+                Visit our <a href="data-deletion.html" style="color: #667eea;">Data Deletion page</a> for instructions. You can request complete deletion of all your personal data, including scores, profile information, and game history. We'll process your request within 30 days.
+            </div>
+        </div>
+
+        <h2>🏆 Leaderboards & Rankings</h2>
+
+        <div class="faq-item">
+            <div class="question">How do I get on the leaderboard?</div>
+            <div class="answer">
+                Sign in with your Google account and complete at least one game. Your best time for each difficulty level will automatically appear on the corresponding leaderboard. Keep playing to improve your times and climb the rankings!
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">How often do leaderboards update?</div>
+            <div class="answer">
+                Leaderboards update in real-time! As soon as you complete a game with a better time than your previous record, it's instantly reflected on the leaderboard. You'll see your new ranking within seconds.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Are there separate leaderboards for each difficulty?</div>
+            <div class="answer">
+                Yes! There's a dedicated leaderboard for Easy, Medium, and Hard modes. This ensures fair competition—Easy mode players compete with Easy mode times, Hard mode players compete with Hard mode times, etc.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Do leaderboards reset?</div>
+            <div class="answer">
+                The main leaderboards reset monthly to give everyone a fresh chance to reach the top. Your all-time best scores are still tracked in your personal profile. Monthly resets keep the competition exciting and give new players opportunities to rank high.
+            </div>
+        </div>
+
+        <h2>⚙️ Technical Issues</h2>
+
+        <div class="faq-item">
+            <div class="question">The game won't load. What should I do?</div>
+            <div class="answer">
+                Try these steps in order:
+                <ol style="margin-top: 10px;">
+                    <li>Refresh the page (Ctrl+R or Cmd+R)</li>
+                    <li>Clear your browser cache and cookies</li>
+                    <li>Try a different browser (Chrome, Firefox, Safari, Edge)</li>
+                    <li>Disable browser extensions (especially ad blockers)</li>
+                    <li>Check your internet connection</li>
+                </ol>
+                If problems persist, try accessing the game in incognito/private mode.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">The game is laggy or slow. How can I fix it?</div>
+            <div class="answer">
+                <strong>Common solutions:</strong><br>
+                • Close other browser tabs and applications<br>
+                • Disable browser extensions temporarily<br>
+                • Update your browser to the latest version<br>
+                • On mobile: close background apps<br>
+                • Ensure you have a stable internet connection (for multiplayer)<br>
+                • Try reducing screen zoom to 100%
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">I can't sign in with Google. Help!</div>
+            <div class="answer">
+                This is usually caused by:
+                <ol style="margin-top: 10px;">
+                    <li><strong>Pop-up blockers:</strong> Allow pop-ups for crazypuzzlecrazy.web.app</li>
+                    <li><strong>Third-party cookies disabled:</strong> Enable cookies in browser settings</li>
+                    <li><strong>Incognito mode:</strong> Google sign-in may not work in private browsing</li>
+                    <li><strong>Browser extensions:</strong> Disable privacy/security extensions temporarily</li>
+                </ol>
+                Try using a different browser if the issue persists.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Does CrazyPuzzle work on mobile devices?</div>
+            <div class="answer">
+                Yes! CrazyPuzzle is fully responsive and works perfectly on smartphones and tablets (iOS and Android). You can even install it as a Progressive Web App (PWA) for an app-like experience. Just visit the site in your mobile browser and look for the "Add to Home Screen" option.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Can I play offline?</div>
+            <div class="answer">
+                Single-player mode can be played offline once you've loaded the game at least once (thanks to PWA technology). However, multiplayer mode, leaderboards, and score syncing require an active internet connection.
+            </div>
+        </div>
+
+        <h2>💰 Pricing & Ads</h2>
+
+        <div class="faq-item">
+            <div class="question">Is CrazyPuzzle free to play?</div>
+            <div class="answer">
+                Yes! CrazyPuzzle is 100% free to play. All features, including multiplayer mode, leaderboards, and all difficulty levels, are available at no cost. There are no hidden fees, subscriptions, or required purchases.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Are there ads in the game?</div>
+            <div class="answer">
+                We use minimal, non-intrusive ads to support ongoing development and server costs. Ads appear between games, never during gameplay. This ensures your puzzle-solving experience is never interrupted. We're exploring a premium ad-free option for the future.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Will there be in-app purchases?</div>
+            <div class="answer">
+                Currently, there are no in-app purchases. The game is completely free. If we introduce premium features in the future (like custom themes or exclusive tournaments), we'll ensure the core game remains free and accessible to everyone.
+            </div>
+        </div>
+
+        <h2>🔒 Privacy & Security</h2>
+
+        <div class="faq-item">
+            <div class="question">What data do you collect?</div>
+            <div class="answer">
+                We only collect essential data:
+                <ul style="margin-top: 10px;">
+                    <li>Google profile information (name, profile picture) if you sign in</li>
+                    <li>Game scores and completion times</li>
+                    <li>Basic device/browser information for technical support</li>
+                </ul>
+                We never sell your data. Read our full <a href="privacy-policy.html" style="color: #667eea;">Privacy Policy</a> for details.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Is my data secure?</div>
+            <div class="answer">
+                Yes. We use Firebase/Firestore (Google's secure cloud platform) for all data storage. All communications are encrypted with HTTPS. We follow industry-standard security practices to protect your information.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Do you share my data with third parties?</div>
+            <div class="answer">
+                No. We do not sell, trade, or share your personal data with third parties for marketing purposes. The only third-party service we use is Firebase (owned by Google) for authentication and data storage.
+            </div>
+        </div>
+
+        <h2>🎨 Customization & Features</h2>
+
+        <div class="faq-item">
+            <div class="question">Can I change the tile designs?</div>
+            <div class="answer">
+                You can choose from multiple layout styles when starting a game. We're working on adding more customization options, including custom color themes and tile pattern sets. Follow our Facebook page for updates on new features!
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Will there be more game modes in the future?</div>
+            <div class="answer">
+                Yes! We're constantly working on new features. Planned additions include:
+                <ul style="margin-top: 10px;">
+                    <li>🏆 Tournament mode with scheduled competitions</li>
+                    <li>🎖️ Achievement system with unlockable badges</li>
+                    <li>📊 Detailed statistics and progress tracking</li>
+                    <li>👥 Friend challenges and private leaderboards</li>
+                    <li>🌐 Additional languages and localization</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question">Can I suggest new features?</div>
+            <div class="answer">
+                Absolutely! We love hearing from our community. Share your ideas through:
+                <ul style="margin-top: 10px;">
+                    <li>Facebook: <a href="https://facebook.com/crazypuzzlegame" style="color: #667eea;">@CrazyPuzzleGame</a></li>
+                    <li>Email: feedback@crazypuzzle.com</li>
+                </ul>
+                Many of our best features come from player suggestions!
+            </div>
+        </div>
+
+        <h2>🆘 Still Need Help?</h2>
+
+        <div class="help-box">
+            <h3 style="color: #667eea; margin-top: 0;">Contact Support</h3>
+            <p>
+                Can't find the answer you're looking for? We're here to help!
+            </p>
+            <p>
+                <strong>📧 Email:</strong> support@crazypuzzle.com<br>
+                <strong>📱 Facebook:</strong> <a href="https://facebook.com/crazypuzzlegame" style="color: #667eea;">Message us on Facebook</a><br>
+                <strong>⏰ Response Time:</strong> Usually within 24 hours
+            </p>
+            <p style="margin-top: 20px;">
+                <strong>Before contacting support, please include:</strong>
+            </p>
+            <ul>
+                <li>Your device type (iPhone, Android, Computer)</li>
+                <li>Browser you're using (Chrome, Safari, Firefox, etc.)</li>
+                <li>Description of the issue</li>
+                <li>Screenshots if applicable</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <h2>Ready to Play?</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Got your questions answered? Time to test your skills!</p>
+            <a href="index.html" class="btn">🎮 Play Now</a>
+            <a href="how-to-play.html" class="btn">📖 How to Play</a>
+            <a href="tips-tricks.html" class="btn">💡 Tips & Tricks</a>
+        </div>
+
+        <footer style="text-align: center; margin-top: 60px; padding-top: 30px; border-top: 2px solid #f0f0f0; color: #999;">
+            <p>© 2026 CrazyPuzzle. All rights reserved. | <a href="about.html" style="color: #667eea;">About</a> | <a href="privacy-policy.html" style="color: #667eea;">Privacy</a></p>
+        </footer>
+    </div>
+
+    <script>
+        function searchFAQ() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const items = document.getElementsByClassName('faq-item');
+            
+            for (let i = 0; i < items.length; i++) {
+                const question = items[i].getElementsByClassName('question')[0];
+                const answer = items[i].getElementsByClassName('answer')[0];
+                const questionText = question.textContent || question.innerText;
+                const answerText = answer.textContent || answer.innerText;
+                
+                if (questionText.toLowerCase().indexOf(filter) > -1 || answerText.toLowerCase().indexOf(filter) > -1) {
+                    items[i].style.display = "";
+                } else {
+                    items[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

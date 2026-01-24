@@ -40,10 +40,9 @@ interface MultiplayerGameProps {
 function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBackToMenu }: MultiplayerGameProps) {
   const gridSizes: Record<Difficulty, number> = { easy: 4, medium: 6, hard: 8 };
   
-  // Get max players based on difficulty
+  // No player limits - room owner controls by accepting/denying
   const getMaxPlayers = (diff: Difficulty): number => {
-    const limits = { easy: 2, medium: 3, hard: 4 };
-    return limits[diff];
+    return 999; // Unlimited - owner decides by accepting players
   };
 
   const [gameState, setGameState] = useState<GameState | null>(null);
