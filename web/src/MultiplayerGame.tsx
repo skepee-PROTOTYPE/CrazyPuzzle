@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { User } from 'firebase/auth';
 import { realtimeDb } from './firebase';
 import { ref, onValue, set, get, update, remove, runTransaction } from 'firebase/database';
@@ -92,28 +92,23 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
 
   const handleReady = async () => {
     await set(ref(realtimeDb, `rooms/${roomId}/players/${user.uid}/ready`), true);
-    
-    // Check if all players are ready to start the game
-    const snapshot = await get(ref(realtimeDb, `rooms/${roomId}`));
-    if (snapshot.exists()) {
-      const room = snapshot.val();
-      const players = room.players || {};
-      const allReady = Object.values(players).every((p: any) => p.ready);
-      
-      if (allReady && Object.keys(players).length >= 2) {
-        startGame();
-      }
-    }
   };
 
-  const startGame = async () => {
+  const startGame = useCallback(async () => {
+    // Get current game state to determine grid size
+    const snapshot = await get(ref(realtimeDb, `rooms/${roomId}`));
+    if (!snapshot.exists()) return;
+    
+    const room = snapshot.val();
+    const gridSizes: Record<Difficulty, number> = { easy: 4, medium: 6, hard: 8 };
+    const gridSize = gridSizes[room.difficulty as Difficulty] || 4;
+    const totalTiles = gridSize * gridSize;
     const safeTotal = totalTiles % 2 === 0 ? totalTiles : totalTiles - 1;
     const pairCount = safeTotal / 2;
     const numbers = Array.from({ length: pairCount }, (_, i) => i + 1);
     const shuffledTiles = [...numbers, ...numbers].sort(() => Math.random() - 0.5);
 
-    const snapshot = await get(ref(realtimeDb, `rooms/${roomId}/players`));
-    const players = snapshot.val();
+    const players = room.players;
     const playerIds = Object.keys(players);
 
     // Initialize player scores
@@ -134,7 +129,21 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
       startTime: Date.now(),
       flippedTiles: []
     });
-  };
+  }, [roomId]);
+
+  // Auto-start game when all players are ready
+  useEffect(() => {
+    if (gameState?.status === 'waiting' && gameState.players) {
+      const players = Object.values(gameState.players);
+      const allReady = players.every((p: any) => p.ready);
+      const enoughPlayers = players.length >= 2;
+      
+      // Only the host should trigger the game start to avoid race conditions
+      if (allReady && enoughPlayers && gameState.hostId === user.uid) {
+        startGame();
+      }
+    }
+  }, [gameState?.status, gameState?.players, gameState?.hostId, user.uid, startGame]);
 
   const handleTileClick = async (index: number) => {
     if (!gameState || !isMyTurn || gameState.status !== 'playing') return;
@@ -259,7 +268,6 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
   // Use the actual difficulty from gameState
   const actualDifficulty = gameState.difficulty || difficulty;
   const gridSize = gridSizes[actualDifficulty] || 4;
-  const totalTiles = gridSize * gridSize;
   const maxPlayers = getMaxPlayers(actualDifficulty);
 
   const players = Object.entries(gameState.players || {});
