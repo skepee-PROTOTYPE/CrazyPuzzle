@@ -316,10 +316,93 @@ describe('MultiplayerLobby', () => {
       expect(mockFirebase.set).toHaveBeenCalled();
       const setCall = mockFirebase.set.mock.calls[0];
       expect(setCall[1]).toEqual({ name: mockUser.displayName });
-      expect(mockAlert).toHaveBeenCalledWith('Join request sent! Waiting for host approval...');
     });
     
     mockAlert.mockRestore();
+  });
+
+  test('auto-navigates to game when pending player is accepted', async () => {
+    // Setup: room exists with pending player
+    const roomWithPending = {
+      'room-1': {
+        hostId: 'user-456',
+        hostName: 'Host Player',
+        difficulty: 'medium',
+        layout: 'circle',
+        players: {
+          'user-456': { name: 'Host Player', ready: false }
+        },
+        pendingPlayers: {
+          'user-123': { name: 'Test User' } // Current user in pending
+        },
+        status: 'waiting',
+        createdAt: Date.now()
+      }
+    };
+
+    let callbackFunction: any = null;
+
+    mockFirebase.onValue.mockImplementation((ref: any, callback: any) => {
+      callbackFunction = callback;
+      callback({ 
+        val: () => roomWithPending,
+        exists: () => true
+      });
+      return jest.fn();
+    });
+
+    mockFirebase.get.mockResolvedValue({
+      val: () => roomWithPending['room-1'],
+      exists: () => true
+    });
+
+    mockFirebase.set.mockResolvedValue(undefined);
+
+    render(
+      <MultiplayerLobby
+        user={mockUser}
+        onJoinRoom={mockOnJoinRoom}
+        onBackToSinglePlayer={mockOnBackToSinglePlayer}
+      />
+    );
+
+    // Simulate joining - adds to pendingRoomIds  
+    const joinButton = screen.getByText('Join Room');
+    fireEvent.click(joinButton);
+
+    await waitFor(() => {
+      expect(mockFirebase.set).toHaveBeenCalled();
+    });
+
+    // Simulate host accepting user - player moves to players list
+    const roomWithAcceptedPlayer = {
+      'room-1': {
+        hostId: 'user-456',
+        hostName: 'Host Player',
+        difficulty: 'medium',
+        layout: 'circle',
+        players: {
+          'user-456': { name: 'Host Player', ready: false },
+          'user-123': { name: 'Test User', ready: true } // Moved from pending
+        },
+        pendingPlayers: {}, // No longer pending
+        status: 'waiting',
+        createdAt: Date.now()
+      }
+    };
+
+    // Trigger Firebase callback again with accepted player
+    if (callbackFunction) {
+      callbackFunction({
+        val: () => roomWithAcceptedPlayer,
+        exists: () => true
+      });
+    }
+
+    // Verify auto-navigation happened
+    await waitFor(() => {
+      expect(mockOnJoinRoom).toHaveBeenCalledWith('room-1', 'medium', 'circle');
+    }, { timeout: 3000 });
   });
 
   test('disables join button for full rooms', () => {

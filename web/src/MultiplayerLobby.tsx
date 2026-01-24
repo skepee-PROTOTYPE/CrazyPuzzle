@@ -102,8 +102,6 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
       setShowCreateModal(false);
       onJoinRoom(newRoomRef.key!, difficulty, layout);
     } catch (error: any) {
-      console.error('Full error:', JSON.stringify(error, null, 2));
-      
       const errorMsg = error.code === 'PERMISSION_DENIED' 
         ? 'Permission denied. Your Firebase Realtime Database security rules may have expired. Please update them in the Firebase Console.'
         : `Failed to create room: ${error.message}`;
@@ -129,9 +127,8 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
         });
         // Track that we're waiting for approval for this room
         setPendingRoomIds(prev => new Set(prev).add(roomId));
-        alert('Join request sent! Waiting for host approval...');
       } else {
-        alert('Room is full!');
+        // Room is full - silently fail, button should already be disabled
       }
     }
   };
@@ -141,7 +138,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
       try {
         await remove(ref(realtimeDb, `rooms/${roomId}`));
       } catch (error) {
-        alert('Failed to delete room');
+        // Silently fail - room deletion is not critical
       }
     }
   };

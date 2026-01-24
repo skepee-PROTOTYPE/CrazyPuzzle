@@ -240,7 +240,7 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
     const maxPlayers = getMaxPlayers(gameState.difficulty);
     
     if (currentPlayerCount >= maxPlayers) {
-      alert(`Room is full! Maximum ${maxPlayers} players allowed for ${gameState.difficulty} difficulty.`);
+      // Room is full, reject the pending player silently
       await remove(ref(realtimeDb, `rooms/${roomId}/pendingPlayers/${playerId}`));
       return;
     }
