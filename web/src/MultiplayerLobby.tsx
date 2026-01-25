@@ -83,14 +83,15 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
       
       const newRoomRef = push(roomsRef);
       
+      const firstName = (user.displayName || 'Anonymous').split(' ')[0];
       const room = {
         hostId: user.uid,
-        hostName: user.displayName || 'Anonymous',
+        hostName: firstName,
         difficulty,
         layout,
         players: {
           [user.uid]: {
-            name: user.displayName || 'Anonymous',
+            name: firstName,
             ready: false
           }
         },
@@ -121,8 +122,9 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
       
       if (playerCount + pendingCount < maxPlayers) {
         // Send join request to pending instead of directly joining
+        const firstName = (user.displayName || 'Anonymous').split(' ')[0];
         await set(ref(realtimeDb, `rooms/${roomId}/pendingPlayers/${user.uid}`), {
-          name: user.displayName || 'Anonymous'
+          name: firstName
         });
         // Track that we're waiting for approval for this room
         setPendingRoomIds(prev => new Set(prev).add(roomId));

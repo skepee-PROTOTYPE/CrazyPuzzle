@@ -151,10 +151,13 @@ function App() {
           setUserStats({ singlePlayerPoints, multiplayerPoints });
           
           // Save/update displayName in Firebase if user is logged in with a name
-          if (currentDisplayName && data?.displayName !== currentDisplayName) {
-            import('firebase/database').then(({ update }) => {
-              update(userStatsRef, { displayName: currentDisplayName });
-            });
+          if (currentDisplayName) {
+            const firstName = currentDisplayName.split(' ')[0];
+            if (data?.displayName !== firstName) {
+              import('firebase/database').then(({ update }) => {
+                update(userStatsRef, { displayName: firstName });
+              });
+            }
           }
         });
       } catch (error) {

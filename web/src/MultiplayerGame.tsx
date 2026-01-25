@@ -203,9 +203,12 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
               const currentGames = current?.multiplayerGamesPlayed || 0;
               
               // Use current user's displayName if it's the current user, otherwise preserve existing displayName
-              const displayNameToUse = playerId === user.uid 
+              const fullName = playerId === user.uid 
                 ? (user.displayName || player.name || `Player ${playerId.slice(0, 8)}`)
                 : (current?.displayName || player.name || `Player ${playerId.slice(0, 8)}`);
+              
+              // Extract first name only (before first space)
+              const displayNameToUse = fullName.split(' ')[0];
               
               return {
                 multiplayerPoints: currentPoints + finalScore,
