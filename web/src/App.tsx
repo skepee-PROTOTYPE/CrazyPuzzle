@@ -126,9 +126,10 @@ function App() {
       }
     };
   }, []);
-  // Fetch user stats
+  // Fetch user stats and ensure displayName is saved
   useEffect(() => {
     const currentUserId = platformUser?.uid || user?.uid;
+    const currentDisplayName = platformUser?.displayName || user?.displayName;
     
     if (!currentUserId) {
       setUserStats({ singlePlayerPoints: 0, multiplayerPoints: 0 });
@@ -148,6 +149,13 @@ function App() {
           const data = snapshot.val();
           const multiplayerPoints = data?.multiplayerPoints || 0;
           setUserStats({ singlePlayerPoints, multiplayerPoints });
+          
+          // Save/update displayName in Firebase if user is logged in with a name
+          if (currentDisplayName && data?.displayName !== currentDisplayName) {
+            import('firebase/database').then(({ update }) => {
+              update(userStatsRef, { displayName: currentDisplayName });
+            });
+          }
         });
       } catch (error) {
       }
