@@ -5,7 +5,11 @@ import styles from './Leaderboard.module.scss';
 
 interface LeaderboardEntry {
   userId: string;
+  displayName: string;
   points: number;
+  wins: number;
+  gamesPlayed: number;
+  winRate: number;
 }
 
 function MultiplayerLeaderboard() {
@@ -19,10 +23,21 @@ function MultiplayerLeaderboard() {
       const data = snapshot.val();
       if (data) {
         const entries: LeaderboardEntry[] = Object.entries(data)
-          .map(([userId, stats]: [string, any]) => ({
-            userId,
-            points: stats.multiplayerPoints || 0
-          }))
+          .map(([userId, stats]: [string, any]) => {
+            const gamesPlayed = stats.multiplayerGamesPlayed || 0;
+            const wins = stats.multiplayerWins || 0;
+            const winRate = gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 100) : 0;
+            
+            return {
+              userId,
+              displayName: stats.displayName || `Player ${userId.slice(0, 8)}`,
+              points: stats.multiplayerPoints || 0,
+              wins: wins,
+              gamesPlayed: gamesPlayed,
+              winRate: winRate
+            };
+          })
+          .filter(entry => entry.gamesPlayed > 0) // Only show players who have played
           .sort((a, b) => b.points - a.points)
           .slice(0, 10);
         setLeaderboard(entries);
@@ -54,7 +69,17 @@ function MultiplayerLeaderboard() {
           {leaderboard.map((entry, index) => (
             <div key={entry.userId} className={styles.scoreItem}>
               <span className={styles.rank}>#{index + 1}</span>
-              <span className={styles.playerName}>Player {entry.userId.slice(0, 8)}</span>
+              <div className={styles.playerInfo}>
+                <span className={styles.playerName}>{entry.displayName}</span>
+                <div className={styles.playerStats}>
+                  <span className={styles.statBadge}>
+                    🏆 {entry.wins}W/{entry.gamesPlayed}G
+                  </span>
+                  <span className={styles.statBadge}>
+                    📊 {entry.winRate}%
+                  </span>
+                </div>
+              </div>
               <span className={styles.score}>{entry.points} pts</span>
             </div>
           ))}

@@ -179,14 +179,39 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
         ) + 2 >= gameState.tiles.length;
 
         if (allMatched) {
-          // Update user stats for all players
+          // Determine winner (highest score)
           const playerEntries = Object.entries(gameState.players);
+          let maxScore = -1;
+          let winnerId = '';
+          
           for (const [playerId, player] of playerEntries) {
             const finalScore = playerId === user.uid ? newScore : player.score;
+            if (finalScore > maxScore) {
+              maxScore = finalScore;
+              winnerId = playerId;
+            }
+          }
+          
+          // Update user stats for all players
+          for (const [playerId, player] of playerEntries) {
+            const finalScore = playerId === user.uid ? newScore : player.score;
+            const isWinner = playerId === winnerId;
+            
             await runTransaction(ref(realtimeDb, `userStats/${playerId}`), (current) => {
               const currentPoints = current?.multiplayerPoints || 0;
+              const currentWins = current?.multiplayerWins || 0;
+              const currentGames = current?.multiplayerGamesPlayed || 0;
+              
+              // Use current user's displayName if it's the current user, otherwise preserve existing displayName
+              const displayNameToUse = playerId === user.uid 
+                ? (user.displayName || player.name || `Player ${playerId.slice(0, 8)}`)
+                : (current?.displayName || player.name || `Player ${playerId.slice(0, 8)}`);
+              
               return {
-                multiplayerPoints: currentPoints + finalScore
+                multiplayerPoints: currentPoints + finalScore,
+                multiplayerWins: isWinner ? currentWins + 1 : currentWins,
+                multiplayerGamesPlayed: currentGames + 1,
+                displayName: displayNameToUse
               };
             });
           }
