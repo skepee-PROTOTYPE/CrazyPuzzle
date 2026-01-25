@@ -315,7 +315,8 @@ describe('MultiplayerLobby', () => {
       // Now joining creates a pending request instead of immediately joining
       expect(mockFirebase.set).toHaveBeenCalled();
       const setCall = mockFirebase.set.mock.calls[0];
-      expect(setCall[1]).toEqual({ name: mockUser.displayName });
+      // Expect only first name (before space)
+      expect(setCall[1]).toEqual({ name: mockUser.displayName.split(' ')[0] });
     });
     
     mockAlert.mockRestore();
