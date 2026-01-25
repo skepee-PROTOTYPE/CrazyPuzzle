@@ -316,7 +316,8 @@ describe('MultiplayerLobby', () => {
       expect(mockFirebase.set).toHaveBeenCalled();
       const setCall = mockFirebase.set.mock.calls[0];
       // Expect only first name (before space)
-      expect(setCall[1]).toEqual({ name: mockUser.displayName.split(' ')[0] });
+      const firstName = (mockUser.displayName || 'Anonymous').split(' ')[0];
+      expect(setCall[1]).toEqual({ name: firstName });
     });
     
     mockAlert.mockRestore();
