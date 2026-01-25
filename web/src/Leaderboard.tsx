@@ -128,7 +128,7 @@ function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
             {leaderboard.map((entry, index) => (
               <tr key={entry.id}>
                 <td className={styles.rank}>{index + 1}</td>
-                <td>{entry.userName}</td>
+                <td>{entry.userName.split(' ')[0]}</td>
                 <td>{entry.time}s</td>
                 <td className={styles.score}>{entry.score}</td>
               </tr>
