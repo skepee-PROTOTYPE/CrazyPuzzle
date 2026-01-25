@@ -81,9 +81,12 @@ function PuzzleBoard({ difficulty, layout, user, onScore, onComplete }: PuzzleBo
     if (!user) return;
     
     try {
+      const fullName = user.displayName || 'Anonymous';
+      const firstName = fullName.split(' ')[0];
+      
       await addDoc(collection(db, 'scores'), {
         userId: user.uid,
-        userName: user.displayName || 'Anonymous',
+        userName: firstName,
         score,
         time,
         difficulty,
