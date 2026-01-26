@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { db } from './firebase';
+import { db, realtimeDb } from './firebase';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { ref, onValue } from 'firebase/database';
 import styles from './Leaderboard.module.scss';
 
 interface LeaderboardProps {
-  difficulty: string;
-  layout: string;
-  score: number;
-  timer: number;
+  mode?: 'singleplayer' | 'multiplayer';
+  difficulty?: string;
+  layout?: string;
+  score?: number;
+  timer?: number;
 }
 
 interface Score {
@@ -20,12 +22,25 @@ interface Score {
   createdAt: any;
 }
 
-function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
+interface MultiplayerEntry {
+  userId: string;
+  displayName: string;
+  points: number;
+  wins: number;
+  gamesPlayed: number;
+  winRate: number;
+}
+
+function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'grid', score = 0, timer = 0 }: LeaderboardProps) {
   const [leaderboard, setLeaderboard] = useState<Score[]>([]);
+  const [multiplayerLeaderboard, setMultiplayerLeaderboard] = useState<MultiplayerEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
+  // Singleplayer leaderboard effect
   useEffect(() => {
+    if (mode !== 'singleplayer') return;
+
     const fetchLeaderboard = async () => {
       try {
         setLoading(true);
@@ -80,17 +95,90 @@ function Leaderboard({ difficulty, layout, score, timer }: LeaderboardProps) {
     };
     
     fetchLeaderboard();
-  }, [difficulty, layout, score, timer]);
+  }, [mode, difficulty, layout, score, timer]);
+
+  // Multiplayer leaderboard effect
+  useEffect(() => {
+    if (mode !== 'multiplayer') return;
+
+    setLoading(true);
+    const statsRef = ref(realtimeDb, 'userStats');
+    
+    const unsubscribe = onValue(statsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const entries: MultiplayerEntry[] = Object.entries(data)
+          .map(([userId, stats]: [string, any]) => {
+            const gamesPlayed = stats.multiplayerGamesPlayed || 0;
+            const wins = stats.multiplayerWins || 0;
+            const winRate = gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 100) : 0;
+            
+            return {
+              userId,
+              displayName: stats.displayName || `Player ${userId.slice(0, 8)}`,
+              points: stats.multiplayerPoints || 0,
+              wins: wins,
+              gamesPlayed: gamesPlayed,
+              winRate: winRate
+            };
+          })
+          .filter(entry => entry.gamesPlayed > 0) // Only show players who have played
+          .sort((a, b) => b.points - a.points)
+          .slice(0, 10);
+        setMultiplayerLeaderboard(entries);
+      } else {
+        setMultiplayerLeaderboard([]);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [mode]);
 
   if (loading) {
     return (
       <div className={styles.leaderboardCard}>
-        <h3 className={styles.leaderboardTitle}>Leaderboard</h3>
-        <div className={styles.noScores}>Loading leaderboard...</div>
+        <h3 className={styles.leaderboardTitle}>
+          {mode === 'multiplayer' ? '🏆 Multiplayer Leaderboard' : 'Leaderboard'}
+        </h3>
+        <div className={styles.noScores}>Loading{mode === 'multiplayer' ? '...' : ' leaderboard...'}</div>
       </div>
     );
   }
 
+  // Render multiplayer leaderboard
+  if (mode === 'multiplayer') {
+    return (
+      <div className={styles.leaderboardCard}>
+        <h3 className={styles.leaderboardTitle}>🏆 Multiplayer Leaderboard</h3>
+        {multiplayerLeaderboard.length === 0 ? (
+          <div className={styles.noScores}>No multiplayer games played yet</div>
+        ) : (
+          <div className={styles.scoresList}>
+            {multiplayerLeaderboard.map((entry, index) => (
+              <div key={entry.userId} className={styles.scoreItem}>
+                <span className={styles.rank}>#{index + 1}</span>
+                <div className={styles.playerInfo}>
+                  <span className={styles.playerName}>{entry.displayName}</span>
+                  <div className={styles.playerStats}>
+                    <span className={styles.statBadge}>
+                      🏆 {entry.wins}W/{entry.gamesPlayed}G
+                    </span>
+                    <span className={styles.statBadge}>
+                      📊 {entry.winRate}%
+                    </span>
+                  </div>
+                </div>
+                <span className={styles.score}>{entry.points} pts</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Render singleplayer leaderboard
   return (
     <div className={styles.leaderboardCard}>
       <h3 className={styles.leaderboardTitle}>

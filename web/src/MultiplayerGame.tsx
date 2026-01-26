@@ -3,7 +3,7 @@ import { User } from 'firebase/auth';
 import { realtimeDb } from './firebase';
 import { ref, onValue, set, get, update, remove, runTransaction } from 'firebase/database';
 import { Difficulty, Layout } from './DifficultySelector';
-import MultiplayerLeaderboard from './MultiplayerLeaderboard';
+import Leaderboard from './Leaderboard';
 import { facebookAds } from './facebookAds';
 import { isFacebookInstantGame } from './platform';
 import styles from './MultiplayerGame.module.scss';
@@ -420,7 +420,7 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
               <p className={styles.readyMessage}>Waiting for other players to ready up...</p>
             )}
           </div>
-          <MultiplayerLeaderboard />
+          <Leaderboard mode="multiplayer" />
         </>
       )}
 
@@ -454,7 +454,7 @@ function MultiplayerGame({ roomId, user, difficulty, layout, onLeaveRoom, onBack
               })}
             </div>
           </div>
-          <MultiplayerLeaderboard />
+          <Leaderboard mode="multiplayer" />
         </>
       )}
 

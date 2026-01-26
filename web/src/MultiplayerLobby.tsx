@@ -3,7 +3,7 @@ import { User } from 'firebase/auth';
 import { realtimeDb } from './firebase';
 import { ref, push, onValue, set, get, remove } from 'firebase/database';
 import DifficultySelector, { Difficulty, Layout } from './DifficultySelector';
-import MultiplayerLeaderboard from './MultiplayerLeaderboard';
+import Leaderboard from './Leaderboard';
 import styles from './MultiplayerLobby.module.scss';
 
 interface Room {
@@ -273,7 +273,7 @@ function MultiplayerLobby({ user, onJoinRoom, onBackToSinglePlayer }: Multiplaye
         )}
       </div>
 
-      <MultiplayerLeaderboard />
+      <Leaderboard mode="multiplayer" />
     </div>
   );
 }
