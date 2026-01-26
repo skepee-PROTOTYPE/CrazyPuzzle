@@ -95,7 +95,7 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
     };
     
     fetchLeaderboard();
-  }, [mode, difficulty, layout, score, timer]);
+  }, [mode, difficulty, layout]);
 
   // Multiplayer leaderboard effect
   useEffect(() => {
