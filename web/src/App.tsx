@@ -235,6 +235,17 @@ function App() {
         <div className={styles.menuContainer}>
           <h1 className={styles.mainTitle}>🧩 CrazyPuzzle</h1>
           <p className={styles.subtitle}>Test your memory and compete with friends!</p>
+          
+          {/* Navigation Links */}
+          <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+            <nav style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center', fontSize: '14px' }}>
+              <a href="/about.html" style={{ color: '#1976d2', textDecoration: 'none' }}>About</a>
+              <a href="/how-to-play.html" style={{ color: '#1976d2', textDecoration: 'none' }}>How to Play</a>
+              <a href="/tips-tricks.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Tips & Tricks</a>
+              <a href="/faq.html" style={{ color: '#1976d2', textDecoration: 'none' }}>FAQ</a>
+              <a href="/contact.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Contact</a>
+            </nav>
+          </div>
           <div className={styles.authSection}>
             {activeUser ? (
               <div className={styles.userWelcome}>

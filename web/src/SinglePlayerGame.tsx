@@ -107,6 +107,32 @@ function SinglePlayerGame({ user, onBackToMenu, onSignInWithGoogle, onSignOut }:
         />
 
         <Leaderboard difficulty={difficulty} layout={layout} score={score} timer={timer} />
+        
+        {/* Footer Navigation */}
+        <footer style={{ 
+          marginTop: '40px', 
+          padding: '20px', 
+          borderTop: '1px solid #ddd',
+          textAlign: 'center',
+          fontSize: '14px'
+        }}>
+          <nav style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '10px' }}>
+            <a href="/about.html" style={{ color: '#1976d2', textDecoration: 'none' }}>About</a>
+            <span>|</span>
+            <a href="/how-to-play.html" style={{ color: '#1976d2', textDecoration: 'none' }}>How to Play</a>
+            <span>|</span>
+            <a href="/tips-tricks.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Tips & Tricks</a>
+            <span>|</span>
+            <a href="/faq.html" style={{ color: '#1976d2', textDecoration: 'none' }}>FAQ</a>
+            <span>|</span>
+            <a href="/contact.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Contact</a>
+            <span>|</span>
+            <a href="/privacy-policy.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Privacy</a>
+            <span>|</span>
+            <a href="/terms.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Terms</a>
+          </nav>
+          <p style={{ margin: '0', color: '#666', fontSize: '12px' }}>© 2026 CrazyPuzzle. All rights reserved.</p>
+        </footer>
       </div>
     </div>
   );
