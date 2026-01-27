@@ -10,6 +10,12 @@
 
 # production
 /build
+/fb-final/
+/fb-final-clean/
+/fb-fixed/
+/fb-flat/
+/fb-production/
+/release/
 
 # misc
 .DS_Store
