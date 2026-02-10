@@ -11,6 +11,7 @@ node_modules/
 
 # production
 /build
+web/build/
 /fb-final/
 /fb-final-clean/
 /fb-fixed/
