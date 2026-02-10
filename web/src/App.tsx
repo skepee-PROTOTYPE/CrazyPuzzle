@@ -242,6 +242,7 @@ function App() {
               <a href="/about.html" style={{ color: '#1976d2', textDecoration: 'none' }}>About</a>
               <a href="/how-to-play.html" style={{ color: '#1976d2', textDecoration: 'none' }}>How to Play</a>
               <a href="/tips-tricks.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Tips & Tricks</a>
+              <a href="/blog/" style={{ color: '#1976d2', textDecoration: 'none', fontWeight: '600' }}>📰 Blog</a>
               <a href="/faq.html" style={{ color: '#1976d2', textDecoration: 'none' }}>FAQ</a>
               <a href="/contact.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Contact</a>
             </nav>

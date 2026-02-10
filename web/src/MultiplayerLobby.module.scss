@@ -244,3 +244,72 @@
     transform: translateY(0);
   }
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .lobbyContainer {
+    padding: 15px;
+  }
+  
+  .lobbyHeader {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+    
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+  
+  .backBtn, .createRoomBtn {
+    font-size: 1rem;
+    padding: 12px 20px;
+    width: 100%;
+  }
+  
+  .roomsGrid {
+    gap: 15px;
+  }
+  
+  .roomCard {
+    padding: 15px;
+    
+    h3 {
+      font-size: 1.2rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .roomActions {
+    flex-direction: column;
+    width: 100%;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .modal {
+    padding: 15px;
+  }
+  
+  .modalContent {
+    padding: 20px;
+    max-width: 90%;
+    
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .modalActions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,19 @@
+# Robots.txt for CrazyPuzzle
+# Updated: February 10, 2026
+
+User-agent: *
+Allow: /
+Allow: /blog/
+Allow: /about.html
+Allow: /how-to-play.html
+Allow: /tips-tricks.html
+Allow: /faq.html
+Allow: /contact.html
+Allow: /privacy-policy.html
+Allow: /terms.html
+
+# Sitemap location
+Sitemap: https://crazypuzzlecrazy.web.app/sitemap.xml
+
+# Crawl delay (optional - prevents server overload)
+Crawl-delay: 1

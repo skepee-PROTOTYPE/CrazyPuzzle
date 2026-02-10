@@ -493,3 +493,105 @@
     box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
   }
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .gameContainer {
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .gameHeader {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+  
+  .headerButtons {
+    width: 100%;
+    
+    button {
+      flex: 1;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+    }
+  }
+  
+  .gameInfo {
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .timer, .yourTurn, .opponentTurn {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+  
+  .playersPanel {
+    padding: 12px;
+  }
+  
+  .playersGrid {
+    gap: 10px;
+  }
+  
+  .playerCard {
+    padding: 12px;
+    
+    h3 {
+      font-size: 1rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .boardSection {
+    padding: 10px;
+  }
+  
+  .chatSection {
+    padding: 12px;
+  }
+  
+  .chatMessages {
+    max-height: 200px;
+  }
+  
+  .chatMessage {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gameHeader h1 {
+    font-size: 1.5rem;
+  }
+  
+  .gameSettings {
+    font-size: 0.8rem;
+  }
+  
+  .timer, .yourTurn, .opponentTurn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .playerCard {
+    padding: 10px;
+    
+    h3 {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .chatMessages {
+    max-height: 150px;
+  }
+}

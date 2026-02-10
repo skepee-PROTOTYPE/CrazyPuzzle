@@ -424,4 +424,52 @@ $bg-card: #fff;
   }
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .menuContainer {
+    padding: 30px 15px;
+  }
+  
+  .mainTitle {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .authSection {
+    padding: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .statusMessage {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+  
+  .modeGrid {
+    gap: 15px;
+  }
+  
+  .scoreBox {
+    font-size: 1em;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainTitle {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .modeGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* leaderboard styles moved to Leaderboard.scss */
