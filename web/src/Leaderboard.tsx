@@ -45,7 +45,7 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
       try {
         setLoading(true);
         setError('');
-        
+
         // Only try the complex query for grid layout (which works)
         if (layout === 'grid') {
           const scoresRef = collection(db, 'scores');
@@ -56,34 +56,34 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
             orderBy('score', 'desc'),
             limit(10)
           );
-          
+
           const querySnapshot = await getDocs(q);
           const scores = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
           })) as Score[];
-          
+
           setLeaderboard(scores);
         } else {
           // For non-grid layouts, show empty leaderboard since they're not implemented
           setLeaderboard([]);
         }
-        
+
       } catch (error: any) {
         setError('Unable to load leaderboard. This may be due to missing database indexes.');
-        
+
         // Fallback: try to get some scores without complex filtering
         try {
           const scoresRef = collection(db, 'scores');
           const simpleQuery = query(scoresRef, limit(5));
           const snapshot = await getDocs(simpleQuery);
-          
+
           const allScores = snapshot.docs
             .map(doc => ({ id: doc.id, ...doc.data() } as Score))
             .filter(scoreItem => scoreItem.difficulty === difficulty && scoreItem.layout === layout)
             .sort((a, b) => b.score - a.score)
             .slice(0, 10);
-            
+
           setLeaderboard(allScores);
           setError(''); // Clear error if fallback works
         } catch (fallbackError) {
@@ -93,7 +93,7 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
         setLoading(false);
       }
     };
-    
+
     fetchLeaderboard();
   }, [mode, difficulty, layout]);
 
@@ -103,7 +103,7 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
 
     setLoading(true);
     const statsRef = ref(realtimeDb, 'userStats');
-    
+
     const unsubscribe = onValue(statsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -112,7 +112,7 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
             const gamesPlayed = stats.multiplayerGamesPlayed || 0;
             const wins = stats.multiplayerWins || 0;
             const winRate = gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 100) : 0;
-            
+
             return {
               userId,
               displayName: stats.displayName || `Player ${userId.slice(0, 8)}`,
@@ -157,7 +157,7 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
           <div className={styles.scoresList}>
             {multiplayerLeaderboard.map((entry, index) => (
               <div key={entry.userId} className={styles.scoreItem}>
-                <span className={styles.rank}>#{index + 1}</span>
+                <span className={`${styles.rank} ${index < 3 ? styles[`rank-${index + 1}`] : ''}`}>#{index + 1}</span>
                 <div className={styles.playerInfo}>
                   <span className={styles.playerName}>{entry.displayName}</span>
                   <div className={styles.playerStats}>
@@ -184,20 +184,20 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
       <h3 className={styles.leaderboardTitle}>
         Leaderboard - {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} ({layout})
       </h3>
-      
+
       {error && (
-        <div style={{ 
-          background: '#fff3cd', 
-          color: '#856404', 
-          padding: '10px', 
-          borderRadius: '4px', 
+        <div style={{
+          background: '#fff3cd',
+          color: '#856404',
+          padding: '10px',
+          borderRadius: '4px',
           marginBottom: '15px',
           fontSize: '0.9rem'
         }}>
           ⚠️ {error}
         </div>
       )}
-      
+
       {layout !== 'grid' ? (
         <div className={styles.noScores}>
           Leaderboard will be available when <strong>{layout}</strong> layout is implemented.
@@ -215,7 +215,7 @@ function Leaderboard({ mode = 'singleplayer', difficulty = 'easy', layout = 'gri
           <tbody>
             {leaderboard.map((entry, index) => (
               <tr key={entry.id}>
-                <td className={styles.rank}>{index + 1}</td>
+                <td className={`${styles.rank} ${index < 3 ? styles[`rank-${index + 1}`] : ''}`}>{index + 1}</td>
                 <td>{entry.userName.split(' ')[0]}</td>
                 <td>{entry.time}s</td>
                 <td className={styles.score}>{entry.score}</td>

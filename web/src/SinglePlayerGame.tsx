@@ -47,7 +47,7 @@ function SinglePlayerGame({ user, onBackToMenu, onSignInWithGoogle, onSignOut }:
           {/* Move authentication to a smaller, optional section */}
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>Game Settings</h3>
-            <DifficultySelector 
+            <DifficultySelector
               difficulty={difficulty}
               layout={layout}
               onDifficultyChange={setDifficulty}
@@ -60,7 +60,7 @@ function SinglePlayerGame({ user, onBackToMenu, onSignInWithGoogle, onSignOut }:
           {!isFacebookInstantGame() && (
             <div className={`${styles.card} ${styles.optionalCard}`}>
               <h3 className={styles.cardTitle}>
-                {user ? 'Player Account' : 'Save Your Progress'} 
+                {user ? 'Player Account' : 'Save Your Progress'}
                 <span className={styles.optionalBadge}>Optional</span>
               </h3>
               {user ? (
@@ -74,7 +74,7 @@ function SinglePlayerGame({ user, onBackToMenu, onSignInWithGoogle, onSignOut }:
               ) : (
                 <div>
                   <p className={styles.guestModeText}>
-                    🎮 You can play as a guest! 
+                    🎮 You can play as a guest!
                     <br />
                     <small>Sign in to save your high scores</small>
                   </p>
@@ -91,7 +91,7 @@ function SinglePlayerGame({ user, onBackToMenu, onSignInWithGoogle, onSignOut }:
           <div className={styles.scoreBox}>Score: {score}</div>
           <div className={styles.scoreBox}>Time: {timer}s</div>
           {!user && !isFacebookInstantGame() && (
-            <div className={styles.scoreBox} style={{ background: '#fff3cd', color: '#856404' }}>
+            <div className={styles.scoreBox} style={{ background: 'rgba(255, 204, 0, 0.2)', color: '#ffcc00', border: '1px solid #ffcc00' }}>
               Guest Mode - Sign in to save scores
             </div>
           )}
@@ -99,39 +99,39 @@ function SinglePlayerGame({ user, onBackToMenu, onSignInWithGoogle, onSignOut }:
 
         <AdBanner />
 
-        <PuzzleBoard 
-          difficulty={difficulty} 
-          layout={layout} 
+        <PuzzleBoard
+          difficulty={difficulty}
+          layout={layout}
           user={user}
           onScore={handleScoreUpdate}
         />
 
         <Leaderboard difficulty={difficulty} layout={layout} score={score} timer={timer} />
-        
+
         {/* Footer Navigation */}
-        <footer style={{ 
-          marginTop: '40px', 
-          padding: '20px', 
-          borderTop: '1px solid #ddd',
+        <footer style={{
+          marginTop: '40px',
+          padding: '20px',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
           textAlign: 'center',
           fontSize: '14px'
         }}>
           <nav style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '10px' }}>
-            <a href="/about.html" style={{ color: '#1976d2', textDecoration: 'none' }}>About</a>
+            <a href="/about.html" style={{ color: '#33ccff', textDecoration: 'none' }}>About</a>
             <span>|</span>
-            <a href="/how-to-play.html" style={{ color: '#1976d2', textDecoration: 'none' }}>How to Play</a>
+            <a href="/how-to-play.html" style={{ color: '#33ccff', textDecoration: 'none' }}>How to Play</a>
             <span>|</span>
-            <a href="/tips-tricks.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Tips & Tricks</a>
+            <a href="/tips-tricks.html" style={{ color: '#33ccff', textDecoration: 'none' }}>Tips & Tricks</a>
             <span>|</span>
-            <a href="/faq.html" style={{ color: '#1976d2', textDecoration: 'none' }}>FAQ</a>
+            <a href="/faq.html" style={{ color: '#33ccff', textDecoration: 'none' }}>FAQ</a>
             <span>|</span>
-            <a href="/contact.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Contact</a>
+            <a href="/contact.html" style={{ color: '#33ccff', textDecoration: 'none' }}>Contact</a>
             <span>|</span>
-            <a href="/privacy-policy.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Privacy</a>
+            <a href="/privacy-policy.html" style={{ color: '#33ccff', textDecoration: 'none' }}>Privacy</a>
             <span>|</span>
-            <a href="/terms.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Terms</a>
+            <a href="/terms.html" style={{ color: '#33ccff', textDecoration: 'none' }}>Terms</a>
           </nav>
-          <p style={{ margin: '0', color: '#666', fontSize: '12px' }}>© 2026 CrazyPuzzle. All rights reserved.</p>
+          <p style={{ margin: '0', color: '#e0e0ff', fontSize: '12px' }}>© 2026 CrazyPuzzle. All rights reserved.</p>
         </footer>
       </div>
     </div>

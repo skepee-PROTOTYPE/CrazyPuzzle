@@ -2,11 +2,12 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
-  color: #333;
+  color: #fff;
   min-height: 100vh;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: rgba(10, 5, 15, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .gameHeader {
@@ -15,22 +16,26 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: transparent !important;
   border-radius: 10px;
   color: white !important;
-  
+
   h1 {
     font-size: 2.5rem;
     margin: 0;
     color: white !important;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(51, 204, 255, 0.5);
   }
 }
 
 .gameSettings {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: #33ccff;
   margin: 5px 0 0 0;
-  font-weight: normal;
+  font-weight: 600;
+  font-family: 'Exo 2', sans-serif;
 }
 
 .headerButtons {
@@ -38,7 +43,10 @@
   gap: 10px;
 }
 
-.menuBtn {
+.menuBtn,
+.leaveBtn,
+.readyBtn,
+.playAgainBtn {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -46,36 +54,30 @@
   cursor: pointer;
   transition: all 0.3s;
   font-weight: 600;
-  background: white !important;
-  color: #5c6bc0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  
+  font-family: 'Exo 2', sans-serif;
+}
+
+.menuBtn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+
   &:hover {
-    background: #f5f5f5 !important;
+    background: rgba(255, 255, 255, 0.2) !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   }
 }
 
-.leaveBtn, .readyBtn, .playAgainBtn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 600;
-}
-
 .leaveBtn {
-  background: white !important;
-  color: #f44336 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  
+  background: rgba(255, 51, 102, 0.2) !important;
+  color: #ff3366 !important;
+  border: 1px solid #ff3366;
+
   &:hover {
-    background: #ffebee !important;
+    background: rgba(255, 51, 102, 0.4) !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
   }
 }
 
@@ -87,77 +89,99 @@
 }
 
 .timer {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #33ccff;
+  color: #33ccff;
   padding: 15px 30px;
-  border-radius: 10px;
+  border-radius: 15px;
   font-size: 1.5rem;
   font-weight: 700;
+  box-shadow: 0 0 15px rgba(51, 204, 255, 0.2);
+  font-family: 'Orbitron', sans-serif;
 }
 
-.yourTurn, .opponentTurn {
+.yourTurn,
+.opponentTurn {
   padding: 15px 30px;
-  border-radius: 10px;
+  border-radius: 15px;
   font-size: 1.2rem;
   font-weight: 600;
   animation: pulse 2s infinite;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .yourTurn {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: rgba(0, 255, 153, 0.2);
+  color: #00ff99;
+  border: 1px solid #00ff99;
+  box-shadow: 0 0 15px rgba(0, 255, 153, 0.3);
 }
 
 .opponentTurn {
-  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+  background: rgba(255, 153, 51, 0.2);
+  color: #ff9933;
+  border: 1px solid #ff9933;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
 }
 
 .playersPanel {
-  background: white;
+  background: rgba(0, 0, 0, 0.6);
   padding: 20px;
   border-radius: 15px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
   h3 {
     margin-top: 0;
     font-size: 1.5rem;
-    color: #333;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
   }
 }
 
 .playerCard {
-  background: #f5f5f5;
+  background: rgba(0, 0, 0, 0.85);
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s;
-  
+
   &.currentUser {
-    border-color: #4CAF50;
-    background: rgba(76, 175, 80, 0.1);
+    border-color: #00ff99;
+    background: rgba(0, 255, 153, 0.1);
   }
-  
+
   &.activeTurn {
-    border-color: #FFC107;
-    background: rgba(255, 193, 7, 0.15);
+    border-color: #ffcc00;
+    background: rgba(255, 204, 0, 0.1);
     animation: glow 1.5s infinite;
   }
 }
 
 @keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.3);
   }
+
   50% {
-    box-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
   }
 }
 
@@ -171,6 +195,7 @@
 .playerName {
   font-weight: 600;
   font-size: 1.1rem;
+  color: white;
 }
 
 .playerStats {
@@ -180,39 +205,43 @@
 }
 
 .ready {
-  color: #4CAF50;
+  color: #00ff99;
   font-weight: 600;
+  text-shadow: 0 0 5px rgba(0, 255, 153, 0.5);
 }
 
 .notReady {
-  color: #FF9800;
+  color: #ff9933;
   font-weight: 600;
 }
 
 .score {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   padding: 5px 15px;
   border-radius: 20px;
   font-weight: 600;
+  color: #33ccff;
 }
 
 .removePlayerBtn {
   padding: 8px 12px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-  color: white;
+  background: rgba(255, 51, 102, 0.2);
+  color: #ff3366;
+  border: 1px solid #ff3366;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
   margin-left: 10px;
-  
+
   &:hover {
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    background: rgba(255, 51, 102, 0.4);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
   }
-  
+
   &:active {
     transform: scale(0.95);
   }
@@ -221,40 +250,44 @@
 .waitingRoom {
   text-align: center;
   padding: 60px 20px;
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
   margin: 30px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+
   h2 {
     font-size: 2rem;
     margin-bottom: 20px;
-    color: #333;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
   }
-  
+
   p {
     font-size: 1.3rem;
     margin-bottom: 30px;
-    color: #666;
+    color: #e0e0ff;
   }
 }
 
 .readyBtn {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #00ff99 0%, #00cc66 100%);
   color: white;
   font-size: 1.3rem;
   padding: 18px 40px;
-  
+  border-radius: 30px;
+  box-shadow: 0 0 20px rgba(0, 255, 153, 0.4);
+
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+    box-shadow: 0 0 30px rgba(0, 255, 153, 0.6);
   }
 }
 
 .readyMessage {
-  color: #4CAF50;
+  color: #00ff99;
   font-size: 1.2rem;
   font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 255, 153, 0.4);
 }
 
 .boardContainer {
@@ -265,98 +298,109 @@
 
 .puzzleGrid {
   display: grid;
-  gap: 10px;
-  padding: 20px;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
+  gap: 12px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  perspective: 1000px;
+
   &.grid4 {
-    grid-template-columns: repeat(4, 80px);
+    grid-template-columns: repeat(4, 90px);
   }
-  
+
   &.grid6 {
-    grid-template-columns: repeat(6, 70px);
+    grid-template-columns: repeat(6, 75px);
   }
-  
+
   &.grid8 {
-    grid-template-columns: repeat(8, 60px);
+    grid-template-columns: repeat(8, 65px);
   }
 }
 
 .tile {
   aspect-ratio: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 10px;
+  background: transparent;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.6s;
   position: relative;
-  border: 3px solid transparent;
-  
+  transform-style: preserve-3d;
+
   &:hover:not(.flipped):not(.matched) {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
   }
-  
-  &.flipped, &.matched {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    
-    .tileFront {
-      display: none;
-    }
-    
-    .tileBack {
-      display: block;
-    }
+
+  &.flipped,
+  &.matched {
+    transform: rotateY(180deg);
   }
-  
+
   &.matched {
     opacity: 0.6;
     cursor: default;
-    border-width: 4px;
+    border-color: #fff;
+    box-shadow: 0 0 15px currentColor;
   }
 }
 
-.tileFront, .tileBack {
+.tileFront,
+.tileBack {
   position: absolute;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  font-family: 'Orbitron', sans-serif;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tileFront {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .tileBack {
-  display: none;
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #33ccff 0%, #0072ff 100%);
+  color: white;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .gameOver {
   text-align: center;
   padding: 40px;
-  background: white;
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
   margin: 30px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
   h2 {
     font-size: 2.5rem;
     margin-bottom: 30px;
-    color: #333;
+    color: #00ff99;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 15px rgba(0, 255, 153, 0.4);
   }
 }
 
 .finalScores {
   margin-bottom: 30px;
-  
+
   h3 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #333;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
   }
 }
 
@@ -365,41 +409,47 @@
   align-items: center;
   gap: 15px;
   padding: 15px 30px;
-  background: #f5f5f5;
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
   margin-bottom: 10px;
   font-size: 1.2rem;
-  color: #333;
-  
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
   .rank {
     font-weight: 700;
     font-size: 1.5rem;
+    color: #33ccff;
     width: 30px;
   }
-  
+
   .playerName {
     flex: 1;
     text-align: left;
   }
-  
+
   .score {
     font-weight: 600;
+    background: transparent;
+    color: #00ff99;
   }
-  
+
   .winner {
     font-size: 1.8rem;
   }
 }
 
 .playAgainBtn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff00cc 0%, #333399 100%);
   color: white;
   font-size: 1.2rem;
   padding: 15px 40px;
-  
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(255, 0, 204, 0.4);
+
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 0, 204, 0.6);
   }
 }
 
@@ -407,56 +457,61 @@
   text-align: center;
   padding: 100px 20px;
   font-size: 1.5rem;
-  color: #333;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
 }
 
 .leaveRoomBtn {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-  color: white;
+  background: rgba(255, 51, 102, 0.2);
+  color: #ff3366;
+  border: 1px solid #ff3366;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
   margin-left: 10px;
-  
+
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    background: rgba(255, 51, 102, 0.4);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
   }
 }
 
 .pendingPanel {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
   padding: 20px;
   border-radius: 15px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #FF9800;
-  
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-left: 4px solid #ff9933;
+
   h3 {
     margin-top: 0;
     font-size: 1.3rem;
-    color: #FF9800;
+    color: #ff9933;
+    font-family: 'Orbitron', sans-serif;
   }
 }
 
 .pendingCard {
-  background: #fff9e6;
+  background: rgba(255, 153, 51, 0.1);
   padding: 12px 15px;
   border-radius: 8px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2px solid #FFE082;
+  border: 1px solid rgba(255, 153, 51, 0.3);
 }
 
 .pendingName {
   font-weight: 600;
-  color: #333;
+  color: white;
 }
 
 .pendingActions {
@@ -464,7 +519,8 @@
   gap: 8px;
 }
 
-.approveBtn, .rejectBtn {
+.approveBtn,
+.rejectBtn {
   padding: 6px 14px;
   border: none;
   border-radius: 6px;
@@ -475,22 +531,26 @@
 }
 
 .approveBtn {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-  color: white;
-  
+  background: rgba(0, 255, 153, 0.2);
+  color: #00ff99;
+  border: 1px solid #00ff99;
+
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    background: rgba(0, 255, 153, 0.3);
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
   }
 }
 
 .rejectBtn {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-  color: white;
-  
+  background: rgba(255, 51, 102, 0.2);
+  color: #ff3366;
+  border: 1px solid #ff3366;
+
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    background: rgba(255, 51, 102, 0.3);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
   }
 }
 
@@ -500,69 +560,71 @@
     padding: 10px;
     border-radius: 10px;
   }
-  
+
   .gameHeader {
     flex-direction: column;
     gap: 10px;
     padding: 15px;
-    
+
     h1 {
       font-size: 1.8rem;
     }
   }
-  
+
   .headerButtons {
     width: 100%;
-    
+
     button {
       flex: 1;
       padding: 10px 15px;
       font-size: 0.9rem;
     }
   }
-  
+
   .gameInfo {
     gap: 10px;
     margin-bottom: 15px;
   }
-  
-  .timer, .yourTurn, .opponentTurn {
+
+  .timer,
+  .yourTurn,
+  .opponentTurn {
     padding: 10px 20px;
     font-size: 1rem;
   }
-  
+
   .playersPanel {
     padding: 12px;
   }
-  
+
   .playersGrid {
     gap: 10px;
   }
-  
+
   .playerCard {
     padding: 12px;
-    
+
     h3 {
       font-size: 1rem;
     }
-    
+
     p {
       font-size: 0.9rem;
     }
   }
-  
+
   .boardSection {
     padding: 10px;
   }
-  
+
   .chatSection {
     padding: 12px;
   }
-  
+
   .chatMessages {
     max-height: 200px;
   }
-  
+
   .chatMessage {
     padding: 8px;
     font-size: 0.9rem;
@@ -573,24 +635,26 @@
   .gameHeader h1 {
     font-size: 1.5rem;
   }
-  
+
   .gameSettings {
     font-size: 0.8rem;
   }
-  
-  .timer, .yourTurn, .opponentTurn {
+
+  .timer,
+  .yourTurn,
+  .opponentTurn {
     padding: 8px 15px;
     font-size: 0.9rem;
   }
-  
+
   .playerCard {
     padding: 10px;
-    
+
     h3 {
       font-size: 0.9rem;
     }
   }
-  
+
   .chatMessages {
     max-height: 150px;
   }

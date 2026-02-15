@@ -36,13 +36,13 @@ function App() {
       if (isFacebookInstantGame()) {
         try {
           await window.FBInstant!.initializeAsync();
-          
+
           // Initialize Facebook ads
           await facebookAds.initialize();
-          
+
           // Start the game (removes loading screen) - MUST be called before getName()
           await window.FBInstant!.startGameAsync();
-          
+
           // Get Facebook player info AFTER startGameAsync
           const fbUser = await platformAuth.fromFacebookPlayer();
           if (fbUser) {
@@ -52,7 +52,7 @@ function App() {
               tone: 'success'
             });
           }
-          
+
           setPlatformLoading(false);
         } catch (error: any) {
           setStatusMessage({
@@ -130,7 +130,7 @@ function App() {
   useEffect(() => {
     const currentUserId = platformUser?.uid || user?.uid;
     const currentDisplayName = platformUser?.displayName || user?.displayName;
-    
+
     if (!currentUserId) {
       setUserStats({ singlePlayerPoints: 0, multiplayerPoints: 0 });
       return;
@@ -149,7 +149,7 @@ function App() {
           const data = snapshot.val();
           const multiplayerPoints = data?.multiplayerPoints || 0;
           setUserStats({ singlePlayerPoints, multiplayerPoints });
-          
+
           // Save/update displayName in Firebase if user is logged in with a name
           if (currentDisplayName) {
             const firstName = currentDisplayName.split(' ')[0];
@@ -235,78 +235,73 @@ function App() {
         <div className={styles.menuContainer}>
           <h1 className={styles.mainTitle}>🧩 CrazyPuzzle</h1>
           <p className={styles.subtitle}>Test your memory and compete with friends!</p>
-          
+
           {/* Navigation Links */}
           <div style={{ marginTop: '20px', marginBottom: '20px' }}>
             <nav style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center', fontSize: '14px' }}>
-              <a href="/about.html" style={{ color: '#1976d2', textDecoration: 'none' }}>About</a>
-              <a href="/how-to-play.html" style={{ color: '#1976d2', textDecoration: 'none' }}>How to Play</a>
-              <a href="/tips-tricks.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Tips & Tricks</a>
-              <a href="/blog/" style={{ color: '#1976d2', textDecoration: 'none', fontWeight: '600' }}>📰 Blog</a>
-              <a href="/faq.html" style={{ color: '#1976d2', textDecoration: 'none' }}>FAQ</a>
-              <a href="/contact.html" style={{ color: '#1976d2', textDecoration: 'none' }}>Contact</a>
+              <a href="/about.html" style={{ color: '#33ccff', textDecoration: 'none' }}>About</a>
+              <a href="/how-to-play.html" style={{ color: '#33ccff', textDecoration: 'none' }}>How to Play</a>
+              <a href="/tips-tricks.html" style={{ color: '#33ccff', textDecoration: 'none' }}>Tips & Tricks</a>
+              <a href="/blog/" style={{ color: '#33ccff', textDecoration: 'none', fontWeight: '600' }}>📰 Blog</a>
+              <a href="/faq.html" style={{ color: '#33ccff', textDecoration: 'none' }}>FAQ</a>
+              <a href="/contact.html" style={{ color: '#33ccff', textDecoration: 'none' }}>Contact</a>
             </nav>
           </div>
-          <div className={styles.authSection}>
-            {activeUser ? (
-              <div className={styles.userWelcome}>
+          {activeUser ? (
+            <div className={styles.profileCard}>
+              <div className={styles.profileLeft}>
                 <img src={activeUser.photoURL || ''} alt="Avatar" className={styles.userAvatar} />
                 <div className={styles.userInfo}>
-                  <span className={styles.userName}>Welcome, {activeUser.displayName}!</span>
-                  <div className={styles.userPoints}>
-                    <span className={styles.pointsBadge}>
-                      🎯 Single: {userStats.singlePlayerPoints} pts
+                  <h2 className={styles.userName}>{activeUser.displayName}</h2>
+                  <div className={styles.userStatsRow}>
+                    <span className={styles.statBadge}>
+                      🎯 Single: <strong>{userStats.singlePlayerPoints}</strong>
                     </span>
-                    <span className={styles.pointsBadge}>
-                      👥 Multi: {userStats.multiplayerPoints} pts
+                    <span className={styles.statBadge}>
+                      👥 Multi: <strong>{userStats.multiplayerPoints}</strong>
                     </span>
                   </div>
                 </div>
-                {!isFacebookInstantGame() && (
-                  <button onClick={handleSignOut} className={styles.signOutBtn}>Sign Out</button>
+              </div>
+
+              {!isFacebookInstantGame() && (
+                <button onClick={handleSignOut} className={styles.signOutBtn}>
+                  Sign Out
+                </button>
+              )}
+            </div>
+          ) : (
+            !isFacebookInstantGame() && (
+              <div className={styles.guestCard}>
+                <p>🎮 Join the fun! Sign in to save your progress.</p>
+                <button onClick={signInWithGoogle} className={styles.signInBtn}>
+                  Sign in with Google
+                </button>
+                {statusMessage && statusMessage.tone === 'error' && (
+                  <div style={{ color: '#ff3366', marginTop: '10px', fontSize: '0.9rem' }}>
+                    {statusMessage.text}
+                  </div>
                 )}
               </div>
-            ) : (
-              !isFacebookInstantGame() && (
-                <div className={styles.guestInfo}>
-                  <p>🎮 Play as guest or sign in for more features</p>
-                  <button onClick={signInWithGoogle} className={styles.signInBtn}>
-                    Sign in with Google
-                  </button>
-                </div>
-              )
-            )}
-            {statusMessage && (
-              <div
-                className={`${styles.statusMessage} ${
-                  statusMessage.tone === 'success'
-                    ? styles.statusSuccess
-                    : statusMessage.tone === 'error'
-                    ? styles.statusError
-                    : styles.statusInfo
-                }`}
-              >
-                {statusMessage.text}
-              </div>
-            )}
-          </div>
+            )
+          )}
           <div className={styles.modeSelection}>
-            <button 
-              onClick={() => setGameMode('singleplayer')} 
+            <button
+              onClick={() => setGameMode('singleplayer')}
               className={styles.modeBtn}
             >
               <span className={styles.modeIcon}>🎯</span>
               <span className={styles.modeTitle}>Single Player</span>
               <span className={styles.modeDesc}>Play solo and beat your best time</span>
             </button>
-            <button 
+            <button
               onClick={() => {
                 if (!activeUser) {
                   setStatusMessage({ text: 'Please sign in to play multiplayer.', tone: 'info' });
                   return;
                 }
                 setGameMode('multiplayer-lobby');
-              }} 
+              }}
               className={styles.modeBtn}
             >
               <span className={styles.modeIcon}>👥</span>
@@ -333,10 +328,10 @@ function App() {
       providerData: [],
       refreshToken: '',
       tenantId: null,
-      delete: async () => {},
+      delete: async () => { },
       getIdToken: async () => '',
       getIdTokenResult: async () => ({} as any),
-      reload: async () => {},
+      reload: async () => { },
       toJSON: () => ({}),
       phoneNumber: null,
       providerId: 'facebook.com'
@@ -344,7 +339,7 @@ function App() {
 
     return (
       <div className={styles.appBg}>
-        <MultiplayerLobby 
+        <MultiplayerLobby
           user={compatUser}
           onJoinRoom={handleJoinRoom}
           onBackToSinglePlayer={() => setGameMode('menu')}
@@ -366,10 +361,10 @@ function App() {
       providerData: [],
       refreshToken: '',
       tenantId: null,
-      delete: async () => {},
+      delete: async () => { },
       getIdToken: async () => '',
       getIdTokenResult: async () => ({} as any),
-      reload: async () => {},
+      reload: async () => { },
       toJSON: () => ({}),
       phoneNumber: null,
       providerId: 'facebook.com'
@@ -377,7 +372,7 @@ function App() {
 
     return (
       <div className={styles.appBg}>
-        <MultiplayerGame 
+        <MultiplayerGame
           roomId={currentRoomId}
           user={compatUser}
           difficulty={currentRoomDifficulty}
@@ -400,17 +395,17 @@ function App() {
     providerData: [],
     refreshToken: '',
     tenantId: null,
-    delete: async () => {},
+    delete: async () => { },
     getIdToken: async () => '',
     getIdTokenResult: async () => ({} as any),
-    reload: async () => {},
+    reload: async () => { },
     toJSON: () => ({}),
     phoneNumber: null,
     providerId: activeUser.platform === 'facebook' ? 'facebook.com' : 'google.com'
   } as any : null);
 
   return (
-    <SinglePlayerGame 
+    <SinglePlayerGame
       user={compatUser}
       onBackToMenu={() => setGameMode('menu')}
       onSignInWithGoogle={signInWithGoogle}
